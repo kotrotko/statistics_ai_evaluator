@@ -1,0 +1,9 @@
+# Ignore the file where we will put the actual key
+.env
+
+# Ignore python cache files that were in your previous error
+**/__pycache__/
+*.pyc
+
+# Ignore your virtual environment
+.venv/
