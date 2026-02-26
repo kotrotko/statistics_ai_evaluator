@@ -3,9 +3,6 @@ import os
 import json
 import re
 
-# GROQ API KEY
-os.environ["GROQ_API_KEY"] = "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"
-
 class Question3Evaluator:
     def __init__(self):
         """Initialize the evaluator with Groq API key."""

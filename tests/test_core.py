@@ -15,9 +15,6 @@ parent_dir = os.path.dirname(current_dir)                  # AIAgent/
 classwork_dir = os.path.join(parent_dir, 'classwork_1')   # AIAgent/classwork_1/
 sys.path.insert(0, classwork_dir)
 
-# GROQ API KEY
-os.environ["GROQ_API_KEY"] = "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"
-
 def print_test_header(test_name):
     """Print formatted test header."""
     print("\n" + "=" * 60)

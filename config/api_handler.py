@@ -6,8 +6,6 @@ This module provides a centralized way to manage Groq API credentials.
 import os
 from dotenv import load_dotenv
 
-# GROQ API KEY - Set once for all evaluators
-# os.environ["GROQ_API_KEY"] = "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"
 # This function reads the .env file and loads the variables into your system memory
 load_dotenv()
 

@@ -1,9 +1,6 @@
 from groq import Groq
 import os
 
-# GROQ API KEY
-os.environ["GROQ_API_KEY"] = "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"
-
 class Question2Evaluator:
     def __init__(self):
         """Initialize the evaluator with Groq API key."""

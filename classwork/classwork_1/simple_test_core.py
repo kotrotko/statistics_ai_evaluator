@@ -5,8 +5,6 @@ Place this file INSIDE classwork_1/ folder (next to config/ folder).
 
 import os
 
-# GROQ API KEY
-os.environ["GROQ_API_KEY"] = "gsk_YOUR_KEY_HERE"
 
 print("=" * 60)
 print("SIMPLE CORE MODULE TEST")
