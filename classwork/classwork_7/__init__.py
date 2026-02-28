@@ -1,1 +1,5 @@
 from .graders.question7_1_evaluator import Question7_1Evaluator
+from .graders.question7_2_evaluator import Question7_2Evaluator
+from .graders.question7_3_evaluator import Question7_3Evaluator
+from .graders.question7_4_evaluator import Question7_4Evaluator
+from .graders.question7_5_evaluator import Question7_5Evaluator

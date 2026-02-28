@@ -17,7 +17,8 @@ from homework_3.graders_hw3.hw3_5 import HW3_5Evaluator
 from homework_5.graders_hw5.hw5_1 import HW5_1Evaluator
 from homework_5.graders_hw5.hw5_2 import HW5_2Evaluator
 from homework_5.graders_hw5.hw5_3 import HW5_3Evaluator
-from classwork.classwork_7 import Question7_1Evaluator
+from homework_7.graders_hw7.hw7_1 import HW7_1Evaluator
+from classwork.classwork_7 import Question7_1Evaluator, Question7_2Evaluator, Question7_3Evaluator, Question7_4Evaluator, Question7_5Evaluator
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
 from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
 from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evaluator
@@ -91,12 +92,24 @@ def main():
         "7_1": (Question7_1Evaluator, "QUESTION 7.1",
                 "Hypothesis Testing - Problem Statement / RQ / Hypotheses / α df CV",
                 "grade_question7_1_answer", {}),
+        "7_2": (Question7_2Evaluator, "QUESTION 7.2",
+                "Normality Check - Shapiro-Wilk / Table / Conclusion / Reasoning",
+                "grade_question7_2_answer", {}),
+        "7_3": (Question7_3Evaluator, "QUESTION 7.3",
+                "Wilcoxon Signed Rank Test - Test Value / Approach / Table / Mean & Median",
+                "grade_question7_3_answer", {}),
+        "7_4": (Question7_4Evaluator, "QUESTION 7.4",
+                "Wilcoxon Table / APA Formatting / Interpretation / Descriptive Plot",
+                "grade_question7_4_answer", {}),
+        "7_5": (Question7_5Evaluator, "QUESTION 7.5",
+                "Output Description / Effect Size / Gender Context / Cultural Context",
+                "grade_question7_5_answer", {}),
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),
         "hw2_2": (HW2_2Evaluator, "HOMEWORK 2.2",
                   "Graph Improvement Discussion",
-                  "grade_graph_improvement", {}),
+                  "grade_graph_improvemen7_3t", {}),
         "hw3_1": (HW3_1Evaluator, "HOMEWORK 3.1",
                   "Mean, Median, Mode Sensitivity Comparison",
                   "grade_sensitivity_comparison", {}),
@@ -121,6 +134,9 @@ def main():
         "hw5_3": (HW5_3Evaluator, "HOMEWORK 5.3",
                   "Sampling Distribution and Z-Score Analysis",
                   "grade_question_hw5_3_answer", {}),
+        "hw7_1": (HW7_1Evaluator, "HOMEWORK 7.1",
+                  "What Does a Confidence Interval Represent?",
+                  "grade_question_hw7_1_answer", {}),
         "mid_v1_1": (QuestionMidV1_1Evaluator,
                      "MIDTERM V1 - QUESTION 1",
                      "Manual Computations",

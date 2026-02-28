@@ -5,7 +5,6 @@ Hypothesis Testing - Problem Statement, Research Question, Hypotheses, α/df/CV
 import re
 
 from config import BaseEvaluator
-from config.output_formatter import OutputFormatter
 
 class Question7_1Evaluator(BaseEvaluator):
     """
@@ -23,9 +22,8 @@ class Question7_1Evaluator(BaseEvaluator):
         super().__init__(
             model="llama-3.3-70b-versatile",
             temperature=0.3,
-            max_tokens=2500
+            max_tokens=1200
         )
-        self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:
         """
@@ -38,41 +36,80 @@ class Question7_1Evaluator(BaseEvaluator):
             Dictionary with found elements and evidence
         """
         text_lower = student_answer.lower()
+        first_lines = student_answer[:200]
 
         elements_found = {
-            "has_problem_statement": False,
-            "has_research_question": False,
-            "has_hypotheses": False,
-            "has_alpha_df_cv": False
+            "name": False,
+            "title": False,
+            "variant": False,
+            "task_description": False,
+            "problem_statement": False,
+            "research_question": False,
+            "hypotheses": False,
+            "alpha_df_cv": False
         }
 
         evidence = []
 
-        if re.search(r'problem\s*statement', text_lower):
-            elements_found["has_problem_statement"] = True
-            evidence.append("Found problem statement indicator")
+        # STEP 1 — Name (strict)
+        name_patterns = [
+            r'name\s*:\s*\w+',
+            r'student\s*:\s*\w+',
+            r'by\s*:\s*\w+',
+            r'^\s*[A-Z][a-z]+\s+[A-Z][a-z]+',
+        ]
+        for pattern in name_patterns:
+            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
+                elements_found["name"] = True
+                evidence.append("Name found")
+                break
+        if not elements_found["name"]:
+            evidence.append("Name NOT found")
 
+        # STEP 2 — Title (strict)
+        if re.search(r'question\s*7[\._]?1', text_lower) or re.search(r'hypothesis\s*testing', text_lower):
+            elements_found["title"] = True
+            evidence.append("Title found")
+        else:
+            evidence.append("Title NOT found")
+
+        # STEP 3 — Variant (strict)
+        if re.search(r'variant\s*\d+|v\s*\d+\b', text_lower):
+            elements_found["variant"] = True
+            evidence.append("Variant found")
+        else:
+            evidence.append("Variant NOT found")
+
+        # STEP 4 — Task description (strict)
+        if re.search(r'task|assignment|instructions?|dataset|problem\s*description', text_lower):
+            elements_found["task_description"] = True
+            evidence.append("Task description found")
+        else:
+            evidence.append("Task description NOT found")
+
+        # Research question
         if re.search(r'\?', student_answer) and re.search(r'(research\s*question|question\s*:)', text_lower):
-            elements_found["has_research_question"] = True
+            elements_found["research_question"] = True
             evidence.append("Found research question with question mark")
 
+        # Hypotheses
         if re.search(r'h0\s*:', text_lower) and re.search(r'h1\s*:|ha\s*:', text_lower):
-            elements_found["has_hypotheses"] = True
+            elements_found["hypotheses"] = True
             evidence.append("Found both H0 and H1/Ha")
 
+            # Alpha, df, CV
         alpha_found = bool(re.search(r'\bα\b|\balpha\b|\ba\s*=', text_lower))
         df_found = bool(re.search(r'\bdf\b|\bdegrees\s*of\s*freedom\b', text_lower))
         cv_found = bool(re.search(r'\bcv\b|\bcritical\s*value\b', text_lower))
         if alpha_found and df_found and cv_found:
-            elements_found["has_alpha_df_cv"] = True
+            elements_found["alpha_df_cv"] = True
             evidence.append("Found α, df, and CV indicators")
         elif df_found:
             evidence.append("Found df but missing α or CV")
 
         return {
             "elements_found": elements_found,
-            "evidence": evidence if evidence else ["No clear element indicators found"],
-            "all_present": all(elements_found.values())
+            "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
     def grade_question7_1_answer(self, student_answer: str, test_mode: bool = False):
@@ -125,11 +162,27 @@ class Question7_1Evaluator(BaseEvaluator):
 
     **RUBRIC:**
 
-    Component 1: Problem Statement (5 points)
-    - Describes what is being investigated (not a conclusion): required
-    - Mentions context (test, comparing groups): 1 point
-    - Cites source of reference values: 1 point
-    - Writing a CONCLUSION instead of a problem = 0/5 (full deduction)
+    Component 1: Header + Problem Statement (5 points)
+    Start at 5 points. Deduct 1 for each missing element below.
+    
+    STEP 1 - Name [STRICT]: Use elements_found["name"].
+    - If False: deduct 1 point. Add to explanation: "Name is missing. -1 point."
+    
+    STEP 2 - Title [STRICT]: Use elements_found["title"].
+    - If False: deduct 1 point. Add to explanation: "Title is missing. -1 point."
+    
+    STEP 3 - Variant [STRICT]: Use elements_found["variant"].
+    - If False: deduct 1 point. Add to explanation: "Variant indicator is missing. -1 point."
+    
+    STEP 4 - Task Description [STRICT]: Use elements_found["task_description"].
+    - If False: deduct 1 point. Add to explanation: "Task description is missing. -1 point."
+    
+    STEP 5 - Problem Statement [VIBE]: Read the student's problem statement carefully.
+    Award 1 point ONLY if BOTH conditions are true:
+    - It is present
+    - It is properly formulated as a research problem (answers: what is a problem? or: what do we not know? or: what is the gap?)
+    If it is missing, or present but does not describe a problem or research gap: 0 points.
+    Add to explanation: "Problem statement is missing or not properly formulated. -1 point."
 
     Component 2: Research Question (5 points)
     - Phrased as a clear question with question mark: required
@@ -197,42 +250,54 @@ class Question7_1Evaluator(BaseEvaluator):
             return result
 
     def print_grading_results(self, grading):
-        """
-        Display grading results using OutputFormatter.
+        """Display grading results"""
+        import textwrap
+        print("=" * 60)
+        print("GRADING RESULTS - QUESTION 7.1")
+        print("Hypothesis Testing - Problem Statement / RQ / Hypotheses / α df CV")
+        print("=" * 60)
 
-        Args:
-            grading: Grading result dictionary
-        """
-        component_labels = {
-            "component_1_score": "Problem Statement",
-            "component_2_score": "Research Question",
-            "component_3_score": "Hypotheses (H₀ and H₁)",
-            "component_4_score": "α, df, and CV"
-        }
+        if 'component_1_score' in grading:
+            print("\nCOMPONENT BREAKDOWN:")
+            print(f"  Component 1 (Name + Title + Variant + Task + Problem Statement): {grading.get('component_1_score', 'N/A')}/5")
+            if grading.get('component_1_explanation'):
+                print(f"    → {grading.get('component_1_explanation')}")
 
-        component_types = {
-            "component_1_score": "STRICT",
-            "component_2_score": "HYBRID",
-            "component_3_score": "STRICT",
-            "component_4_score": "STRICT"
-        }
+            print(f"  Component 2 (Research Question): {grading.get('component_2_score', 'N/A')}/5")
+            if grading.get('component_2_explanation'):
+                print(f"    → {grading.get('component_2_explanation')}")
 
-        max_scores = {
-            "component_1_score": 3,
-            "component_2_score": 17,
-        }
+            print(f"  Component 3 (Hypotheses H₀ and H₁): {grading.get('component_3_score', 'N/A')}/5")
+            if grading.get('component_3_explanation'):
+                print(f"    → {grading.get('component_3_explanation')}")
 
-        self.formatter.print_grading_results(
-            grading=grading,
-            question_name="QUESTION 7.1",
-            question_description="Hypothesis Testing - Problem Statement / RQ / Hypotheses / α df CV",
-            component_labels=component_labels,
-            max_score=max_scores,
-            component_types=component_types,
-            check_configs=None,
-            width=60,
-            mode="STRICT"
-        )
+            print(f"  Component 4 (α, df, and CV): {grading.get('component_4_score', 'N/A')}/5")
+            if grading.get('component_4_explanation'):
+                print(f"    → {grading.get('component_4_explanation')}")
+
+            print(f"  {'─' * 40}")
+
+        print(f"\nTOTAL SCORE: {grading.get('total_points', 'N/A')}/{grading.get('max_points', 20)}")
+        print(f"PERCENTAGE: {grading.get('percentage', 'N/A')}%")
+
+        print("\n" + "=" * 60)
+        print("FEEDBACK:")
+        print("=" * 60)
+        print(textwrap.fill(grading.get('feedback', 'No feedback available'), width=60))
+
+        print("\n" + "=" * 60)
+        print("THE VIBE:")
+        print("=" * 60)
+        print(textwrap.fill(grading.get('vibe', 'N/A'), width=60))
+
+        if 'error' in grading:
+            print("\n" + "=" * 60)
+            print("ERROR:")
+            print("=" * 60)
+            print(grading.get('error'))
+            if 'raw_response' in grading:
+                print("\nRaw Response:")
+                print(grading['raw_response'][:500])
 
 
 if __name__ == "__main__":
