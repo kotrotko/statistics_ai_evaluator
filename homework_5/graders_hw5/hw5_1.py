@@ -38,6 +38,7 @@ class HW5_1Evaluator(BaseEvaluator):
             Dictionary with found elements and evidence
         """
         text_lower = student_answer.lower()
+        first_lines = student_answer[:200]
 
         elements_found = {
             "student_name": False,
@@ -50,18 +51,21 @@ class HW5_1Evaluator(BaseEvaluator):
 
         evidence = []
 
-        # Check for student name
+        # STEP 1 — Name (strict)
         name_patterns = [
-            r'\bname\s*:',
-            r'\bstudent\s*:',
-            r'\bby\s+[A-Z][a-z]+\s+[A-Z][a-z]+',
-            r'^[A-Z][a-z]+\s+[A-Z][a-z]+'
+            r'name\s*:\s*\w+',
+            r'student\s*:\s*\w+',
+            r'by\s*:\s*\w+',
+            r'^\s*[A-Z][a-z]+\s+[A-Z][a-z]+',
         ]
         for pattern in name_patterns:
-            if re.search(pattern, student_answer, re.MULTILINE):
+            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
                 elements_found["student_name"] = True
-                evidence.append(f"Found name indication: {pattern}")
+                evidence.append("Name found")
                 break
+
+            if not elements_found["student_name"]:
+                evidence.append("Name NOT found")
 
         # Check for paper title (e.g., "Homework 5", "HW5", "HW 5")
         title_patterns = [
@@ -138,7 +142,7 @@ class HW5_1Evaluator(BaseEvaluator):
             return self.create_mock_result(
                 component_scores={
                     "component_1_score": 3,
-                    "component_2_score": 6,
+                    "component_2_score": 5,
                     "component_3_score": 6
                 },
                 max_points=20,
@@ -161,21 +165,59 @@ class HW5_1Evaluator(BaseEvaluator):
 
         # Check for formatting elements
         formatting_check = self.check_formatting_elements(student_answer)
+        formatting_summary = formatting_check["elements_found"]
+
+        formatting_block = f"""
+        HEADER DETECTION RESULTS (DO NOT RE-EVALUATE — USE AS FACTS):
+
+        student_name_present = {formatting_summary["student_name"]}
+        paper_title_present = {formatting_summary["paper_title"]}
+        task_description_present = {formatting_summary["task_description"]}
+
+        You MUST deduct points in Component 1 strictly according to these values.
+        If student_name_present = False, you MUST deduct 1 point.
+        If paper_title_present = False, you MUST deduct 1 point.
+        If task_description_present = False, you MUST deduct 1 point.
+        """
 
         # Build the grading prompt
-        prompt = f"""You are grading a statistics homework assignment where students must identify and explain the two mathematical facts (the Central Limit Theorem and the Law of Large Numbers) that describe how sampling distributions work.
+        prompt = f"""{formatting_block}
+        You are grading a statistics homework assignment where students must identify and explain the two mathematical facts (the Central Limit Theorem and the Law of Large Numbers) that describe how sampling distributions work.
 
 **TASK DESCRIPTION:**
 What are the two mathematical facts that describe how sampling distributions work?
 
 **RUBRIC (20 points total):**
 
-**Component 1: Task Setup (4 points total)**
-- 1 point: Student's name is included
-- 1 point: Paper title is included (e.g., "Homework 5", "HW5")
-- 1 point: Task description is copied/included before the answer
-- 1 point: No autoformatting used (no numbered or unordered bullet lists)
-- 0 points for each sub-point that is missing or violated
+**Component 1: Header & Structural Integrity (5 points)**
+
+Start at 5 points.
+
+PART A — Formal header elements (3 points total)
+Deduct 1 point for each missing element:
+
+STEP 1 - Name [STRICT]
+Use student_name_present.
+If False: deduct 1 point. Add: "Name is missing. -1 point."
+
+STEP 2 - Title [STRICT]
+Use paper_title_present.
+If False: deduct 1 point. Add: "Title is missing. -1 point."
+
+STEP 3 - Task Description [STRICT]
+Use task_description_present.
+If False: deduct 1 point. Add: "Task description is missing. -1 point."
+
+PART B — Content quality elements (2 points total)
+Deduct 1 point for each missing element:
+
+STEP 4 - No autoformatting
+If the answer uses numbered lists (1. 2. 3.) or bullet points (-, •, *): deduct 1 point.
+Add: "Autoformatting detected. -1 point."
+
+STEP 5 - Both theorems mentioned
+If either CLT or LLN is completely missing from the answer: deduct 1 point.
+Add: "One theorem missing. -1 point."
 
 **Component 2: Central Limit Theorem - named AND explained (8 points)**
 - 8 points: CLT is correctly named AND described correctly
@@ -203,11 +245,11 @@ Evidence: {formatting_check['evidence']}
 
 **GRADING GUIDELINES:**
 
-For Component 1 (Task Setup):
-- Check each sub-point independently: name, paper title, task description, no autoformatting
-- For paper title: judge yourself whether a title is present. It can be any reasonable title, course name, chapter reference like "Exercises – Ch. 6", assignment label, etc. Be flexible.
-- Autoformatting detection result above indicates if numbered or bullet lists were found
-- 1 point per sub-point present, 0 if missing or violated
+For Component 1 (Header & Structural Integrity):
+- PART A is evaluated STRICTLY using the boolean flags provided above
+- Do NOT re-evaluate name, title, or task description presence
+- PART B requires your judgment on autoformatting and theorem coverage
+- Total deductions from 5 points; minimum score is 0
 
 For Component 2 (CLT):
 - CORRECT ANSWER: CLT states that the sampling distribution of the sample mean
@@ -311,7 +353,7 @@ Return your grading in this exact JSON format:
         if 'component_1_score' in grading:
             print("\nCOMPONENT BREAKDOWN:")
 
-            print(f"  Component 1 (Task Setup): {grading.get('component_1_score', 'N/A')}/4")
+            print(f"  Component 1 (Header & Structural Integrity): {grading.get('component_1_score', 'N/A')}/5")
             print(f"    • Student name:        {grading.get('component_1_name_score', 'N/A')}/1")
             print(f"    • Paper title:         {grading.get('component_1_title_score', 'N/A')}/1")
             print(f"    • Task description:    {grading.get('component_1_task_score', 'N/A')}/1")
