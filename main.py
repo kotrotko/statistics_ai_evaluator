@@ -18,6 +18,11 @@ from homework_5.graders_hw5.hw5_1 import HW5_1Evaluator
 from homework_5.graders_hw5.hw5_2 import HW5_2Evaluator
 from homework_5.graders_hw5.hw5_3 import HW5_3Evaluator
 from homework_7.graders_hw7.hw7_1 import HW7_1Evaluator
+from homework_7.graders_hw7.hw7_2 import HW7_2Evaluator
+from homework_7.graders_hw7.hw7_3 import HW7_3Evaluator
+from homework_7.graders_hw7.hw7_4 import HW7_4Evaluator
+from homework_7.graders_hw7.hw7_5 import HW7_5Evaluator
+from homework_8.graders_hw8.hw8_1 import HW8_1Evaluator
 from classwork.classwork_7 import Question7_1Evaluator, Question7_2Evaluator, Question7_3Evaluator, Question7_4Evaluator, Question7_5Evaluator
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
 from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
@@ -109,7 +114,7 @@ def main():
                   "grade_chart_comparison", {}),
         "hw2_2": (HW2_2Evaluator, "HOMEWORK 2.2",
                   "Graph Improvement Discussion",
-                  "grade_graph_improvemen7_3t", {}),
+                  "grade_graph_improvement", {}),
         "hw3_1": (HW3_1Evaluator, "HOMEWORK 3.1",
                   "Mean, Median, Mode Sensitivity Comparison",
                   "grade_sensitivity_comparison", {}),
@@ -137,6 +142,21 @@ def main():
         "hw7_1": (HW7_1Evaluator, "HOMEWORK 7.1",
                   "What Does a Confidence Interval Represent?",
                   "grade_question_hw7_1_answer", {}),
+        "hw7_2": (HW7_2Evaluator, "HOMEWORK 7.2",
+                  "Confidence Interval Calculations Around Sample Mean",
+                  "grade_question_hw7_2_answer", {}),
+        "hw7_3": (HW7_3Evaluator, "HOMEWORK 7.3",
+                  "One-Sample t-Test Hypothesis Testing (Two-Tailed)",
+                  "grade_question_hw7_3_answer", {}),
+        "hw7_4": (HW7_4Evaluator, "HOMEWORK 7.4",
+                  "Hypothesis Testing Decision-Making",
+                  "grade_question_hw7_4_answer", {}),
+        "hw7_5": (HW7_5Evaluator, "HOMEWORK 7.5",
+                  "One-Sample t-Test Hypothesis Testing (One-Tailed)",
+                  "grade_question_hw7_5_answer", {}),
+        "hw8_1": (HW8_1Evaluator, "HOMEWORK 8.1",
+                  "Dependent-Samples T-Test Research Questions",
+                  "grade_question_hw8_1_answer", {}),
         "mid_v1_1": (QuestionMidV1_1Evaluator,
                      "MIDTERM V1 - QUESTION 1",
                      "Manual Computations",
@@ -169,23 +189,15 @@ def main():
         # choice = sys.stdin.readline().strip()
 
         if choice == "0":
-            print("\n👋 Goodbye!")
+            print("\n Goodbye!")
             break
 
         if choice not in evaluators:
             print(f"\n❌ Invalid choice '{choice}'. Please try again: 0, {available_options}")
             continue
 
-        # if choice not in evaluators:
-        #     print("\n❌ Invalid choice. Please try again.")
-        #     continue
-
         evaluator_class, q_name, q_desc, method, extra_kwargs = evaluators[choice]
         run_evaluator(evaluator_class, q_name, q_desc, method, **extra_kwargs)
-
-
-
-
 
         choice_input = input("\nWould you like to evaluate another student? (y/n): ").strip().lower()
 

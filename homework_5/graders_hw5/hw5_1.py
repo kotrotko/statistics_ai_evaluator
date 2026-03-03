@@ -42,7 +42,7 @@ class HW5_1Evaluator(BaseEvaluator):
 
         elements_found = {
             "student_name": False,
-            "paper_title": None,
+            "paper_title": False,
             "task_description": False,
             "no_autoformatting": True,   # Assumed True; detected False if lists found
             "clt_mentioned": False,
@@ -64,10 +64,10 @@ class HW5_1Evaluator(BaseEvaluator):
                 evidence.append("Name found")
                 break
 
-            if not elements_found["student_name"]:
-                evidence.append("Name NOT found")
+        if not elements_found["student_name"]:
+            evidence.append("Name NOT found")
 
-        # Check for paper title (e.g., "Homework 5", "HW5", "HW 5")
+        # STEP 2 — Title (strict)
         title_patterns = [
             r'homework\s*5',
             r'\bhw\s*5\b',
@@ -75,25 +75,24 @@ class HW5_1Evaluator(BaseEvaluator):
             r'paper\s*5'
         ]
         for pattern in title_patterns:
-            if re.search(pattern, text_lower):
+            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
                 elements_found["paper_title"] = True
-                evidence.append(f"Found paper title: {pattern}")
+                evidence.append("Title found")
                 break
 
-        # Check for task description
-        task_patterns = [
-            r'two\s+mathematical\s+facts',
-            r'sampling\s+distribution',
-            r'task\s*:',
-            r'question\s*:'
-        ]
-        for pattern in task_patterns:
-            if re.search(pattern, text_lower):
-                elements_found["task_description"] = True
-                evidence.append(f"Found task description: {pattern}")
-                break
+        if not elements_found["paper_title"]:
+            evidence.append("Title NOT found")
 
-        # Check for autoformatting (numbered or bullet lists)
+        # STEP 3 — Task description (strict)
+        if re.search(r'task|assignment|instructions?|question\s*:|two\s+mathematical\s+facts|sampling\s+distribution',
+                     text_lower):
+            elements_found["task_description"] = True
+            evidence.append("Task description found")
+        else:
+            evidence.append("Task description NOT found")
+
+
+        # STEP 4 — No autoformatting (strict)
         autoformat_patterns = [
             r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',  # only 2+ consecutive numbered lines
             r'^\s*[-•*]\s+\S',              # bullet list: -, •, *
@@ -101,8 +100,11 @@ class HW5_1Evaluator(BaseEvaluator):
         for pattern in autoformat_patterns:
             if re.search(pattern, student_answer, re.MULTILINE):
                 elements_found["no_autoformatting"] = False
-                evidence.append(f"Autoformatting detected: {pattern}")
+                evidence.append(f"Autoformatting detected")
                 break
+
+        if elements_found["no_autoformatting"]:
+            evidence.append("No autoformatting found")
 
         # Check if CLT is mentioned
         clt_patterns = [r'\bclt\b', r'central\s+limit\s+theorem']
@@ -189,11 +191,10 @@ What are the two mathematical facts that describe how sampling distributions wor
 
 **RUBRIC (20 points total):**
 
-**Component 1: Header & Structural Integrity (5 points)**
+**Component 1: Header & Structural Integrity (4 points)**
 
-Start at 5 points.
+Start at 4 points.
 
-PART A — Formal header elements (3 points total)
 Deduct 1 point for each missing element:
 
 STEP 1 - Name [STRICT]
@@ -208,16 +209,9 @@ STEP 3 - Task Description [STRICT]
 Use task_description_present.
 If False: deduct 1 point. Add: "Task description is missing. -1 point."
 
-PART B — Content quality elements (2 points total)
-Deduct 1 point for each missing element:
-
-STEP 4 - No autoformatting
-If the answer uses numbered lists (1. 2. 3.) or bullet points (-, •, *): deduct 1 point.
-Add: "Autoformatting detected. -1 point."
-
-STEP 5 - Both theorems mentioned
-If either CLT or LLN is completely missing from the answer: deduct 1 point.
-Add: "One theorem missing. -1 point."
+STEP 4 - No autoformatting [STRICT]
+Use no_autoformatting_present.
+If False: deduct 1 point. Add: "Autoformatting detected. -1 point."
 
 **Component 2: Central Limit Theorem - named AND explained (8 points)**
 - 8 points: CLT is correctly named AND described correctly

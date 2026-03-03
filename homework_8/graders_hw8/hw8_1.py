@@ -1,7 +1,7 @@
 """
-hw7_1.py
-What Does a Confidence Interval Represent?
-Evaluation method name: def grade_question_hw7_1_answer
+hw8_1.py
+Dependent-Samples T-Test Research Questions
+Evaluation method name: def grade_question_hw8_1_answer
 """
 import re
 import textwrap
@@ -9,15 +9,15 @@ import textwrap
 from config import BaseEvaluator
 
 
-class HW7_1Evaluator(BaseEvaluator):
+class HW8_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Confidence Interval Definition (HW7_1).
+    Evaluator for Dependent-Samples T-Test Research Questions (HW8_1).
 
-    Task: What does a confidence interval represent?
+    Task: Name 3 research questions that could be addressed using a dependent-
+    samples t-test.
 
-    Evaluates student's ability to correctly define and explain a confidence
-    interval, including the confidence level, and
-    correct interpretation of what the interval means.
+    Evaluates student's ability to formulate appropriate research questions
+    for dependent-samples t-test with justification.
 
     Inherits common functionality from BaseEvaluator.
     Contains only question-specific logic.
@@ -28,7 +28,7 @@ class HW7_1Evaluator(BaseEvaluator):
         super().__init__(
             model="llama-3.3-70b-versatile",
             temperature=0.3,
-            max_tokens=1200
+            max_tokens=1500
         )
 
     def check_formatting_elements(self, student_answer: str) -> dict:
@@ -49,9 +49,6 @@ class HW7_1Evaluator(BaseEvaluator):
             "paper_title": False,
             "task_description": False,
             "no_autoformatting": True,
-            "confidence_level_mentioned": False,
-            "interval_range_mentioned": False,
-            "correct_interpretation": False
         }
 
         evidence = []
@@ -72,25 +69,22 @@ class HW7_1Evaluator(BaseEvaluator):
             evidence.append("Name NOT found")
 
         # STEP 2 — Title (strict)
-
         title_patterns = [
-            r'homework\s*7',
-            r'\bhw\s*7\b',
-            r'assignment\s*7',
-            r'paper\s*7'
+            r'^\s*homework\s*8',
+            r'^\s*hw\s*8\b',
+            r'^\s*assignment\s*8',
+            r'^\s*paper\s*8'
         ]
-
         for pattern in title_patterns:
             if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
                 elements_found["paper_title"] = True
                 evidence.append("Title found")
                 break
-
         if not elements_found["paper_title"]:
             evidence.append("Title NOT found")
 
         # STEP 3 — Task description (strict)
-        if re.search(r'task|assignment|instructions?|question\s*:|what\s+does\s+a\s+confidence\s+interval', text_lower):
+        if re.search(r'task|assignment|instructions?|question\s*:|three\s+research\s+questions|3\s+research\s+questions|dependent.?samples\s+t.?test', text_lower):
             elements_found["task_description"] = True
             evidence.append("Task description found")
         else:
@@ -109,29 +103,14 @@ class HW7_1Evaluator(BaseEvaluator):
         if elements_found["no_autoformatting"]:
             evidence.append("No autoformatting found")
 
-        # Confidence level mentioned (e.g., 95%, 90%, confidence level)
-        if re.search(r'\d+\s*%|\bconfidence\s+level\b|\bsignificance\s+level\b', text_lower):
-            elements_found["confidence_level_mentioned"] = True
-            evidence.append("Confidence level or percentage found")
-
-        # Interval / range mentioned
-        if re.search(r'\brange\b|\binterval\b|\blower\b|\bupper\b|\bbound\b|\bwidth\b', text_lower):
-            elements_found["interval_range_mentioned"] = True
-            evidence.append("Interval/range concept found")
-
-        # Correct interpretation: "contain" or "capture" the true parameter
-        if re.search(r'\bcontain\b|\bcapture\b|\binclude\b|\bcover\b', text_lower):
-            elements_found["correct_interpretation"] = True
-            evidence.append("Correct containment interpretation language found")
-
         return {
             "elements_found": elements_found,
             "evidence": evidence if evidence else ["No clear formatting indicators found"]
         }
 
-    def grade_question_hw7_1_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_question_hw8_1_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Question 7_1 Task 2: What does a confidence interval represent?
+        Grade Question 8_1: Name 3 research questions for dependent-samples t-test.
         Returns detailed grading breakdown.
 
         Args:
@@ -145,17 +124,18 @@ class HW7_1Evaluator(BaseEvaluator):
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 3,
+                    "component_1_score": 4,
                     "component_1_name_score": 1,
-                    "component_1_title_score": 0,
+                    "component_1_title_score": 1,
                     "component_1_task_score": 1,
                     "component_1_autoformat_score": 1,
-                    "component_2_score": 4,
+                    "component_2_score": 5,
                     "component_3_score": 4,
+                    "component_4_score": 3,
                 },
                 max_points=20,
-                feedback="[TEST MODE] Header partially complete. CI definition present but interpretation is incorrect.",
-                vibe="Student has basic awareness of confidence intervals but misinterprets what the confidence level means.",
+                feedback="[TEST MODE] All formatting elements present. Research questions show understanding of dependent t-test concept.",
+                vibe="Student demonstrates good grasp of paired/dependent design with room for improvement in justifications.",
                 additional_data={
                     "formatting_check": {
                         "elements_found": {
@@ -163,12 +143,8 @@ class HW7_1Evaluator(BaseEvaluator):
                             "paper_title": True,
                             "task_description": True,
                             "no_autoformatting": True,
-                            "confidence_level_mentioned": True,
-                            "interval_range_mentioned": True,
-                            "correct_interpretation": False
                         },
-                        "all_present": False,
-                        "evidence": ["Test mode - partial elements present"]
+                        "evidence": ["Test mode - all elements present"]
                     }
                 }
             )
@@ -186,24 +162,24 @@ class HW7_1Evaluator(BaseEvaluator):
         no_autoformatting_present = {formatting_summary["no_autoformatting"]}
 
         You MUST deduct points in Component 1 strictly according to these values.
-        If paper_title_present = False, you MUST deduct 1 point.
         If student_name_present = False, you MUST deduct 1 point.
+        If paper_title_present = False, you MUST deduct 1 point.
         If task_description_present = False, you MUST deduct 1 point.
         If no_autoformatting_present = False, you MUST deduct 1 point.
         """
 
         prompt = f"""{formatting_block}
-        You are grading a statistics assignment where a student must answer:
-"What does a confidence interval represent?"
+        You are grading a statistics assignment where a student must:
+"Name 3 research questions that could be addressed using a dependent-samples t-test."
 
 Use a **STRICT rubric-based approach**. Total score MUST be exactly 20 points.
 
 **IMPORTANT GRADING RULES:**
 1. Total score MUST be exactly 20 points
-2. Focus on conceptual correctness over formatting
+2. Award 1 point minimum for ANY attempt (even if wrong), 0 only if completely blank
 3. Feedback should be SHORT, written as a teacher's comment
 4. Feedback CANNOT be an invitation for further discussion
-5. Award partial credit where reasoning is mostly correct but incomplete
+5. For 1-point answers, use encouraging language: "Credit for trying, but..."
 
 ---
 
@@ -233,39 +209,91 @@ If False: deduct 1 point. Add: "Autoformatting detected. -1 point."
 
 ---
 
-**Component 2: Definition of Confidence Interval (8 points)**
+**Component 2: Research Question 1 (6 points)**
 
-A correct definition must include ALL of the following ideas:
-  a) A CI is a range / interval of values considered plausible or reasonable
-  b) It is built around a point estimate (sample mean) with a margin of error extending equally in both directions
-  c) We are a certain percentage confident that the calculated range brackets the true population mean
+The student must provide a research question appropriate for dependent-samples t-test AND a justification.
 
-Scoring:
-- 8 points: All three ideas (a, b, c) are present and correctly explained
-- 6 points: Two of three ideas present and correct
-- 4 points: One idea present, OR all three named but poorly explained
-- 2 points: Vague reference to CI with no clear explanation of any idea
-- 0 points: No definition provided, or definition is entirely wrong
+**EVALUATION STEPS:**
 
-**COMMON MISTAKES:**
-- Saying "95% probability the true mean is in THIS interval" — WRONG interpretation (frequentist CI does not assign probability to a fixed interval). Deduct 2 points.
-- Confusing CI with hypothesis test p-value: deduct 2 points
-- Correctly naming "range" and "confidence level" but missing the population parameter: partial credit
+STEP 1: Is there ANY answer provided for Question 1?
+- If completely blank/missing → 0 points, feedback: "No answer provided for Question 1."
+- If ANY attempt exists → Continue to STEP 2 (minimum 1 point)
+
+STEP 2: Does the question use dependent/paired structure?
+- Same subjects measured twice (before/after, condition A vs B)? OR
+- Matched pairs (twins, siblings, couples, etc.)?
+
+If NO (compares independent groups):
+→ 1 point, feedback: "Credit for trying, but this compares two separate groups. Dependent t-test requires the SAME people measured twice or matched pairs."
+
+If YES → Continue to STEP 3
+
+STEP 3: Check requirements:
+- Exactly 2 conditions/time points?
+- Continuous outcome variable (measurable, not categorical)?
+- Question clearly worded?
+
+STEP 4: Check justification:
+- Does student explain WHY dependent t-test is needed?
+- Does justification mention pairing ("same subjects," "matched pairs," "within-subject")?
+
+**SCORING:**
+- 6 points: Perfect question + clear justification explaining pairing
+- 4 points: Good question but weak/missing justification
+- 2-3 points: Correct paired structure but unclear wording OR questionable outcome variable OR poor justification
+- 1 point: Wrong (compares independent groups) but attempted
+- 0 points: Completely blank
 
 ---
 
-**Component 3: Practical Interpretation / Example (8 points)**
+**Component 3: Research Question 2 (5 points)**
 
-Student should demonstrate understanding by providing a practical interpretation or example.
+Same evaluation criteria as Component 2.
 
-- 8 points: Provides a correct practical interpretation (e.g., "A 95% CI means that if we
-  repeated sampling 100 times, 95 of those intervals would contain the true population mean")
-  OR applies the concept correctly to an example (e.g., relates it to the dataset used in class)
-- 6 points: Interpretation is mostly correct but missing one key nuance (e.g., doesn't mention
-  repeated sampling, or confuses "interval contains parameter" with "parameter is 95% likely")
-- 4 points: Gives a vague or partially correct real-world example without a full explanation
-- 2 points: Attempts an example but it is incorrect or irrelevant
-- 0 points: No interpretation or example provided at all
+**SCORING:**
+- 5 points: Perfect question + clear justification
+- 3 points: Good question but weak/missing justification
+- 2 points: Correct paired structure but quality issues
+- 1 point: Wrong (compares independent groups) but attempted
+- 0 points: Completely blank
+
+---
+
+**Component 4: Research Question 3 (5 points)**
+
+Same evaluation criteria as Component 2.
+
+**SCORING:**
+- 5 points: Perfect question + clear justification
+- 3 points: Good question but weak/missing justification
+- 2 points: Correct paired structure but quality issues
+- 1 point: Wrong (compares independent groups) but attempted
+- 0 points: Completely blank
+
+---
+
+**GOOD EXAMPLES OF RESEARCH QUESTIONS:**
+
+Example 1 (Before-After):
+"Does a 6-week exercise program reduce resting heart rate in adults?"
+Justification: "This requires a dependent-samples t-test because the same participants are measured twice (before and after the program), creating paired observations."
+
+Example 2 (Matched Pairs):
+"Do identical twins raised together have more similar IQ scores than identical twins raised apart?"
+Justification: "This requires a dependent-samples t-test because twins are naturally matched pairs, and we're comparing the difference in IQ within each twin pair."
+
+Example 3 (Repeated Measures):
+"Do drivers have faster reaction times in the morning versus evening?"
+Justification: "This requires a dependent-samples t-test because each driver is tested twice (morning and evening), eliminating individual differences in baseline reaction time."
+
+---
+
+**FEEDBACK EXAMPLES FOR 1-POINT ANSWERS:**
+
+If student compares independent groups:
+- "Credit for effort, but this question compares two different groups (men vs women), not the same people measured twice."
+- "Good attempt, but dependent t-test requires the SAME subjects measured under both conditions."
+- "Thanks for trying, but your question involves independent groups. Dependent t-test is for paired data only."
 
 ---
 
@@ -276,13 +304,6 @@ structure, or language that reads like a Wikipedia/ChatGPT excerpt rather than a
 - If originality concern detected: set all component scores to 0, set originality_concern to true,
   and set feedback to EXACTLY: "Due to originality concern, your points are frozen. You can get them back if you provide oral explanation for this paper."
 - If original student work: set originality_concern to false and proceed normally.
-
----
-
-**TYPICAL MISTAKES AND PENALTIES:**
-- "The true mean falls in this interval with 95% probability" — classic misinterpretation: −2 from Component 2
-- Defining CI as a single value instead of a range: −4 from Component 2
-- No example or practical application at all: 0/7 on Component 3
 
 ---
 
@@ -298,15 +319,17 @@ Return grading in this exact JSON format:
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
   "component_1_explanation": "<brief explanation for header>",
-  "component_2_score": <0-8>,
-  "component_2_explanation": "<brief explanation for CI definition>",
-  "component_3_score": <0-8>,
-  "component_3_explanation": "<brief explanation for practical interpretation>",
+  "component_2_score": <0-6>,
+  "component_2_explanation": "<brief explanation for Question 1>",
+  "component_3_score": <0-5>,
+  "component_3_explanation": "<brief explanation for Question 2>",
+  "component_4_score": <0-5>,
+  "component_4_explanation": "<brief explanation for Question 3>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <percentage as number>,
   "feedback": "<SHORT teacher's comment, not an invitation for discussion>",
-  "vibe": "<one-sentence overall impression of the student's understanding of confidence intervals>"
+  "vibe": "<one-sentence overall impression of the student's understanding of dependent-samples t-test>"
 }}"""
 
         result = self.grade_with_prompt(
@@ -317,23 +340,13 @@ Return grading in this exact JSON format:
             }
         )
 
-        result = self.grade_with_prompt(
-            student_answer=student_answer,
-            prompt=prompt,
-            additional_checks={
-                "formatting_check": formatting_check
-            }
-        )
-
-        # DEBUG: Print full result
-        print(f"\n🐛 DEBUG - Full result keys: {result.keys()}")
-        print(f"🐛 DEBUG - Full result: {result}")
-
+        # If grading succeeded, validate component scores
         if "error" not in result:
             component_keys = [
                 "component_1_score",
                 "component_2_score",
                 "component_3_score",
+                "component_4_score"
             ]
             result = self.validate_component_scores(result, component_keys, 20)
 
@@ -342,8 +355,8 @@ Return grading in this exact JSON format:
     def print_grading_results(self, grading):
         """Display grading results."""
         print("=" * 60)
-        print("GRADING RESULTS - HW7_1")
-        print("Hypothesis Testing - What Does a Confidence Interval Represent?")
+        print("GRADING RESULTS - HW8_1")
+        print("Dependent-Samples T-Test Research Questions")
         print("=" * 60)
 
         if 'component_1_score' in grading:
@@ -361,13 +374,17 @@ Return grading in this exact JSON format:
             if grading.get('component_1_explanation'):
                 print(f"    → {grading.get('component_1_explanation')}")
 
-            print(f"  Component 2 (CI Definition): {grading.get('component_2_score', 'N/A')}/8")
+            print(f"  Component 2 (Research Question 1): {grading.get('component_2_score', 'N/A')}/6")
             if grading.get('component_2_explanation'):
                 print(f"    → {grading.get('component_2_explanation')}")
 
-            print(f"  Component 3 (Practical Interpretation): {grading.get('component_3_score', 'N/A')}/8")
+            print(f"  Component 3 (Research Question 2): {grading.get('component_3_score', 'N/A')}/5")
             if grading.get('component_3_explanation'):
                 print(f"    → {grading.get('component_3_explanation')}")
+
+            print(f"  Component 4 (Research Question 3): {grading.get('component_4_score', 'N/A')}/5")
+            if grading.get('component_4_explanation'):
+                print(f"    → {grading.get('component_4_explanation')}")
 
             print(f"  {'─' * 40}")
 
@@ -399,14 +416,14 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Initialize evaluator
-    evaluator = HW7_1Evaluator()
+    evaluator = HW8_1Evaluator()
 
     # Prompt user for student's answer
     print("=" * 60)
-    print("QUESTION 7.1 EVALUATOR")
-    print("What Does a Confidence Interval Represent?")
+    print("QUESTION 8.1 EVALUATOR")
+    print("Dependent-Samples T-Test Research Questions")
     print("=" * 60)
-    print("\nPlease enter the student's answer to QUESTION 7_1.")
+    print("\nPlease enter the student's answer to QUESTION 8_1.")
     print("(Press Enter twice when finished, or type 'END' on a new line)\n")
 
     lines = []
@@ -432,7 +449,7 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Grade with Groq API
-    grading = evaluator.grade_question_hw7_1_answer(student_answer)
+    grading = evaluator.grade_question_hw8_1_answer(student_answer)
 
     # Display results
     evaluator.print_grading_results(grading)
