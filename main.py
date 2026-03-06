@@ -32,6 +32,7 @@ from classwork.classwork_5.graders.question5_2_evaluator import Question5_2Evalu
 from classwork.classwork_8.graders.question8_1_evaluator import CW8_1Evaluator
 from classwork.classwork_8.graders.question8_2_evaluator import CW8_2Evaluator
 from classwork.classwork_8.graders.question8_3_evaluator import CW8_3Evaluator
+from classwork.classwork_8.graders.question8_4_evaluator import CW8_4Evaluator
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 
@@ -120,6 +121,10 @@ def main():
         "cw8_3": (CW8_3Evaluator, "CLASSWORK 8.3",
                   "Hypothesis Testing Setup - Hypotheses / α / df / CV",
                   "grade_question_cw8_3_answer", {}),
+        "cw8_4": (CW8_4Evaluator, "CLASSWORK 8.4",
+                  "Means Comparison - Justification / Table / Inference / Effect Size / Plot",
+                  "grade_cw8_4_answer",
+                  {}),
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),
