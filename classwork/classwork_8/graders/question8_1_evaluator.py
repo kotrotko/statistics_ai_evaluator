@@ -1,7 +1,7 @@
 """
-hw8_1.py
-Dependent-Samples T-Test Research Questions
-Evaluation method name: def grade_question_hw8_1_answer
+cw8_1.py
+Classwork 8: Statistical Method Selection and Justification
+Evaluation method name: def grade_question_cw8_1_answer
 """
 import re
 import textwrap
@@ -9,15 +9,16 @@ import textwrap
 from config import BaseEvaluator
 
 
-class HW8_1Evaluator(BaseEvaluator):
+class CW8_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Dependent-Samples T-Test Research Questions (HW8_1).
+    Evaluator for Statistical Method Selection (CW8_1).
 
-    Task: Name 3 research questions that could be addressed using a dependent-
-    samples t-test.
+    Task: In class, state the problem (5 points), and formulate Research question (5 points).
+    Using OUR step system, name the statistical method you use (5 points) and explain why this
+    method is suitable for our problem solving, based on research design (5 points).
 
-    Evaluates student's ability to formulate appropriate research questions
-    for dependent-samples t-test with justification.
+    Evaluates student's ability to state a problem, formulate a research question,
+    identify the appropriate statistical method, and justify the choice based on research design.
 
     Inherits common functionality from BaseEvaluator.
     Contains only question-specific logic.
@@ -45,7 +46,6 @@ class HW8_1Evaluator(BaseEvaluator):
         first_lines = student_answer[:200]
 
         elements_found = {
-            "student_name": False,
             "paper_title": False,
             "task_description": False,
             "no_autoformatting": True,
@@ -53,27 +53,12 @@ class HW8_1Evaluator(BaseEvaluator):
 
         evidence = []
 
-        # STEP 1 — Name (strict)
-        name_patterns = [
-            r'name\s*:\s*\w+',
-            r'student\s*:\s*\w+',
-            r'by\s*:\s*\w+',
-            r'^\s*[A-Z][a-z]+\s+[A-Z][a-z]+',
-        ]
-        for pattern in name_patterns:
-            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
-                elements_found["student_name"] = True
-                evidence.append("Name found")
-                break
-        if not elements_found["student_name"]:
-            evidence.append("Name NOT found")
-
         # STEP 2 — Title (strict)
         title_patterns = [
-            r'^\s*homework\s*8',
-            r'^\s*hw\s*8\b',
-            r'^\s*assignment\s*8',
-            r'^\s*paper\s*8'
+            r'^\s*classwork\s*8',
+            r'^\s*cw\s*8\b',
+            r'^\s*class\s*work\s*8',
+            r'^\s*in.?class\s*8'
         ]
         for pattern in title_patterns:
             if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
@@ -84,7 +69,7 @@ class HW8_1Evaluator(BaseEvaluator):
             evidence.append("Title NOT found")
 
         # STEP 3 — Task description (strict)
-        if re.search(r'task|assignment|instructions?|question\s*:|three\s+research\s+questions|3\s+research\s+questions|dependent.?samples\s+t.?test', text_lower):
+        if re.search(r'task|assignment|instructions?|question\s*:|state\s+the\s+problem|research\s+question|statistical\s+method', text_lower):
             elements_found["task_description"] = True
             evidence.append("Task description found")
         else:
@@ -108,9 +93,9 @@ class HW8_1Evaluator(BaseEvaluator):
             "evidence": evidence if evidence else ["No clear formatting indicators found"]
         }
 
-    def grade_question_hw8_1_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_question_cw8_1_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Question 8_1: Name 3 research questions for dependent-samples t-test.
+        Grade Classwork 8_1: Statistical Method Selection and Justification.
         Returns detailed grading breakdown.
 
         Args:
@@ -129,17 +114,18 @@ class HW8_1Evaluator(BaseEvaluator):
                     "component_1_title_score": 1,
                     "component_1_task_score": 1,
                     "component_1_autoformat_score": 1,
-                    "component_2_score": 5,
+                    "component_2_score": 4,
                     "component_3_score": 4,
-                    "component_4_score": 3,
+                    "component_4_score": 4,
+                    "component_5_score": 4,
                 },
                 max_points=20,
-                feedback="[TEST MODE] All formatting elements present. Research questions show understanding of dependent t-test concept.",
-                vibe="Student demonstrates good grasp of paired/dependent design with room for improvement in justifications.",
+                feedback="[TEST MODE] All formatting elements present. Problem stated clearly, research question formulated, method identified with good justification.",
+                vibe="Student demonstrates solid understanding of research design and statistical method selection.",
                 additional_data={
                     "formatting_check": {
                         "elements_found": {
-                            "student_name": True,
+                            # "student_name": True,
                             "paper_title": True,
                             "task_description": True,
                             "no_autoformatting": True,
@@ -156,21 +142,21 @@ class HW8_1Evaluator(BaseEvaluator):
         formatting_block = f"""
         HEADER DETECTION RESULTS (DO NOT RE-EVALUATE — USE AS FACTS):
 
-        student_name_present = {formatting_summary["student_name"]}
         paper_title_present = {formatting_summary["paper_title"]}
         task_description_present = {formatting_summary["task_description"]}
         no_autoformatting_present = {formatting_summary["no_autoformatting"]}
 
         You MUST deduct points in Component 1 strictly according to these values.
-        If student_name_present = False, you MUST deduct 1 point.
         If paper_title_present = False, you MUST deduct 1 point.
         If task_description_present = False, you MUST deduct 1 point.
         If no_autoformatting_present = False, you MUST deduct 1 point.
         """
 
         prompt = f"""{formatting_block}
-        You are grading a statistics assignment where a student must:
-"Name 3 research questions that could be addressed using a dependent-samples t-test."
+        You are grading a statistics classwork assignment where a student must:
+"In class, state the problem (5 points), and formulate Research question (5 points). 
+Using OUR step system, name the statistical method you use (5 points) and explain why this 
+method is suitable for our problem solving, based on research design (5 points)."
 
 Use a **STRICT rubric-based approach**. Total score MUST be exactly 20 points.
 
@@ -192,8 +178,12 @@ Start at 4 points.
 Deduct 1 point for each missing element:
 
 STEP 1 - Name [STRICT]
-Use student_name_present.
-If False: deduct 1 point. Add: "Name is missing. -1 point."
+- CRITICAL: "Answer:", "Hypothesis:", "Question:", "H0:", "H1:", "Problem:", "Method:" are NOT names
+- Look ONLY in the first 1-2 lines of the submission
+- A valid student name is: Two words, each starting with a capital letter, like "John Doe" or "Jane Smith"
+- The name must appear BEFORE any assignment content (before "Answer:", "Hypothesis:", etc.)
+- If you see "Answer:" or "Hypothesis:" in the first line, there is NO name
+- If NO name found: deduct 1 point and add feedback: "Your name is expected here. -1 point."
 
 STEP 2 - Title [STRICT]
 Use paper_title_present.
@@ -209,91 +199,116 @@ If False: deduct 1 point. Add: "Autoformatting detected. -1 point."
 
 ---
 
-**Component 2: Research Question 1 (6 points)**
+**Component 2: Problem Statement (4 points)**
 
-The student must provide a research question appropriate for dependent-samples t-test AND a justification.
+The student must clearly state the problem being addressed.
 
-**EVALUATION STEPS:**
+**EVALUATION:**
 
-STEP 1: Is there ANY answer provided for Question 1?
-- If completely blank/missing → 0 points, feedback: "No answer provided for Question 1."
+STEP 1: Is there ANY problem statement provided?
+- If completely blank/missing → 0 points, feedback: "No problem statement provided."
 - If ANY attempt exists → Continue to STEP 2 (minimum 1 point)
 
-STEP 2: Does the question use dependent/paired structure?
-- Same subjects measured twice (before/after, condition A vs B)? OR
-- Matched pairs (twins, siblings, couples, etc.)?
-
-If NO (compares independent groups):
-→ 1 point, feedback: "Credit for trying, but this compares two separate groups. Dependent t-test requires the SAME people measured twice or matched pairs."
-
-If YES → Continue to STEP 3
-
-STEP 3: Check requirements:
-- Exactly 2 conditions/time points?
-- Continuous outcome variable (measurable, not categorical)?
-- Question clearly worded?
-
-STEP 4: Check justification:
-- Does student explain WHY dependent t-test is needed?
-- Does justification mention pairing ("same subjects," "matched pairs," "within-subject")?
+STEP 2: Evaluate problem statement quality:
+- Is the problem clearly articulated?
+- Does it identify what needs to be investigated?
+- Is it specific and focused?
 
 **SCORING:**
-- 6 points: Perfect question + clear justification explaining pairing
-- 4 points: Good question but weak/missing justification
-- 2-3 points: Correct paired structure but unclear wording OR questionable outcome variable OR poor justification
-- 1 point: Wrong (compares independent groups) but attempted
+- 4 points: Clear, specific problem statement that identifies exactly what needs to be investigated
+- 3 points: Problem stated but lacks some clarity or specificity
+- 2 points: Vague or poorly articulated problem statement
+- 1 point: Attempted but unclear or confused
 - 0 points: Completely blank
 
 ---
 
-**Component 3: Research Question 2 (5 points)**
+**Component 3: Research Question (4 points)**
 
-Same evaluation criteria as Component 2.
+The student must formulate a clear research question.
+
+**EVALUATION:**
+
+STEP 1: Is there ANY research question provided?
+- If completely blank/missing → 0 points, feedback: "No research question provided."
+- If ANY attempt exists → Continue to STEP 2 (minimum 1 point)
+
+STEP 2: Evaluate research question quality:
+- Is it phrased as a question?
+- Is it specific and answerable?
+- Does it follow from the problem statement?
+- Does it specify variables or conditions being compared?
 
 **SCORING:**
-- 5 points: Perfect question + clear justification
-- 3 points: Good question but weak/missing justification
-- 2 points: Correct paired structure but quality issues
-- 1 point: Wrong (compares independent groups) but attempted
+- 4 points: Well-formulated research question that is specific, answerable, and clearly related to the problem
+- 3 points: Research question present but lacks some clarity or specificity
+- 2 points: Vague or poorly formulated research question
+- 1 point: Attempted but unclear or not properly structured as a research question
 - 0 points: Completely blank
 
 ---
 
-**Component 4: Research Question 3 (5 points)**
+**Component 4: Statistical Method Named (4 points)**
 
-Same evaluation criteria as Component 2.
+The student must name the appropriate statistical method using the step system taught in class.
+
+**EVALUATION:**
+
+STEP 1: Is there ANY statistical method named?
+- If completely blank/missing → 0 points, feedback: "No statistical method named."
+- If ANY attempt exists → Continue to STEP 2 (minimum 1 point)
+
+STEP 2: Evaluate method identification:
+- Is a specific statistical method named (e.g., dependent-samples t-test, independent-samples t-test, ANOVA, correlation, chi-square, etc.)?
+- Is the method appropriate for the research question stated?
+- Does the student reference the step system used in class?
 
 **SCORING:**
-- 5 points: Perfect question + clear justification
-- 3 points: Good question but weak/missing justification
-- 2 points: Correct paired structure but quality issues
-- 1 point: Wrong (compares independent groups) but attempted
+- 4 points: Correct statistical method named and appropriate for the research question; step system referenced
+- 3 points: Correct method named but step system not clearly referenced
+- 2 points: Method named but not clearly appropriate, or method selection unclear
+- 1 point: Attempted but method unclear, wrong, or missing key details
 - 0 points: Completely blank
 
 ---
 
-**GOOD EXAMPLES OF RESEARCH QUESTIONS:**
+**Component 5: Justification Based on Research Design (4 points)**
 
-Example 1 (Before-After):
-"Does a 6-week exercise program reduce resting heart rate in adults?"
-Justification: "This requires a dependent-samples t-test because the same participants are measured twice (before and after the program), creating paired observations."
+The student must explain WHY the chosen statistical method is appropriate based on the research design.
 
-Example 2 (Matched Pairs):
-"Do identical twins raised together have more similar IQ scores than identical twins raised apart?"
-Justification: "This requires a dependent-samples t-test because twins are naturally matched pairs, and we're comparing the difference in IQ within each twin pair."
+**EVALUATION:**
 
-Example 3 (Repeated Measures):
-"Do drivers have faster reaction times in the morning versus evening?"
-Justification: "This requires a dependent-samples t-test because each driver is tested twice (morning and evening), eliminating individual differences in baseline reaction time."
+STEP 1: Is there ANY justification provided?
+- If completely blank/missing → 0 points, feedback: "No justification provided."
+- If ANY attempt exists → Continue to STEP 2 (minimum 1 point)
+
+STEP 2: Evaluate justification quality:
+- Does the justification explain WHY this method is appropriate?
+- Does it reference key features of the research design (e.g., independent vs dependent samples, number of groups, type of variables)?
+- Is the reasoning logically sound?
+
+**SCORING:**
+- 4 points: Clear, well-reasoned justification that explicitly connects the research design features to the chosen method
+- 3 points: Justification present but lacks some detail or clarity in connecting design to method
+- 2 points: Weak or vague justification that doesn't clearly explain the connection
+- 1 point: Attempted but justification is unclear, illogical, or irrelevant
+- 0 points: Completely blank
 
 ---
 
-**FEEDBACK EXAMPLES FOR 1-POINT ANSWERS:**
+**EXAMPLE OF A COMPLETE ANSWER:**
 
-If student compares independent groups:
-- "Credit for effort, but this question compares two different groups (men vs women), not the same people measured twice."
-- "Good attempt, but dependent t-test requires the SAME subjects measured under both conditions."
-- "Thanks for trying, but your question involves independent groups. Dependent t-test is for paired data only."
+Problem Statement:
+"We want to determine whether a new sleep intervention improves sleep quality in college students who suffer from insomnia."
+
+Research Question:
+"Do college students with insomnia report higher sleep quality scores after completing a 4-week sleep intervention compared to before the intervention?"
+
+Statistical Method:
+"Using the step system, this requires a dependent-samples t-test."
+
+Justification:
+"This method is appropriate because we are comparing the same group of students at two different time points (before and after the intervention), which creates paired observations. The dependent-samples t-test is designed for this type of within-subjects design where we measure the same individuals twice."
 
 ---
 
@@ -310,6 +325,21 @@ structure, or language that reads like a Wikipedia/ChatGPT excerpt rather than a
 **STUDENT ANSWER:**
 {student_answer}
 
+**SCORING INSTRUCTIONS FOR SUB-SCORES:**
+
+For component_1_name_score:
+- CRITICAL: "Answer:", "Hypothesis:", "Question:", "H0:", "H1:", "Problem:", "Method:" are NOT names
+- Look ONLY in the first 1-2 lines of the submission
+- A valid student name is: Two words, each starting with a capital letter, like "John Doe" or "Jane Smith"
+- The name must appear BEFORE any assignment content (before "Answer:", "Hypothesis:", etc.)
+- If you see "Answer:" or "Hypothesis:" in the first line, there is NO name
+- If name found: component_1_name_score = 1
+- If NO name found: component_1_name_score = 0
+
+For component_1_title_score: use paper_title_present (1 if True, 0 if False)
+For component_1_task_score: use task_description_present (1 if True, 0 if False)
+For component_1_autoformat_score: use no_autoformatting_present (1 if True, 0 if False)
+
 Return grading in this exact JSON format:
 {{
   "originality_concern": <true/false>,
@@ -319,17 +349,19 @@ Return grading in this exact JSON format:
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
   "component_1_explanation": "<brief explanation for header>",
-  "component_2_score": <0-6>,
-  "component_2_explanation": "<brief explanation for Question 1>",
-  "component_3_score": <0-5>,
-  "component_3_explanation": "<brief explanation for Question 2>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<brief explanation for Question 3>",
+  "component_2_score": <0-4>,
+  "component_2_explanation": "<brief explanation for problem statement>",
+  "component_3_score": <0-4>,
+  "component_3_explanation": "<brief explanation for research question>",
+  "component_4_score": <0-4>,
+  "component_4_explanation": "<brief explanation for method named>",
+  "component_5_score": <0-4>,
+  "component_5_explanation": "<brief explanation for justification>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <percentage as number>,
   "feedback": "<SHORT teacher's comment, not an invitation for discussion>",
-  "vibe": "<one-sentence overall impression of the student's understanding of dependent-samples t-test>"
+  "vibe": "<one-sentence overall impression of the student's understanding of statistical method selection and research design>"
 }}"""
 
         result = self.grade_with_prompt(
@@ -346,7 +378,8 @@ Return grading in this exact JSON format:
                 "component_1_score",
                 "component_2_score",
                 "component_3_score",
-                "component_4_score"
+                "component_4_score",
+                "component_5_score"
             ]
             result = self.validate_component_scores(result, component_keys, 20)
 
@@ -355,8 +388,8 @@ Return grading in this exact JSON format:
     def print_grading_results(self, grading):
         """Display grading results."""
         print("=" * 60)
-        print("GRADING RESULTS - HW8_1")
-        print("Dependent-Samples T-Test Research Questions")
+        print("GRADING RESULTS - CW8_1")
+        print("Statistical Method Selection and Justification")
         print("=" * 60)
 
         if 'component_1_score' in grading:
@@ -367,24 +400,28 @@ Return grading in this exact JSON format:
 
             print("\nCOMPONENT BREAKDOWN:")
             print(f"  Component 1 (Header): {grading.get('component_1_score', 'N/A')}/4")
-            print(f"    • Student name:        {grading.get('component_1_name_score', 'N/A')}/1")
-            print(f"    • Paper title:         {grading.get('component_1_title_score', 'N/A')}/1")
-            print(f"    • Task description:    {grading.get('component_1_task_score', 'N/A')}/1")
-            print(f"    • No autoformatting:   {grading.get('component_1_autoformat_score', 'N/A')}/1")
+            print(f"    • Student name:        {grading.get('component_1_name_score', 'N/A')}/1 (LLM)")
+            print(f"    • Paper title:         {grading.get('component_1_title_score', 'N/A')}/1 (regex)")
+            print(f"    • Task description:    {grading.get('component_1_task_score', 'N/A')}/1 (regex)")
+            print(f"    • No autoformatting:   {grading.get('component_1_autoformat_score', 'N/A')}/1 (regex)")
             if grading.get('component_1_explanation'):
                 print(f"    → {grading.get('component_1_explanation')}")
 
-            print(f"  Component 2 (Research Question 1): {grading.get('component_2_score', 'N/A')}/6")
+            print(f"  Component 2 (Problem Statement): {grading.get('component_2_score', 'N/A')}/4")
             if grading.get('component_2_explanation'):
                 print(f"    → {grading.get('component_2_explanation')}")
 
-            print(f"  Component 3 (Research Question 2): {grading.get('component_3_score', 'N/A')}/5")
+            print(f"  Component 3 (Research Question): {grading.get('component_3_score', 'N/A')}/4")
             if grading.get('component_3_explanation'):
                 print(f"    → {grading.get('component_3_explanation')}")
 
-            print(f"  Component 4 (Research Question 3): {grading.get('component_4_score', 'N/A')}/5")
+            print(f"  Component 4 (Method Named): {grading.get('component_4_score', 'N/A')}/4")
             if grading.get('component_4_explanation'):
                 print(f"    → {grading.get('component_4_explanation')}")
+
+            print(f"  Component 5 (Justification): {grading.get('component_5_score', 'N/A')}/4")
+            if grading.get('component_5_explanation'):
+                print(f"    → {grading.get('component_5_explanation')}")
 
             print(f"  {'─' * 40}")
 
@@ -416,14 +453,14 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Initialize evaluator
-    evaluator = HW8_1Evaluator()
+    evaluator = CW8_1Evaluator()
 
     # Prompt user for student's answer
     print("=" * 60)
-    print("QUESTION 8.1 EVALUATOR")
-    print("Dependent-Samples T-Test Research Questions")
+    print("CLASSWORK 8.1 EVALUATOR")
+    print("Statistical Method Selection and Justification")
     print("=" * 60)
-    print("\nPlease enter the student's answer to QUESTION 8_1.")
+    print("\nPlease enter the student's answer to CLASSWORK 8_1.")
     print("(Press Enter twice when finished, or type 'END' on a new line)\n")
 
     lines = []
@@ -449,7 +486,7 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Grade with Groq API
-    grading = evaluator.grade_question_hw8_1_answer(student_answer)
+    grading = evaluator.grade_question_cw8_1_answer(student_answer)
 
     # Display results
     evaluator.print_grading_results(grading)

@@ -1,28 +1,27 @@
 """
 Main application for statistics grading system.
 """
-import sys
 
 from config.input_handler import InputHandler
 from classwork.classwork_1.graders import Question1_1Evaluator, Question1_2Evaluator
 from classwork.classwork_2.graders import Question2_1Evaluator, Question2_2Evaluator, Question2_3Evaluator
 from classwork.classwork_2.graders.question2_4_evaluator import Question2_4Evaluator
-from homework_2.graders_hw2.hw2_2 import HW2_2Evaluator
-from homework_2.graders_hw2.hw2_1 import HW2_1Evaluator
-from homework_3.graders_hw3.hw3_1 import HW3_1Evaluator
-from homework_3.graders_hw3.hw3_2 import HW3_2Evaluator
-from homework_3.graders_hw3.hw3_3 import HW3_3Evaluator
-from homework_3.graders_hw3.hw3_4 import HW3_4Evaluator
-from homework_3.graders_hw3.hw3_5 import HW3_5Evaluator
-from homework_5.graders_hw5.hw5_1 import HW5_1Evaluator
-from homework_5.graders_hw5.hw5_2 import HW5_2Evaluator
-from homework_5.graders_hw5.hw5_3 import HW5_3Evaluator
-from homework_7.graders_hw7.hw7_1 import HW7_1Evaluator
-from homework_7.graders_hw7.hw7_2 import HW7_2Evaluator
-from homework_7.graders_hw7.hw7_3 import HW7_3Evaluator
-from homework_7.graders_hw7.hw7_4 import HW7_4Evaluator
-from homework_7.graders_hw7.hw7_5 import HW7_5Evaluator
-from homework_8.graders_hw8.hw8_1 import HW8_1Evaluator
+from homework.homework_2.graders_hw2 import HW2_2Evaluator
+from homework.homework_2.graders_hw2 import HW2_1Evaluator
+from homework.homework_3.graders_hw3.hw3_1 import HW3_1Evaluator
+from homework.homework_3.graders_hw3.hw3_2 import HW3_2Evaluator
+from homework.homework_3.graders_hw3.hw3_3 import HW3_3Evaluator
+from homework.homework_3.graders_hw3.hw3_4 import HW3_4Evaluator
+from homework.homework_3.graders_hw3.hw3_5 import HW3_5Evaluator
+from homework.homework_5 import HW5_1Evaluator
+from homework.homework_5.graders_hw5.hw5_2 import HW5_2Evaluator
+from homework.homework_5 import HW5_3Evaluator
+from homework.homework_7.graders_hw7.hw7_1 import HW7_1Evaluator
+from homework.homework_7.graders_hw7.hw7_2 import HW7_2Evaluator
+from homework.homework_7.graders_hw7.hw7_3 import HW7_3Evaluator
+from homework.homework_7.graders_hw7.hw7_4 import HW7_4Evaluator
+from homework.homework_7.graders_hw7.hw7_5 import HW7_5Evaluator
+from homework.homework_8.graders_hw8.hw8_1 import HW8_1Evaluator
 from classwork.classwork_7 import Question7_1Evaluator, Question7_2Evaluator, Question7_3Evaluator, Question7_4Evaluator, Question7_5Evaluator
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
 from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
@@ -30,6 +29,9 @@ from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evalu
 from classwork.classwork_4.graders.question4_1_evaluator import Question4_1Evaluator
 from classwork.classwork_5.graders.question5_1_evaluator import Question5_1Evaluator
 from classwork.classwork_5.graders.question5_2_evaluator import Question5_2Evaluator
+from classwork.classwork_8.graders.question8_1_evaluator import CW8_1Evaluator
+from classwork.classwork_8.graders.question8_2_evaluator import CW8_2Evaluator
+from classwork.classwork_8.graders.question8_3_evaluator import CW8_3Evaluator
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 
@@ -109,6 +111,15 @@ def main():
         "7_5": (Question7_5Evaluator, "QUESTION 7.5",
                 "Output Description / Effect Size / Gender Context / Cultural Context",
                 "grade_question7_5_answer", {}),
+        "cw8_1": (CW8_1Evaluator, "CLASSWORK 8.1",
+                  "Statistical Method Selection and Justification",
+                  "grade_question_cw8_1_answer", {}),
+        "cw8_2": (CW8_2Evaluator, "CLASSWORK 8.2",
+                  "Normality Check - Method / Conclusion / Reasoning",
+                  "grade_question_cw8_2_answer", {}),
+        "cw8_3": (CW8_3Evaluator, "CLASSWORK 8.3",
+                  "Hypothesis Testing Setup - Hypotheses / α / df / CV",
+                  "grade_question_cw8_3_answer", {}),
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),

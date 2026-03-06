@@ -1,0 +1,3 @@
+from .graders_hw5.hw5_1 import HW5_1Evaluator
+from .graders_hw5.hw5_2 import HW5_2Evaluator
+from .graders_hw5.hw5_3 import HW5_3Evaluator
