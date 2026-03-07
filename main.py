@@ -33,6 +33,7 @@ from classwork.classwork_8.graders.question8_1_evaluator import CW8_1Evaluator
 from classwork.classwork_8.graders.question8_2_evaluator import CW8_2Evaluator
 from classwork.classwork_8.graders.question8_3_evaluator import CW8_3Evaluator
 from classwork.classwork_8.graders.question8_4_evaluator import CW8_4Evaluator
+from classwork.classwork_8.graders.question8_5_evaluator import CW8_5Evaluator
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 
@@ -117,7 +118,7 @@ def main():
                   "grade_question_cw8_1_answer", {}),
         "cw8_2": (CW8_2Evaluator, "CLASSWORK 8.2",
                   "Normality Check - Method / Conclusion / Reasoning",
-                  "grade_question_cw8_2_answer", {}),
+                  "grade_cw8_2_answer", {}),
         "cw8_3": (CW8_3Evaluator, "CLASSWORK 8.3",
                   "Hypothesis Testing Setup - Hypotheses / α / df / CV",
                   "grade_question_cw8_3_answer", {}),
@@ -125,6 +126,9 @@ def main():
                   "Means Comparison - Justification / Table / Inference / Effect Size / Plot",
                   "grade_cw8_4_answer",
                   {}),
+        "cw8_5": (CW8_5Evaluator, "CLASSWORK 8.5",
+                  "Summary - APA Result / Research Question Answer",
+                  "grade_cw8_5_answer", {}),
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),

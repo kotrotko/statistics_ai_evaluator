@@ -2,3 +2,4 @@ from .graders.question8_1_evaluator import CW8_1Evaluator
 from .graders.question8_2_evaluator import CW8_2Evaluator
 from .graders.question8_3_evaluator import CW8_3Evaluator
 from .graders.question8_4_evaluator import CW8_4Evaluator
+from .graders.question8_5_evaluator import CW8_5Evaluator

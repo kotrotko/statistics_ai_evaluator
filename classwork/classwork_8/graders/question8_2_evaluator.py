@@ -1,27 +1,28 @@
 """
 cw8_2.py
 Classwork 8: Repeated Measures
-Hypothesis Testing - State Hypotheses / Significance Level / df / Critical Value
-Evaluation method name: def grade_question_cw8_2_answer
+Normality Check - Method / Normal Distribution / Reasoning
+Evaluation method name: def grade_cw8_2_answer
 """
 
 import re
 from config import BaseEvaluator
 
-class CW8_2Evaluator(BaseEvaluator):
+
+class CW8_2Evaluator (BaseEvaluator):
     """
-       Evaluator for Hypothesis Testing Setup (CW8_2).
+    Evaluator for Normality Check (CW8_2).
 
-       Task: State Hypotheses explicitly in needed form (in math form or not, one- or two-tailed test) (5 points),
-       select a level of significance (5 points), calculate df (5 points), find the CV (5 points).
-       Total (strictly) 20 points.
+    Task: Check normality assumption (5 points). Which method did you apply to check normality? (5 points).
+    Is this distribution normal, with significance level α = 0.001? (5 points) How did you know? (5 points).
+    Total (strictly) 20 points.
 
-       Evaluates student's ability to state null and alternative hypotheses, select significance level,
-       calculate degrees of freedom with complete logic, and find critical value with proper justification.
+    Evaluates student's ability to check normality assumption, name the method used,
+    state whether distribution is normal at α = 0.001, and explain the reasoning.
 
-       Inherits common functionality from BaseEvaluator.
-       Contains only question-specific logic.
-       """
+    Inherits common functionality from BaseEvaluator.
+    Contains only question-specific logic.
+    """
 
     def __init__(self):
         """Initialize the evaluator with API handler."""
@@ -29,11 +30,11 @@ class CW8_2Evaluator(BaseEvaluator):
             model="llama-3.3-70b-versatile",
             temperature=0.3,
             max_tokens=1200
-    )
+        )
 
     def check_required_elements(self, student_answer: str) -> dict:
         """
-        Check if required structural and content elements are present.
+        Check if required elements are present.
 
         Args:
             student_answer: The student's response text
@@ -44,57 +45,53 @@ class CW8_2Evaluator(BaseEvaluator):
         text_lower = student_answer.lower()
 
         elements_found = {
-            "step_system": False,
-            "hypotheses": False,
-            "alpha": False,
-            "df": False
+            "task_description": False,
+            "normality_method": False,
+            "normality_conclusion": False,
+            "reasoning": False
         }
 
         evidence = []
 
-        # Checkpoint 0 — Step System (critical for evaluation)
-        if re.search(r'step\s*1|step\s*2|step\s*3|step\s*4', text_lower):
-            elements_found["step_system"] = True
-            evidence.append("Step system found")
-        else:
-            evidence.append("Step system NOT found (required format)")
+        # Checkpoint 1 — Task description
+        task_full_text = "Check normality assumption (5 points). Which method did you apply to check normality? (5 points). Is this distribution normal, with significance level α = 0.001? (5 points) How did you know? (5 points)."
 
-        # Checkpoint 1 — Hypotheses (H0 and H1/Ha)
-        if re.search(r'h[_0₀]|h[_1₁]|h[_a]|null\s*hypothesis|alternative\s*hypothesis', text_lower):
-            elements_found["hypotheses"] = True
-            evidence.append("Hypotheses found")
+        if task_full_text.lower() in text_lower:
+            elements_found["task_description"] = True
+            evidence.append("Task description found")
         else:
-            evidence.append("Hypotheses NOT found")
+            evidence.append("Task description NOT found")
 
-        # Checkpoint 2 — Significance level (α)
-        if re.search(r'α\s*=|alpha\s*=|significance\s*level', text_lower):
-            elements_found["alpha"] = True
-            evidence.append("Significance level found")
+        # Checkpoint 2 — Normality method (strict)
+        if re.search(r'shapiro[\s-]?wilk|normality\s*test|s-w\s*test|kolmogorov|anderson', text_lower):
+            elements_found["normality_method"] = True
+            evidence.append("Normality method found")
         else:
-            evidence.append("Significance level NOT found")
+            evidence.append("Normality method NOT found")
 
-        # Checkpoint 3 — Degrees of freedom
-        if re.search(r'df\s*=|degrees?\s*of\s*freedom|d\.f\.|n\s*[-−]\s*1', text_lower):
-            elements_found["df"] = True
-            evidence.append("Degrees of freedom found")
+        # Checkpoint 3 — Normality conclusion (yes/no)
+        if re.search(r'distribution\s*is\s*(not\s*)?normal|is\s*(not\s*)?normally\s*distributed|normal\s*distribution', text_lower):
+            elements_found["normality_conclusion"] = True
+            evidence.append("Normality conclusion found")
         else:
-            evidence.append("Degrees of freedom NOT found")
+            evidence.append("Normality conclusion NOT found")
 
-        # Checkpoint 4 — Critical value
-        if re.search(r'critical\s*value|cv\s*=|c\.v\.|t[\s_]*critical|z[\s_]*critical|chi[\s_]*critical|f[\s_]*critical', text_lower):
-            elements_found["critical_value"] = True
-            evidence.append("Critical value found")
+        # Checkpoint 4 — Reasoning with α
+        if re.search(r'α\s*=\s*0\.001|alpha\s*=\s*0\.001|significance\s*level', text_lower) and \
+                re.search(r'p[\s-]?value|p\s*[<>]=?\s*0\.', text_lower):
+            elements_found["reasoning"] = True
+            evidence.append("Reasoning with α found")
         else:
-            evidence.append("Critical value NOT found")
+            evidence.append("Reasoning with α NOT found")
 
         return {
             "elements_found": elements_found,
             "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
-    def grade_question_cw8_2_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_cw8_2_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Classwork 8.2: Hypothesis Testing Setup.
+        Grade Classwork 8.2: Normality Check.
         Returns detailed grading breakdown.
 
         Args:
@@ -105,73 +102,68 @@ class CW8_2Evaluator(BaseEvaluator):
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 4,
+                    "component_1_score": 0,
                     "component_2_score": 5,
-                    "component_3_score": 3,
-                    "component_4_score": 4,
+                    "component_3_score": 0,
+                    "component_4_score": 3,
                 },
                 max_points=20,
-                feedback="[TEST MODE] Hypotheses mostly correct. Alpha stated. df calculation incomplete. CV found but method unclear.",
-                vibe="Student understands basics but needs to show complete calculations and logic",
+                feedback="[TEST MODE] Method not stated explicitly. Normality assumption checked. No clear yes/no conclusion. Reasoning partially correct.",
+                vibe="Student shows partial understanding; normality method and conclusion need improvement",
                 additional_data={
                     "element_check": {
                         "elements_found": {
-                            "step_system": True,
-                            "hypotheses": True,
-                            "alpha": True,
-                            "df": True,
-                            "critical_value": True
+                            "task_description": False,
+                            "normality_method": False,
+                            "normality_conclusion": False,
+                            "reasoning": True
                         },
-                        "all_present": True,
-                        "evidence": ["Test mode - all elements present"]
+                        "all_present": False,
+                        "evidence": ["Test mode - partial elements present"]
                     }
                 }
             )
 
-        prompt = f"""You are grading a statistics assignment about hypothesis testing setup using a **STRICT rubric-based approach.
+        prompt = f"""You are grading a statistics assignment about normality checking using a **STRICT rubric-based approach.
 
 **TASK DESCRIPTION:**
-Students must complete 4 steps for hypothesis testing setup according to the Step System format (as described in document 6.2.3).
+Students must complete 4 components for a normality assumption check.
 
 **IMPORTANT GRADING RULES:**
 1. Total score MUST be exactly 20 points
-2. Students MUST use explicit Step System format (Step 1, Step 2, Step 3, Step 4) — if not used, deduct 1 point from total and mention in feedback
-3. Students MUST demonstrate complete understanding by providing logic and calculations, not only answers (see doc 0.6.1)
-4. Feedback should be SHORT, written as a teacher's comment
-5. Feedback CANNOT be an invitation for further discussion
+2. Focus on conceptual understanding over formatting
+3. Feedback should be SHORT, written as a teacher's comment
+4. Feedback CANNOT be an invitation for further discussion
 
 **RUBRIC:**
 
-**Component 1: State Hypotheses Explicitly (5 points):**
-- 5/5: Both H₀ and H₁ (or Hₐ) explicitly stated in proper form (mathematical notation or clear verbal form), correctly identifies one-tailed or two-tailed test
-- 4/5: Hypotheses stated but minor issue (e.g., unclear whether one- or two-tailed, or notation slightly imprecise)
-- 3/5: Hypotheses present but incomplete (e.g., only H₀ stated, or direction unclear)
-- 2/5: Hypotheses attempted but significantly incorrect
-- 0/5: Hypotheses not stated or completely wrong
-- CRITICAL: Must explicitly state BOTH null and alternative hypotheses
-- CRITICAL: Must indicate test type (one-tailed or two-tailed)
+**Component 1: Check Normality Assumption (5 points):**
 
-**Component 2: Select Level of Significance (5 points):**
-- 5/5: α explicitly stated with value (e.g., "α = 0.05" or "significance level = 0.01"), clearly presented as Step 2
-- 3/5: α value mentioned but not explicitly labeled or unclear presentation
-- 0/5: α not stated or no significance level mentioned
-- CRITICAL: Must use explicit notation (α = [value])
+PREREQUISITE: Task description must be pasted in answer. If missing → 0/5.
 
-**Component 3: Calculate Degrees of Freedom (5 points):**
-- 5/5: df calculated correctly with complete formula and logic shown (e.g., "df = n - 1 = 25 - 1 = 24")
-- 3/5: df value correct but calculation/formula not shown, or minor error in logic
-- 1/5: df attempted but calculation incorrect or incomplete
-- 0/5: df not calculated or completely wrong
-- CRITICAL: Must show HOW df was calculated, not just the answer
-- CRITICAL: Formula must be appropriate for the specific test type
+If task description present, evaluate whether normality was checked:
+- 5/5: Clear evidence that normality assumption was checked (test performed, results shown)
+- 3/5: Normality check mentioned but incomplete
+- 0/5: No task description OR no evidence of normality check
 
-**Component 4: Find the Critical Value (5 points):**
-- 5/5: Critical value found correctly with clear explanation of how it was determined (e.g., "Using t-table with df=24 and α=0.05 two-tailed, CV = ±2.064")
-- 4/5: CV correct but method/source not fully explained
-- 2/5: CV attempted but incorrect value or unclear method
-- 0/5: CV not provided or completely wrong
-- CRITICAL: Must show HOW CV was found (table lookup, formula, etc.)
-- CRITICAL: CV must match the test type (one-tailed vs two-tailed)
+**Component 2: Name the Normality Method (5 points):**
+- 5/5: Method name explicitly stated in a sentence (e.g., "I used the Shapiro-Wilk test")
+- 3/5: Method mentioned but statement incomplete or unclear
+- 0/5: Method name only in table header, or not mentioned at all
+- CRITICAL: Must explicitly state the method name in text, not just in a table
+
+**Component 3: Is This Distribution Normal? (5 points):**
+- 5/5: Clear yes/no statement about normality at α = 0.001, correct conclusion
+- 0/5: No clear yes/no statement, or conclusion contradicts test results
+- CRITICAL: Must explicitly state "distribution is normal" or "distribution is not normal" at α = 0.001
+
+**Component 4: Explain Your Reasoning (5 points):**
+- 1 point: Student attempts to explain
+- 1 point [VIBE]: Use your judgment to assess whether the final conclusion is correct given the test results provided
+- 3 points: Reasoning is correct (proper comparison of p-value with α = 0.001)
+- CRITICAL: Evaluate reasoning and conclusion INDEPENDENTLY
+- CRITICAL: If student correctly applies decision rule but final conclusion contradicts it, deduct 1 point for wrong conclusion only — reasoning (3 points) remains correct
+- CRITICAL: If student incorrectly applies decision rule (e.g. p > α → not normal), deduct 3 points for wrong reasoning regardless of conclusion
 
 STUDENT ANSWER:
 {student_answer}
@@ -219,24 +211,24 @@ Return grading in this exact JSON format:
         import textwrap
         print("=" * 60)
         print("GRADING RESULTS - CLASSWORK 8.2")
-        print("Hypothesis Testing Setup - Hypotheses / α / df / CV")
+        print("Normality Check - Method / Normal Distribution / Reasoning")
         print("=" * 60)
 
         if 'component_1_score' in grading:
             print("\nCOMPONENT BREAKDOWN:")
-            print(f"  Component 1 (Hypotheses): {grading.get('component_1_score', 'N/A')}/5")
+            print(f"  Component 1 (Check Normality): {grading.get('component_1_score', 'N/A')}/5")
             if grading.get('component_1_explanation'):
                 print(f"    → {grading.get('component_1_explanation')}")
 
-            print(f"  Component 2 (Significance Level): {grading.get('component_2_score', 'N/A')}/5")
+            print(f"  Component 2 (Normality Method): {grading.get('component_2_score', 'N/A')}/5")
             if grading.get('component_2_explanation'):
                 print(f"    → {grading.get('component_2_explanation')}")
 
-            print(f"  Component 3 (Degrees of Freedom): {grading.get('component_3_score', 'N/A')}/5")
+            print(f"  Component 3 (Normal Distribution): {grading.get('component_3_score', 'N/A')}/5")
             if grading.get('component_3_explanation'):
                 print(f"    → {grading.get('component_3_explanation')}")
 
-            print(f"  Component 4 (Critical Value): {grading.get('component_4_score', 'N/A')}/5")
+            print(f"  Component 4 (Reasoning): {grading.get('component_4_score', 'N/A')}/5")
             if grading.get('component_4_explanation'):
                 print(f"    → {grading.get('component_4_explanation')}")
 
@@ -264,15 +256,17 @@ Return grading in this exact JSON format:
                 print("\nRaw Response:")
                 print(grading['raw_response'][:500])
 
+
 if __name__ == "__main__":
     evaluator = CW8_2Evaluator()
     from config import InputHandler
+
     input_handler = InputHandler()
     student_answer = input_handler.collect_and_validate_input(
         question_name="CLASSWORK 8.2",
-        question_description="Hypothesis Testing Setup - State Hypotheses / Select α / Calculate df / Find CV",
-        min_length=20
+        question_description="Normality Check - Method / Normal Distribution / Reasoning",
+        min_length=10
     )
     if student_answer:
-        grading = evaluator.grade_question_cw8_2_answer(student_answer)
+        grading = evaluator.grade_cw8_2_answer(student_answer)
         evaluator.print_grading_results(grading)
