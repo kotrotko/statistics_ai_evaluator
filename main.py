@@ -22,25 +22,55 @@ from homework.homework_7.graders_hw7.hw7_3 import HW7_3Evaluator
 from homework.homework_7.graders_hw7.hw7_4 import HW7_4Evaluator
 from homework.homework_7.graders_hw7.hw7_5 import HW7_5Evaluator
 from homework.homework_8.graders_hw8.hw8_1 import HW8_1Evaluator
-from classwork.classwork_7 import Question7_1Evaluator, Question7_2Evaluator, Question7_3Evaluator, Question7_4Evaluator, Question7_5Evaluator
+# from classwork.classwork_7 import Question7_1Evaluator, Question7_2Evaluator, Question7_3Evaluator, Question7_4Evaluator, Question7_5Evaluator
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
 from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
 from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evaluator
 from classwork.classwork_4.graders.question4_1_evaluator import Question4_1Evaluator
 from classwork.classwork_5.graders.question5_1_evaluator import Question5_1Evaluator
 from classwork.classwork_5.graders.question5_2_evaluator import Question5_2Evaluator
-from classwork.classwork_8.graders.question8_1_evaluator import CW8_1Evaluator
-from classwork.classwork_8.graders.question8_2_evaluator import CW8_2Evaluator
-from classwork.classwork_8.graders.question8_3_evaluator import CW8_3Evaluator
-from classwork.classwork_8.graders.question8_4_evaluator import CW8_4Evaluator
-from classwork.classwork_8.graders.question8_5_evaluator import CW8_5Evaluator
+from classwork.classwork_7 import (
+    Question7_1Evaluator,
+    Question7_2Evaluator,
+    Question7_3Evaluator,
+    Question7_4Evaluator,
+    Question7_5Evaluator
+)
+from classwork.classwork_8.graders import (
+    CW8_1Evaluator,
+    CW8_2Evaluator,
+    CW8_3Evaluator,
+    CW8_4Evaluator,
+    CW8_5Evaluator
+)
+from classwork.classwork_9 import (
+    CW9_1Evaluator,
+    # CW9_2Evaluator,
+    # CW9_3Evaluator,
+    # CW9_4Evaluator,
+    # CW9_5Evaluator
+)
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 
+_input_handler = InputHandler()
+
 def run_evaluator(evaluator_class, question_name, question_description, grading_method, **kwargs):
+    """
+    Run evaluation for a student answer.
+
+    Args:
+        evaluator_class: Evaluator class to instantiate
+        question_name: Display name of the question
+        question_description: Brief description
+        grading_method: Method name to call on evaluator
+        **kwargs: Additional arguments for print_grading_results
+    """
+    # Create instances
     evaluator = evaluator_class()
     input_handler = InputHandler()
 
+    # Collect student input
     student_answer = input_handler.collect_and_validate_input(
         question_name=question_name,
         question_description=question_description,
@@ -129,6 +159,9 @@ def main():
         "cw8_5": (CW8_5Evaluator, "CLASSWORK 8.5",
                   "Summary - APA Result / Research Question Answer",
                   "grade_cw8_5_answer", {}),
+        "cw9_1": (CW9_1Evaluator, "CLASSWORK 9.1",
+                  "Statistical Method Selection and Justification",
+                  "grade_question_cw9_1_answer", {}),
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),
@@ -199,7 +232,6 @@ def main():
         available_options = ", ".join(evaluators.keys())
 
         # 2. Use an f-string to inject those keys into the prompt automatically
-        # prompt = f"Select an evaluator (0, {available_options}):\n" #TODO: Check and remove
         prompt = f"Select an evaluator (0, {available_options}):\n"
 
         choice = input(prompt).strip()

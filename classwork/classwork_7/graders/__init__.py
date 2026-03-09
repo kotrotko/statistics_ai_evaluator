@@ -1,5 +1,0 @@
-from .question7_1_evaluator import Question7_1Evaluator
-from .question7_2_evaluator import Question7_2Evaluator
-from .question7_3_evaluator import Question7_3Evaluator
-from .question7_4_evaluator import Question7_4Evaluator
-from .question7_5_evaluator import Question7_5Evaluator

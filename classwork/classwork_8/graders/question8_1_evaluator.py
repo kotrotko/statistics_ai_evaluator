@@ -1,6 +1,6 @@
 """
 cw8_1.py
-Classwork 8: Statistical Method Selection and Justification
+Classwork 8: Paired t-test
 Evaluation method name: def grade_question_cw8_1_answer
 """
 import re
@@ -11,10 +11,10 @@ from config import BaseEvaluator
 
 class CW8_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Statistical Method Selection (CW8_1).
+    Evaluator for Paired t-test (CW8_1).
 
-    Task: In class, state the problem (5 points), and formulate Research question (5 points).
-    Using OUR step system, name the statistical method you use (5 points) and explain why this
+    Task: State the problem (5 points). Formulate the main Research question (5 points).
+    Name the statistical method you use (5 points) and explain why this
     method is suitable for our problem solving, based on research design (5 points).
 
     Evaluates student's ability to state a problem, formulate a research question,
@@ -29,7 +29,7 @@ class CW8_1Evaluator(BaseEvaluator):
         super().__init__(
             model="llama-3.3-70b-versatile",
             temperature=0.3,
-            max_tokens=1500
+            max_tokens=1200
         )
 
     def check_formatting_elements(self, student_answer: str) -> dict:
@@ -53,7 +53,7 @@ class CW8_1Evaluator(BaseEvaluator):
 
         evidence = []
 
-        # STEP 2 — Title (strict)
+        # STEP 1 — Title (strict)
         title_patterns = [
             r'^\s*classwork\s*8',
             r'^\s*cw\s*8\b',
@@ -68,14 +68,14 @@ class CW8_1Evaluator(BaseEvaluator):
         if not elements_found["paper_title"]:
             evidence.append("Title NOT found")
 
-        # STEP 3 — Task description (strict)
+        # STEP 2 — Task description (strict)
         if re.search(r'task|assignment|instructions?|question\s*:|state\s+the\s+problem|research\s+question|statistical\s+method', text_lower):
             elements_found["task_description"] = True
             evidence.append("Task description found")
         else:
             evidence.append("Task description NOT found")
 
-        # STEP 4 — No autoformatting (strict)
+        # STEP 3 — No autoformatting (strict)
         autoformat_patterns = [
             r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',  # only 2+ consecutive numbered lines
             r'^\s*[-•*]\s+\S',  # bullet list: -, •, *
@@ -95,7 +95,7 @@ class CW8_1Evaluator(BaseEvaluator):
 
     def grade_question_cw8_1_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Classwork 8_1: Statistical Method Selection and Justification.
+        Grade Classwork 8_1: Paired t-test.
         Returns detailed grading breakdown.
 
         Args:
@@ -154,8 +154,8 @@ class CW8_1Evaluator(BaseEvaluator):
 
         prompt = f"""{formatting_block}
         You are grading a statistics classwork assignment where a student must:
-"In class, state the problem (5 points), and formulate Research question (5 points). 
-Using OUR step system, name the statistical method you use (5 points) and explain why this 
+"State the problem (5 points), and formulate Research question (5 points). 
+Name the statistical method you use (5 points) and explain why this 
 method is suitable for our problem solving, based on research design (5 points)."
 
 Use a **STRICT rubric-based approach**. Total score MUST be exactly 20 points.
