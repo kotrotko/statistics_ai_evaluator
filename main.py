@@ -45,8 +45,8 @@ from classwork.classwork_8.graders import (
 )
 from classwork.classwork_9 import (
     CW9_1Evaluator,
-    # CW9_2Evaluator,
-    # CW9_3Evaluator,
+    CW9_2Evaluator,
+    CW9_3Evaluator,
     # CW9_4Evaluator,
     # CW9_5Evaluator
 )
@@ -162,6 +162,13 @@ def main():
         "cw9_1": (CW9_1Evaluator, "CLASSWORK 9.1",
                   "Statistical Method Selection and Justification",
                   "grade_question_cw9_1_answer", {}),
+        "cw9_2": (CW9_2Evaluator, "CLASSWORK 9.2",
+                  "Normality Check - Method / Normal Distribution / Reasoning",
+                  "grade_question_cw9_2_answer", {}),
+        "cw9_3": (CW9_3Evaluator, "CLASSWORK 9.3",
+                  "Variance Homogeneity Check - Method / Homogenous Variance / Method Form Selection",
+                  "grade_question_cw9_3_answer", {}),
+
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),
