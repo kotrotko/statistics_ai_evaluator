@@ -47,8 +47,8 @@ from classwork.classwork_9 import (
     CW9_1Evaluator,
     CW9_2Evaluator,
     CW9_3Evaluator,
-    # CW9_4Evaluator,
-    # CW9_5Evaluator
+    CW9_4Evaluator,
+    CW9_5Evaluator
 )
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
@@ -168,7 +168,12 @@ def main():
         "cw9_3": (CW9_3Evaluator, "CLASSWORK 9.3",
                   "Variance Homogeneity Check - Method / Homogenous Variance / Method Form Selection",
                   "grade_question_cw9_3_answer", {}),
-
+        "cw9_4": (CW9_4Evaluator, "CLASSWORK 9.4",
+                  "Hypothesis Testing Setup - Hypotheses / α / df / CV",
+                  "grade_cw9_4_answer", {}),
+        "cw9_5": (CW9_5Evaluator, "CLASSWORK 9.5",
+                  "Statistical Analysis and Interpretation",
+                  "grade_cw9_5_answer", {}),
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),
