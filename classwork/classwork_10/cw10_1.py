@@ -1,7 +1,7 @@
 """
-cw9_1.py
-Classwork 9: Independent groups comparison
-Evaluation method name: def grade_cw9_1_answer
+cw10_1.py
+Classwork 10: One-Way ANOVA
+Evaluation method name: def grade_cw10_1_answer
 """
 
 import re
@@ -9,15 +9,15 @@ import textwrap
 from config import BaseEvaluator
 
 
-class CW9_1Evaluator(BaseEvaluator):
+class CW10_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Classwork 9_1.
+    Evaluator for Classwork 10_1.
 
     Task:
-    State the problem (5 points).
-    Formulate the main Research Question (5 points).
-    Name the statistical method appropriate for this research design (5 points).
-    Explain why this method is suitable based on the research design (5 points).
+    What is the role of the 'Participant' variable? (5 points)
+    Should it be included in your analysis? Why? (5 points)
+    State the problem with your own words (5 points)
+    Formulate the main Research question (5 points)
     """
 
     def __init__(self):
@@ -40,10 +40,10 @@ class CW9_1Evaluator(BaseEvaluator):
         evidence = []
 
         title_patterns = [
-            r'^\s*classwork\s*9',
-            r'^\s*cw\s*9\b',
-            r'^\s*class\s*work\s*(week\s*)?9',
-            r'^\s*in.?class\s*9'
+            r'^\s*classwork\s*10',
+            r'^\s*cw\s*10\b',
+            r'^\s*class\s*work\s*(week\s*)?10',
+            r'^\s*in.?class\s*10'
         ]
 
         for pattern in title_patterns:
@@ -53,7 +53,7 @@ class CW9_1Evaluator(BaseEvaluator):
                 break
 
         if re.search(
-                r'state\s+the\s+problem|research\s+question|statistical\s+method|explain\s+why|research\s+design|independent\s+groups|comparison',
+                r'participant\s+variable|role\s+of|facebook\s+friends|should\s+it\s+be\s+included|state\s+the\s+problem|research\s+question|anova',
                 text_lower):
             elements_found["task_description"] = True
             evidence.append("Task description found")
@@ -76,7 +76,7 @@ class CW9_1Evaluator(BaseEvaluator):
             "evidence": evidence
         }
 
-    def grade_question_cw9_1_answer(self, student_answer: str):
+    def grade_question_cw10_1_answer(self, student_answer: str):
 
         formatting_check = self.check_formatting_elements(student_answer)
         formatting_summary = formatting_check["elements_found"]
@@ -95,10 +95,10 @@ You are grading a statistics classwork assignment.
 
 Student must:
 
-• State the problem (5 points)  
-• Formulate the Research Question (5 points)  
-• Name the statistical method appropriate for this research design (5 points)  
-• Explain why this method is suitable based on the research design (5 points)
+• What is the role of the 'Participant' variable? (5 points)  
+• Should it be included in your analysis? Why? (5 points)  
+• State the problem with your own words (5 points)  
+• Formulate the main Research question (5 points)
 
 Total score MUST be exactly 20 points.
 
@@ -127,15 +127,39 @@ If False: deduct 1 point
 
 **Layer 2: Content Components (5 points each)**
 
-**Component 1: Problem Statement (5 points)**
-- 5 points: Clear, specific, well-defined problem with appropriate context
-- 4 points: Problem stated with minor clarity issues
-- 3 points: Problem present but vague or lacks specificity
+**Component 1: Role of Participant Variable (5 points)**
+The 'Participant' variable is an identifier/ID variable that uniquely identifies each subject in the study.
+- 5 points: Correctly identifies as ID/identifier variable with clear explanation
+- 4 points: Correct identification with minor clarity issues
+- 3 points: Partially correct (e.g., mentions uniqueness but lacks precision)
+- 2 points: Shows some understanding but confused or incomplete
+- 1 point: Attempted but mostly incorrect
+- 0 points: Completely blank
+
+**Component 2: Should It Be Included & Why (5 points)**
+The Participant variable should NOT be included in the analysis because:
+- It's an identifier, not a variable of interest
+- It doesn't contain meaningful data for statistical analysis
+- Including ID variables can cause errors or meaningless results
+
+- 5 points: Correctly states NO with clear, logical reasoning
+- 4 points: Correct answer with good reasoning, minor gaps
+- 3 points: Correct answer but weak or incomplete reasoning
+- 2 points: Incorrect answer OR correct answer with illogical reasoning
+- 1 point: Attempted but mostly wrong
+- 0 points: Completely blank
+
+**Component 3: Problem Statement (5 points)**
+Should describe the Facebook friends dataset context (examining relationship between personality characteristics and number of Facebook friends).
+- 5 points: Clear, specific, well-articulated problem in own words
+- 4 points: Good statement with minor clarity issues
+- 3 points: Problem present but vague or lacks context
 - 2 points: Problem poorly articulated but shows some understanding
 - 1 point: Attempted but unclear or off-topic
 - 0 points: Completely blank
 
-**Component 2: Research Question (5 points)**
+**Component 4: Research Question (5 points)**
+Should formulate a testable question about the relationship between groups/conditions and number of Facebook friends.
 - 5 points: Clear, testable question directly addressing the problem
 - 4 points: Good question with minor precision issues
 - 3 points: Question present but vague or partially addresses problem
@@ -143,49 +167,21 @@ If False: deduct 1 point
 - 1 point: Attempted but not testable or irrelevant
 - 0 points: Completely blank
 
-**Component 3: Statistical Method Named (5 points)**
-- 5 points: Correct method clearly identified (independent-samples t-test)
-- 4 points: Correct method with minor naming issues
-- 3 points: Method identified but may be incorrect or unclear
-- 2 points: Method named but incorrect for the design
-- 1 point: Attempted but wrong method or unclear
-- 0 points: Completely blank
-
-**Component 4: Justification Based on Research Design (5 points)**
-Justification should reference design properties:
-- Independent groups
-- Two groups comparison
-- Quantitative outcome variable
-- Comparison of means
-
-- 5 points: Clear, logical justification referencing all key design properties
-- 4 points: Good justification with most design properties mentioned
-- 3 points: Justification present but missing key design properties
-- 2 points: Weak justification or incomplete reasoning
-- 1 point: Attempted but illogical or irrelevant
-- 0 points: Completely blank
-
-The justification should refer to design properties such as:
-- independent groups
-- two groups comparison
-- quantitative outcome variable
-- comparison of means
-
 ---
 
 EXAMPLE OF A COMPLETE ANSWER
 
-Problem:
-We want to determine whether directed reading activity improves comprehension scores compared to traditional instruction.
+Role of Participant Variable:
+The 'Participant' variable is an identifier variable that assigns a unique number to each participant in the study. It serves to distinguish between different subjects.
+
+Should It Be Included:
+No, the Participant variable should not be included in the analysis. It is merely an ID number and does not contain any meaningful data about the participants' characteristics or outcomes. Including it would be inappropriate as it's not a variable of theoretical or practical interest.
+
+Problem Statement:
+This study examines whether there is a relationship between personality characteristics and the number of Facebook friends people have. Researchers want to understand if different personality types are associated with different levels of social media connectivity.
 
 Research Question:
-Do students who complete the directed reading activity obtain different comprehension scores than students who receive traditional instruction?
-
-Statistical Method:
-Using the step system, this requires an independent-samples t-test.
-
-Justification:
-This method is appropriate because two separate groups of students are compared on a quantitative outcome variable. The independent-samples t-test is designed to compare mean scores between independent groups.
+Is there a significant difference in the number of Facebook friends across different personality characteristic groups?
 
 ---
 
@@ -202,13 +198,13 @@ Return grading in this exact JSON format:
   "formatting_autoformat_deduction": <0-1>,
   "formatting_explanation": "<brief explanation for deductions>",
   "component_1_score": <0-5>,
-  "component_1_explanation": "<brief explanation for problem statement>",
+  "component_1_explanation": "<brief explanation for participant variable role>",
   "component_2_score": <0-5>,
-  "component_2_explanation": "<brief explanation for research question>",
+  "component_2_explanation": "<brief explanation for inclusion decision>",
   "component_3_score": <0-5>,
-  "component_3_explanation": "<brief explanation for method named>",
+  "component_3_explanation": "<brief explanation for problem statement>",
   "component_4_score": <0-5>,
-  "component_4_explanation": "<brief explanation for justification>",
+  "component_4_explanation": "<brief explanation for research question>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <percentage as number>,
@@ -254,8 +250,8 @@ total_points = (component_1_score + component_2_score + component_3_score + comp
     def print_grading_results(self, grading):
         """Display grading results."""
         print("=" * 60)
-        print("GRADING RESULTS - CW9_1")
-        print("Independent Groups Comparison")
+        print("GRADING RESULTS - CW10_1")
+        print("ANOVA - Facebook Friends Analysis")
         print("=" * 60)
 
         if 'component_1_score' in grading:
@@ -274,19 +270,19 @@ total_points = (component_1_score + component_2_score + component_3_score + comp
                 print(f"   → {grading.get('formatting_explanation')}")
 
             print("\nCONTENT COMPONENTS:")
-            print(f"  Component 1 (Problem Statement): {grading.get('component_1_score', 'N/A')}/5")
+            print(f"  Component 1 (Participant Variable Role): {grading.get('component_1_score', 'N/A')}/5")
             if grading.get('component_1_explanation'):
                 print(f"    → {grading.get('component_1_explanation')}")
 
-            print(f"  Component 2 (Research Question): {grading.get('component_2_score', 'N/A')}/5")
+            print(f"  Component 2 (Should Be Included & Why): {grading.get('component_2_score', 'N/A')}/5")
             if grading.get('component_2_explanation'):
                 print(f"    → {grading.get('component_2_explanation')}")
 
-            print(f"  Component 3 (Method Named): {grading.get('component_3_score', 'N/A')}/5")
+            print(f"  Component 3 (Problem Statement): {grading.get('component_3_score', 'N/A')}/5")
             if grading.get('component_3_explanation'):
                 print(f"    → {grading.get('component_3_explanation')}")
 
-            print(f"  Component 4 (Justification): {grading.get('component_4_score', 'N/A')}/5")
+            print(f"  Component 4 (Research Question): {grading.get('component_4_score', 'N/A')}/5")
             if grading.get('component_4_explanation'):
                 print(f"    → {grading.get('component_4_explanation')}")
 
@@ -313,9 +309,9 @@ total_points = (component_1_score + component_2_score + component_3_score + comp
 
 if __name__ == "__main__":
 
-    evaluator = CW9_1Evaluator()
+    evaluator = CW10_1Evaluator()
 
-    print("CLASSWORK 9.1 EVALUATOR")
+    print("CLASSWORK 10.1 EVALUATOR")
     print("=" * 60)
 
     print("Enter student's answer (type END to finish):")
@@ -329,6 +325,6 @@ if __name__ == "__main__":
 
     student_answer = "\n".join(lines)
 
-    grading = evaluator.grade_question_cw9_1_answer(student_answer)
+    grading = evaluator.grade_question_cw10_1_answer(student_answer)
 
     evaluator.print_grading_results(grading)

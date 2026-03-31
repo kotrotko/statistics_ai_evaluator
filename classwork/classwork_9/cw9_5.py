@@ -1,6 +1,6 @@
 """
 cw9_5.py
-Classwork 9: Independent groups comparison
+Classwork 9: Independent groups t-test
 Statistical analysis and interpretation
 Evaluation method name: def grade_cw9_5_answer
 """

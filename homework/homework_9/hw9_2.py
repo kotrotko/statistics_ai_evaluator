@@ -1,7 +1,7 @@
 """
-hw8_1.py
-Dependent-Samples T-Test Research Questions
-Evaluation method name: def grade_question_hw8_1_answer
+hw9_2.py
+Standard Error Calculation
+Evaluation method name: def grade_hw9_2_answer
 """
 import re
 import textwrap
@@ -9,15 +9,17 @@ import textwrap
 from config import BaseEvaluator
 
 
-class HW8_1Evaluator(BaseEvaluator):
+class HW9_2Evaluator(BaseEvaluator):
     """
-    Evaluator for Dependent-Samples T-Test Research Questions (HW8_1).
+    Evaluator for Standard Error Calculation (HW9_2).
 
-    Task: Name 3 research questions that could be addressed using a dependent-
-    samples t-test.
+    Task: Calculate the standard error from the following descriptive statistics
+    a. s1 = 24, s2 = 21, n1 = 36, n2 = 49
+    b. s1 = 15.40, s2 = 14.80, n1 = 20, n2 = 23
+    c. s1 = 12, s2 = 10, n1 = 25, n2 = 25
 
-    Evaluates student's ability to formulate appropriate research questions
-    for dependent-samples t-test with justification.
+    Evaluates student's ability to calculate standard error correctly
+    using the formula for independent samples.
 
     Inherits common functionality from BaseEvaluator.
     Contains only question-specific logic.
@@ -45,36 +47,20 @@ class HW8_1Evaluator(BaseEvaluator):
         first_lines = student_answer[:200]
 
         elements_found = {
-            "paper_title": False,
             "task_description": False,
             "no_autoformatting": True,
         }
 
         evidence = []
 
-        # STEP 2 — Title (strict)
-        title_patterns = [
-            r'^\s*homework\s*8',
-            r'^\s*hw\s*8\b',
-            r'^\s*assignment\s*8',
-            r'^\s*paper\s*8'
-        ]
-        for pattern in title_patterns:
-            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
-                elements_found["paper_title"] = True
-                evidence.append("Title found")
-                break
-        if not elements_found["paper_title"]:
-            evidence.append("Title NOT found")
-
-        # STEP 3 — Task description (strict)
-        if re.search(r'task|assignment|instructions?|question\s*:|three\s+research\s+questions|3\s+research\s+questions|dependent.?samples\s+t.?test', text_lower):
+        # STEP 2 — Task description (strict)
+        if re.search(r'calculate.*standard\s+error.*from.*following|a\.\s*s1\s*=\s*24|s1\s*=\s*24.*s2\s*=\s*21.*n1\s*=\s*36', text_lower):
             elements_found["task_description"] = True
             evidence.append("Task description found")
         else:
             evidence.append("Task description NOT found")
 
-        # STEP 4 — No autoformatting (strict)
+        # STEP 3 — No autoformatting (strict)
         autoformat_patterns = [
             r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',  # only 2+ consecutive numbered lines
             r'^\s*[-•*]\s+\S',  # bullet list: -, •, *
@@ -92,9 +78,9 @@ class HW8_1Evaluator(BaseEvaluator):
             "evidence": evidence if evidence else ["No clear formatting indicators found"]
         }
 
-    def grade_question_hw8_1_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_hw9_2_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Question 8_1: Name 3 research questions for dependent-samples t-test.
+        Grade Question 9_2: Calculate standard error from descriptive statistics.
         Returns detailed grading breakdown.
 
         Args:
@@ -108,22 +94,20 @@ class HW8_1Evaluator(BaseEvaluator):
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 4,
-                    "component_1_name_score": 1,
+                    "component_1_score": 2,
                     "component_1_title_score": 1,
                     "component_1_task_score": 1,
                     "component_1_autoformat_score": 1,
-                    "component_2_score": 5,
-                    "component_3_score": 4,
-                    "component_4_score": 3,
+                    "component_2_score": 6,
+                    "component_3_score": 6,
+                    "component_4_score": 6,
                 },
                 max_points=20,
-                feedback="[TEST MODE] All formatting elements present. Research questions show understanding of dependent t-test concept.",
-                vibe="Student demonstrates good grasp of paired/dependent design with room for improvement in justifications.",
+                feedback="[TEST MODE] All formatting elements present. Calculations demonstrate understanding of standard error formula.",
+                vibe="Student shows competence in applying the standard error formula with minor computational issues.",
                 additional_data={
                     "formatting_check": {
                         "elements_found": {
-                            "student_name": True,
                             "paper_title": True,
                             "task_description": True,
                             "no_autoformatting": True,
@@ -140,7 +124,6 @@ class HW8_1Evaluator(BaseEvaluator):
         formatting_block = f"""
         HEADER DETECTION RESULTS (DO NOT RE-EVALUATE — USE AS FACTS):
 
-        paper_title_present = {formatting_summary["paper_title"]}
         task_description_present = {formatting_summary["task_description"]}
         no_autoformatting_present = {formatting_summary["no_autoformatting"]}
 
@@ -152,7 +135,10 @@ class HW8_1Evaluator(BaseEvaluator):
 
         prompt = f"""{formatting_block}
         You are grading a statistics assignment where a student must:
-"Name 3 research questions that could be addressed using a dependent-samples t-test."
+"Calculate the standard error from the following descriptive statistics
+a. s1 = 24, s2 = 21, n1 = 36, n2 = 49
+b. s1 = 15.40, s2 = 14.80, n1 = 20, n2 = 23
+c. s1 = 12, s2 = 10, n1 = 25, n2 = 25"
 
 Use a **STRICT rubric-based approach**. Total score MUST be exactly 20 points.
 
@@ -167,120 +153,155 @@ Use a **STRICT rubric-based approach**. Total score MUST be exactly 20 points.
 
 **RUBRIC:**
 
-**Component 1: Header & Structural Integrity (4 points)**
+**Component 1: Header & Structural Integrity (2 points)**
 
-Start at 4 points.
+Start at 2 points.
 
 Deduct 1 point for each missing element:
 
-STEP 1 - Name [STRICT]
-- CRITICAL: "Answer:", "Hypothesis:", "Question:", "H0:", "H1:", "Problem:", "Method:" are NOT names
-- Look ONLY in the first 1-2 lines of the submission
-- A valid student name is: Two words, each starting with a capital letter, like "John Doe" or "Jane Smith"
-- The name must appear BEFORE any assignment content (before "Answer:", "Hypothesis:", etc.)
-- If you see "Answer:" or "Hypothesis:" in the first line, there is NO name
-- If name found: component_1_name_score = 1
-- If NO name found: component_1_name_score = 0
-
-STEP 2 - Title [STRICT]
-Use paper_title_present.
-If False: deduct 1 point. Add: "Title is missing. -1 point."
-
-STEP 3 - Task Description [STRICT]
+STEP 1 - Task Description [STRICT]
 Use task_description_present.
 If False: deduct 1 point. Add: "Task description is missing. -1 point."
 
-STEP 4 - No autoformatting [STRICT]
+STEP 2 - No autoformatting [STRICT]
 Use no_autoformatting_present.
 If False: deduct 1 point. Add: "Autoformatting detected. -1 point."
 
 ---
 
-**Component 2: Research Question 1 (6 points)**
+**Component 2: Part (a) Standard Error Calculation (6 points)**
 
-The student must provide a research question appropriate for dependent-samples t-test AND a justification.
+Given: s1 = 24, s2 = 21, n1 = 36, n2 = 49
+
+The student must calculate the standard error using the formula:
+SE = sqrt((s1²/n1) + (s2²/n2))
+
+**CORRECT ANSWER:**
+SE = sqrt((24²/36) + (21²/49))
+SE = sqrt((576/36) + (441/49))
+SE = sqrt(16 + 9)
+SE = sqrt(25)
+SE = 5.00
 
 **EVALUATION STEPS:**
 
-STEP 1: Is there ANY answer provided for Question 1?
-- If completely blank/missing → 0 points, feedback: "No answer provided for Question 1."
-- If ANY attempt exists → Continue to STEP 2 (minimum 1 point)
+STEP 1: Is the formula shown or implied? (2 points)
+- Full credit: SE = sqrt((s1²/n1) + (s2²/n2)) or equivalent shown
+- Partial: Formula implied through correct calculations
+- None: No formula or incorrect formula used
 
-STEP 2: Does the question use dependent/paired structure?
-- Same subjects measured twice (before/after, condition A vs B)? OR
-- Matched pairs (twins, siblings, couples, etc.)?
+STEP 2: Are calculations shown and correct? (2 points)
+- Full credit (2 pts): All intermediate steps shown correctly
+- Partial (1 pt): Some steps shown but with minor errors
+- None (0 pts): No work shown or major computational errors
 
-If NO (compares independent groups):
-→ 1 point, feedback: "Credit for trying, but this compares two separate groups. Dependent t-test requires the SAME people measured twice or matched pairs."
+STEP 3: Is the final answer correct? (2 points)
+- Full credit: SE ≈ 5.00 (accept 5, 5.0, 5.00)
+- Partial: Close answer due to rounding (4.9-5.1)
+- None: Incorrect answer
 
-If YES → Continue to STEP 3
-
-STEP 3: Check requirements:
-- Exactly 2 conditions/time points?
-- Continuous outcome variable (measurable, not categorical)?
-- Question clearly worded?
-
-STEP 4: Check justification:
-- Does student explain WHY dependent t-test is needed?
-- Does justification mention pairing ("same subjects," "matched pairs," "within-subject")?
-
-**SCORING:**
-- 6 points: Perfect question + clear justification explaining pairing
-- 4 points: Good question but weak/missing justification
-- 2-3 points: Correct paired structure but unclear wording OR questionable outcome variable OR poor justification
-- 1 point: Wrong (compares independent groups) but attempted
-- 0 points: Completely blank
+**Scoring:**
+- 6 points: Formula shown, all work correct, correct answer
+- 4 points: Formula shown, minor computational error, close answer
+- 3 points: Formula shown, major computational error 
+- 1 point: Attempted calculation but incorrect approach
+- 0 points: Correct answer with no work or no attempt or completely wrong
 
 ---
 
-**Component 3: Research Question 2 (5 points)**
+**Component 3: Part (b) Standard Error Calculation (6 points)**
 
-Same evaluation criteria as Component 2.
+Given: s1 = 15.40, s2 = 14.80, n1 = 20, n2 = 23
 
-**SCORING:**
-- 5 points: Perfect question + clear justification
-- 3 points: Good question but weak/missing justification
-- 2 points: Correct paired structure but quality issues
-- 1 point: Wrong (compares independent groups) but attempted
-- 0 points: Completely blank
+**CORRECT ANSWER:**
+SE = sqrt((15.40²/20) + (14.80²/23))
+SE = sqrt((237.16/20) + (219.04/23))
+SE = sqrt(11.858 + 9.524)
+SE = sqrt(21.382)
+SE ≈ 4.62
+
+**EVALUATION STEPS:**
+
+STEP 1: Is the formula shown and applied correctly? (2 points)
+- Full credit: Correct formula application with correct values
+- None: Incorrect formula or wrong values substituted
+
+STEP 2: Are calculations shown and correct? (2 points)
+- Full credit (2 pts): All intermediate steps shown correctly
+- Partial (1 pt): Some steps shown but with minor errors
+- None (0 pts): No work shown or major computational errors
+
+STEP 3: Is the final answer correct? (2 points)
+- Full credit: SE ≈ 4.62 (accept 4.6, 4.62, 4.624)
+- Partial: Close answer due to rounding (4.5-4.7)
+- None: Incorrect answer
+
+**Scoring:**
+- 6 points: Formula shown, all work correct, correct answer
+- 4 points: Formula shown, minor computational error, close answer
+- 3 points: Formula shown, major computational error 
+- 1 point: Attempted calculation but incorrect approach
+- 0 points: Correct answer with no work or no attempt or completely wrong
 
 ---
 
-**Component 4: Research Question 3 (5 points)**
+**Component 4: Part (c) Standard Error Calculation (6 points)**
 
-Same evaluation criteria as Component 2.
+Given: s1 = 12, s2 = 10, n1 = 25, n2 = 25
 
-**SCORING:**
-- 5 points: Perfect question + clear justification
-- 3 points: Good question but weak/missing justification
-- 2 points: Correct paired structure but quality issues
-- 1 point: Wrong (compares independent groups) but attempted
-- 0 points: Completely blank
+**CORRECT ANSWER:**
+SE = sqrt((12²/25) + (10²/25))
+SE = sqrt((144/25) + (100/25))
+SE = sqrt(5.76 + 4)
+SE = sqrt(9.76)
+SE ≈ 3.12
+
+**EVALUATION STEPS:**
+
+STEP 1: Is the formula applied correctly? (2 points)
+- Full credit: Correct formula application with correct values
+- None: Incorrect formula or wrong values substituted
+
+STEP 2: Are calculations shown and correct? (2 points)
+- Full credit (2 pts): All intermediate steps shown correctly
+- Partial (1 pt): Some steps shown but with minor errors
+- None (0 pts): No work shown or major computational errors
+
+STEP 3: Is the final answer correct? (2 points)
+- Full credit: SE ≈ 3.12 (accept 3.1, 3.12, 3.124)
+- Partial: Close answer due to rounding (3.0-3.2)
+- None: Incorrect answer
+
+**Scoring:**
+- 6 points: Formula shown, all work correct, correct answer
+- 4 points: Formula shown, minor computational error, close answer
+- 3 points: Formula shown, major computational error 
+- 1 point: Attempted calculation but incorrect approach
+- 0 points: Correct answer with no work or no attempt or completely wrong
 
 ---
 
-**GOOD EXAMPLES OF RESEARCH QUESTIONS:**
+**COMMON MISTAKES TO WATCH FOR:**
 
-Example 1 (Before-After):
-"Does a 6-week exercise program reduce resting heart rate in adults?"
-Justification: "This requires a dependent-samples t-test because the same participants are measured twice (before and after the program), creating paired observations."
-
-Example 2 (Matched Pairs):
-"Do identical twins raised together have more similar IQ scores than identical twins raised apart?"
-Justification: "This requires a dependent-samples t-test because twins are naturally matched pairs, and we're comparing the difference in IQ within each twin pair."
-
-Example 3 (Repeated Measures):
-"Do drivers have faster reaction times in the morning versus evening?"
-Justification: "This requires a dependent-samples t-test because each driver is tested twice (morning and evening), eliminating individual differences in baseline reaction time."
+1. **Wrong formula**: Using SE = s/sqrt(n) instead of pooled formula
+2. **Forgetting to square**: Using s1/n1 instead of s1²/n1
+3. **Forgetting square root**: Calculating variance instead of SE
+4. **Calculation errors**: Simple arithmetic mistakes in intermediate steps
+5. **Rounding too early**: Leading to slightly incorrect final answers
+6. **No work shown**: Just providing final answers without calculations
 
 ---
 
 **FEEDBACK EXAMPLES FOR 1-POINT ANSWERS:**
 
-If student compares independent groups:
-- "Credit for effort, but this question compares two different groups (men vs women), not the same people measured twice."
-- "Good attempt, but dependent t-test requires the SAME subjects measured under both conditions."
-- "Thanks for trying, but your question involves independent groups. Dependent t-test is for paired data only."
+If student uses wrong formula:
+- "Credit for effort, but the formula used is incorrect. Standard error for two groups requires: SE = sqrt((s1²/n1) + (s2²/n2))."
+
+If student forgets to show work:
+- "You need to show your calculations step-by-step. Just providing answers isn't sufficient."
+
+If student makes consistent computational errors:
+- "Good attempt at applying the formula, but check your arithmetic carefully in the intermediate steps."
 
 ---
 
@@ -299,15 +320,6 @@ structure, or language that reads like a Wikipedia/ChatGPT excerpt rather than a
 
 **SCORING INSTRUCTIONS FOR SUB-SCORES:**
 
-For component_1_name_score:
-- CRITICAL: "Answer:", "Hypothesis:", "Question:", "H0:", "H1:", "Problem:", "Method:" are NOT names
-- Look ONLY in the first 1-2 lines of the submission
-- A valid student name is: Two words, each starting with a capital letter, like "John Doe" or "Jane Smith"
-- The name must appear BEFORE any assignment content (before "Answer:", "Hypothesis:", etc.)
-- If you see "Answer:" or "Hypothesis:" in the first line, there is NO name
-- If name found: component_1_name_score = 1
-- If NO name found: component_1_name_score = 0
-
 For component_1_title_score: use paper_title_present (1 if True, 0 if False)
 For component_1_task_score: use task_description_present (1 if True, 0 if False)
 For component_1_autoformat_score: use no_autoformatting_present (1 if True, 0 if False)
@@ -315,23 +327,21 @@ For component_1_autoformat_score: use no_autoformatting_present (1 if True, 0 if
 Return grading in this exact JSON format:
 {{
   "originality_concern": <true/false>,
-  "component_1_score": <0-4>,
-  "component_1_name_score": <0-1>,
-  "component_1_title_score": <0-1>,
+  "component_1_score": <0-2>,
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
   "component_1_explanation": "<brief explanation for header>",
-  "component_2_score": <0-5>,
-  "component_2_explanation": "<brief explanation for Question 1>",
-  "component_3_score": <0-5>,
-  "component_3_explanation": "<brief explanation for Question 2>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<brief explanation for Question 3>",
+  "component_2_score": <0-6>,
+  "component_2_explanation": "<brief explanation for Part (a)>",
+  "component_3_score": <0-6>,
+  "component_3_explanation": "<brief explanation for Part (b)>",
+  "component_4_score": <0-6>,
+  "component_4_explanation": "<brief explanation for Part (c)>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <percentage as number>,
   "feedback": "<SHORT teacher's comment, not an invitation for discussion>",
-  "vibe": "<one-sentence overall impression of the student's understanding of dependent-samples t-test>"
+  "vibe": "<one-sentence overall impression of the student's understanding of standard error calculations>"
 }}"""
 
         result = self.grade_with_prompt(
@@ -357,8 +367,8 @@ Return grading in this exact JSON format:
     def print_grading_results(self, grading):
         """Display grading results."""
         print("=" * 60)
-        print("GRADING RESULTS - HW8_1")
-        print("Dependent-Samples T-Test Research Questions")
+        print("GRADING RESULTS - HW9_2")
+        print("Standard Error Calculation")
         print("=" * 60)
 
         if 'component_1_score' in grading:
@@ -368,23 +378,21 @@ Return grading in this exact JSON format:
                 print("   All points frozen. See feedback below.")
 
             print("\nCOMPONENT BREAKDOWN:")
-            print(f"  Component 1 (Header): {grading.get('component_1_score', 'N/A')}/4")
-            print(f"    • Student name:        {grading.get('component_1_name_score', 'N/A')}/1 (LLM)")
-            print(f"    • Paper title:         {grading.get('component_1_title_score', 'N/A')}/1 (regex)")
+            print(f"  Component 1 (Header): {grading.get('component_1_score', 'N/A')}/2")
             print(f"    • Task description:    {grading.get('component_1_task_score', 'N/A')}/1 (regex)")
             print(f"    • No autoformatting:   {grading.get('component_1_autoformat_score', 'N/A')}/1 (regex)")
             if grading.get('component_1_explanation'):
                 print(f"   → {grading.get('component_1_explanation')}")
 
-            print(f"  Component 2 (Research Question 1): {grading.get('component_2_score', 'N/A')}/6")
+            print(f"  Component 2 (Part a): {grading.get('component_2_score', 'N/A')}/6")
             if grading.get('component_2_explanation'):
                 print(f"    → {grading.get('component_2_explanation')}")
 
-            print(f"  Component 3 (Research Question 2): {grading.get('component_3_score', 'N/A')}/5")
+            print(f"  Component 3 (Part b): {grading.get('component_3_score', 'N/A')}/6")
             if grading.get('component_3_explanation'):
                 print(f"    → {grading.get('component_3_explanation')}")
 
-            print(f"  Component 4 (Research Question 3): {grading.get('component_4_score', 'N/A')}/5")
+            print(f"  Component 4 (Part c): {grading.get('component_4_score', 'N/A')}/6")
             if grading.get('component_4_explanation'):
                 print(f"    → {grading.get('component_4_explanation')}")
 
@@ -418,14 +426,14 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Initialize evaluator
-    evaluator = HW8_1Evaluator()
+    evaluator = HW9_2Evaluator()
 
     # Prompt user for student's answer
     print("=" * 60)
-    print("QUESTION 8.1 EVALUATOR")
-    print("Dependent-Samples T-Test Research Questions")
+    print("QUESTION 9.2 EVALUATOR")
+    print("Standard Error Calculation")
     print("=" * 60)
-    print("\nPlease enter the student's answer to QUESTION 8_1.")
+    print("\nPlease enter the student's answer to QUESTION 9_2.")
     print("(Press Enter twice when finished, or type 'END' on a new line)\n")
 
     lines = []
@@ -451,7 +459,7 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Grade with Groq API
-    grading = evaluator.grade_question_hw8_1_answer(student_answer)
+    grading = evaluator.grade_hw9_2_answer(student_answer)
 
     # Display results
     evaluator.print_grading_results(grading)

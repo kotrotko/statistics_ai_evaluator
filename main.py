@@ -23,6 +23,21 @@ from homework.homework_7.graders_hw7.hw7_4 import HW7_4Evaluator
 from homework.homework_7.graders_hw7.hw7_5 import HW7_5Evaluator
 from homework.homework_8.graders_hw8.hw8_1 import HW8_1Evaluator
 # from classwork.classwork_7 import Question7_1Evaluator, Question7_2Evaluator, Question7_3Evaluator, Question7_4Evaluator, Question7_5Evaluator
+from homework.homework_9 import (
+    HW9_1Evaluator,
+    HW9_2Evaluator,
+    HW9_3Evaluator,
+    # HW9_4Evaluator,
+    # HW9_5Evaluator
+)
+from homework.homework_10 import (
+    HW10_1Evaluator,
+    HW10_2Evaluator,
+    HW10_3Evaluator,
+    HW10_4Evaluator,
+    HW10_5Evaluator
+)
+
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
 from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
 from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evaluator
@@ -49,6 +64,13 @@ from classwork.classwork_9 import (
     CW9_3Evaluator,
     CW9_4Evaluator,
     CW9_5Evaluator
+)
+from classwork.classwork_10 import (
+    CW10_1Evaluator,
+    CW10_2Evaluator,
+    CW10_3Evaluator,
+    CW10_4Evaluator,
+    CW10_5Evaluator
 )
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
@@ -174,6 +196,21 @@ def main():
         "cw9_5": (CW9_5Evaluator, "CLASSWORK 9.5",
                   "Statistical Analysis and Interpretation",
                   "grade_cw9_5_answer", {}),
+        "cw10_1": (CW10_1Evaluator, "CLASSWORK 10.1",
+                  "ANOVA Method Selection and Justification",
+                  "grade_question_cw10_1_answer", {}),
+        "cw10_2": (CW10_2Evaluator, "CLASSWORK 10.2",
+                   "ANOVA Method Selection and Justification", # TODO name it
+                   "grade_question_cw10_2_answer", {}),
+        "cw10_3": (CW10_3Evaluator, "CLASSWORK 10.3",
+                   "ANOVA Method Selection and Justification",  # TODO name it
+                   "grade_question_cw10_3_answer", {}),
+        "cw10_4": (CW10_4Evaluator, "CLASSWORK 10.4",
+                   "ANOVA Method Selection and Justification",  # TODO name it
+                   "grade_question_cw10_4_answer", {}),
+        "cw10_5": (CW10_5Evaluator, "CLASSWORK 10.5",
+                   "ANOVA Method Selection and Justification",  # TODO name it
+                   "grade_question_cw10_5_answer", {}),
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),
@@ -222,6 +259,35 @@ def main():
         "hw8_1": (HW8_1Evaluator, "HOMEWORK 8.1",
                   "Dependent-Samples T-Test Research Questions",
                   "grade_question_hw8_1_answer", {}),
+        "hw9_1": (HW9_1Evaluator, "HOMEWORK 9.1",
+                  "Independent Groups T-Test Research Questions",
+                  "grade_hw9_1_answer", {}),
+        "hw9_2": (HW9_2Evaluator, "HOMEWORK 9.2",
+                  "Standard Error Calculation",
+                  "grade_hw9_2_answer", {}),
+        "hw9_3": (HW9_3Evaluator, "HOMEWORK 9.3",
+                  "Standard Error Calculation",
+                  "grade_hw9_3_answer", {}),
+        "hw10_1": (HW10_1Evaluator, "HOMEWORK 10.1",
+                  "Standard Error Calculation",
+                  "grade_hw10_1_answer", {}),
+
+
+        "hw10_2": (HW10_2Evaluator, "HOMEWORK 10.2",
+                   "Standard Error Calculation",
+                   "grade_hw10_2_answer", {}),
+        "hw10_3": (HW10_3Evaluator, "HOMEWORK 10.3",
+                   "Standard Error Calculation",
+                   "grade_hw10_3_answer", {}),
+        "hw10_4": (HW10_4Evaluator, "HOMEWORK 10.4",
+                   "Standard Error Calculation",
+                   "grade_hw10_4_answer", {}),
+        "hw10_5": (HW10_5Evaluator, "HOMEWORK 10.5",
+                   "Standard Error Calculation",
+                   "grade_hw10_5_answer", {}),
+
+
+
         "mid_v1_1": (QuestionMidV1_1Evaluator,
                      "MIDTERM V1 - QUESTION 1",
                      "Manual Computations",

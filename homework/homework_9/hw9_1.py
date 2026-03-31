@@ -1,7 +1,7 @@
 """
-hw8_1.py
-Dependent-Samples T-Test Research Questions
-Evaluation method name: def grade_question_hw8_1_answer
+hw9_1.py
+Independent-Samples T-Test Research Questions
+Evaluation method name: def grade_question_hw9_1_answer
 """
 import re
 import textwrap
@@ -9,15 +9,15 @@ import textwrap
 from config import BaseEvaluator
 
 
-class HW8_1Evaluator(BaseEvaluator):
+class HW9_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Dependent-Samples T-Test Research Questions (HW8_1).
+    Evaluator for Independent-Samples T-Test Research Questions (HW9_1).
 
-    Task: Name 3 research questions that could be addressed using a dependent-
-    samples t-test.
+    Task: Describe 3 research questions that could be tested using an
+    independent-samples t-test.
 
     Evaluates student's ability to formulate appropriate research questions
-    for dependent-samples t-test with justification.
+    for independent-samples t-test with justification.
 
     Inherits common functionality from BaseEvaluator.
     Contains only question-specific logic.
@@ -54,10 +54,11 @@ class HW8_1Evaluator(BaseEvaluator):
 
         # STEP 2 — Title (strict)
         title_patterns = [
-            r'^\s*homework\s*8',
-            r'^\s*hw\s*8\b',
-            r'^\s*assignment\s*8',
-            r'^\s*paper\s*8'
+            r'^\s*homework\s*9',
+            r'^\s*home\s*work\s*(week)?\s*9',
+            r'^\s*hw\s*9\b',
+            r'^\s*assignment\s*9',
+            r'^\s*paper\s*9'
         ]
         for pattern in title_patterns:
             if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
@@ -68,7 +69,7 @@ class HW8_1Evaluator(BaseEvaluator):
             evidence.append("Title NOT found")
 
         # STEP 3 — Task description (strict)
-        if re.search(r'task|assignment|instructions?|question\s*:|three\s+research\s+questions|3\s+research\s+questions|dependent.?samples\s+t.?test', text_lower):
+        if re.search(r'task|assignment|instructions?|question\s*:|three\s+research\s+questions|3\s+research\s+questions|independent.?samples\s+t.?test', text_lower):
             elements_found["task_description"] = True
             evidence.append("Task description found")
         else:
@@ -92,9 +93,9 @@ class HW8_1Evaluator(BaseEvaluator):
             "evidence": evidence if evidence else ["No clear formatting indicators found"]
         }
 
-    def grade_question_hw8_1_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_hw9_1_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Question 8_1: Name 3 research questions for dependent-samples t-test.
+        Grade Question 9_1: Describe 3 research questions for independent-samples t-test.
         Returns detailed grading breakdown.
 
         Args:
@@ -118,8 +119,8 @@ class HW8_1Evaluator(BaseEvaluator):
                     "component_4_score": 3,
                 },
                 max_points=20,
-                feedback="[TEST MODE] All formatting elements present. Research questions show understanding of dependent t-test concept.",
-                vibe="Student demonstrates good grasp of paired/dependent design with room for improvement in justifications.",
+                feedback="[TEST MODE] All formatting elements present. Research questions show understanding of independent t-test concept.",
+                vibe="Student demonstrates good grasp of independent groups design with room for improvement in justifications.",
                 additional_data={
                     "formatting_check": {
                         "elements_found": {
@@ -152,7 +153,7 @@ class HW8_1Evaluator(BaseEvaluator):
 
         prompt = f"""{formatting_block}
         You are grading a statistics assignment where a student must:
-"Name 3 research questions that could be addressed using a dependent-samples t-test."
+"Describe 3 research questions that could be tested using an independent-samples t-test."
 
 Use a **STRICT rubric-based approach**. Total score MUST be exactly 20 points.
 
@@ -198,89 +199,107 @@ If False: deduct 1 point. Add: "Autoformatting detected. -1 point."
 
 **Component 2: Research Question 1 (6 points)**
 
-The student must provide a research question appropriate for dependent-samples t-test AND a justification.
+The student must provide a research question appropriate for independent-samples t-test AND a justification.
 
 **EVALUATION STEPS:**
 
-STEP 1: Is there ANY answer provided for Question 1?
-- If completely blank/missing → 0 points, feedback: "No answer provided for Question 1."
-- If ANY attempt exists → Continue to STEP 2 (minimum 1 point)
+STEP 1: Does the question compare TWO SEPARATE/INDEPENDENT GROUPS?
+- Look for: different people, different conditions, mutually exclusive categories
+- Examples: men vs women, treatment vs control, public school vs private school
+- If YES → proceed to STEP 2
+- If NO (compares same people twice) → maximum 1 point for effort
 
-STEP 2: Does the question use dependent/paired structure?
-- Same subjects measured twice (before/after, condition A vs B)? OR
-- Matched pairs (twins, siblings, couples, etc.)?
+STEP 2: Is the outcome variable CONTINUOUS/MEASURABLE?
+- Look for: scores, times, heights, weights, rates, amounts
+- Examples: test scores, reaction time, blood pressure, satisfaction ratings
+- If YES → proceed to STEP 3
+- If NO (categorical outcome like yes/no) → maximum 2 points
 
-If NO (compares independent groups):
-→ 1 point, feedback: "Credit for trying, but this compares two separate groups. Dependent t-test requires the SAME people measured twice or matched pairs."
-
-If YES → Continue to STEP 3
-
-STEP 3: Check requirements:
-- Exactly 2 conditions/time points?
-- Continuous outcome variable (measurable, not categorical)?
-- Question clearly worded?
-
-STEP 4: Check justification:
-- Does student explain WHY dependent t-test is needed?
-- Does justification mention pairing ("same subjects," "matched pairs," "within-subject")?
+STEP 3: Quality of justification
+- Does student explain WHY it requires independent-samples t-test?
+- Key elements: mentions two separate groups, explains independence, identifies continuous outcome
+- Strong justification → full points possible
+- Weak/missing justification → deduct 2 points
 
 **SCORING:**
-- 6 points: Perfect question + clear justification explaining pairing
-- 4 points: Good question but weak/missing justification
-- 2-3 points: Correct paired structure but unclear wording OR questionable outcome variable OR poor justification
-- 1 point: Wrong (compares independent groups) but attempted
+- 6 points: Perfect question + clear, comprehensive justification
+- 4 points: Good question but weak justification OR minor issues with question clarity
+- 2 points: Correct independent groups structure but significant quality issues
+- 1 point: Wrong (compares same people twice) but attempted
 - 0 points: Completely blank
 
 ---
 
 **Component 3: Research Question 2 (5 points)**
 
-Same evaluation criteria as Component 2.
+Same evaluation process as Component 2, but maximum 5 points.
 
 **SCORING:**
 - 5 points: Perfect question + clear justification
 - 3 points: Good question but weak/missing justification
-- 2 points: Correct paired structure but quality issues
-- 1 point: Wrong (compares independent groups) but attempted
+- 2 points: Correct independent groups structure but quality issues
+- 1 point: Wrong (compares same people twice) but attempted
 - 0 points: Completely blank
 
 ---
 
 **Component 4: Research Question 3 (5 points)**
 
-Same evaluation criteria as Component 2.
+Same evaluation process as Component 2, but maximum 5 points.
 
 **SCORING:**
 - 5 points: Perfect question + clear justification
 - 3 points: Good question but weak/missing justification
-- 2 points: Correct paired structure but quality issues
-- 1 point: Wrong (compares independent groups) but attempted
+- 2 points: Correct independent groups structure but quality issues
+- 1 point: Wrong (compares same people twice) but attempted
 - 0 points: Completely blank
 
 ---
 
 **GOOD EXAMPLES OF RESEARCH QUESTIONS:**
 
+Example 1 (Group Comparison):
+"Do male students have higher average math test scores than female students?"
+Justification: "This requires an independent-samples t-test because we're comparing two separate groups (males and females) on a continuous outcome variable (test scores). Each student belongs to only one group."
+
+Example 2 (Treatment vs Control):
+"Does a new drug reduce average blood pressure more than a placebo?"
+Justification: "This requires an independent-samples t-test because participants are randomly assigned to either the drug group OR the placebo group (not both), and we're comparing a continuous measure (blood pressure) between these two independent groups."
+
+Example 3 (Condition Comparison):
+"Do children from single-parent households have different average self-esteem scores compared to children from two-parent households?"
+Justification: "This requires an independent-samples t-test because the two groups (single-parent vs two-parent households) are mutually exclusive, and we're measuring a continuous variable (self-esteem scores) across these independent groups."
+
+---
+
+**BAD EXAMPLES (These are DEPENDENT samples, NOT independent):**
+
 Example 1 (Before-After):
-"Does a 6-week exercise program reduce resting heart rate in adults?"
-Justification: "This requires a dependent-samples t-test because the same participants are measured twice (before and after the program), creating paired observations."
+"Does exercise reduce heart rate?" — WRONG if measuring same people before/after
+This is a dependent-samples t-test because the same participants are measured twice.
 
-Example 2 (Matched Pairs):
-"Do identical twins raised together have more similar IQ scores than identical twins raised apart?"
-Justification: "This requires a dependent-samples t-test because twins are naturally matched pairs, and we're comparing the difference in IQ within each twin pair."
+Example 2 (Repeated Measures):
+"Do students perform better in morning classes vs afternoon classes?" — WRONG if same students tested both times
+This is a dependent-samples t-test because each student provides data for both conditions.
 
-Example 3 (Repeated Measures):
-"Do drivers have faster reaction times in the morning versus evening?"
-Justification: "This requires a dependent-samples t-test because each driver is tested twice (morning and evening), eliminating individual differences in baseline reaction time."
+Example 3 (Matched Pairs):
+"Do twins have similar IQ scores?" — WRONG
+This is a dependent-samples t-test because twins are naturally paired.
+
+---
+
+**KEY DISTINCTION:**
+- INDEPENDENT samples: Two DIFFERENT groups of people (Group A vs Group B)
+- DEPENDENT samples: SAME people measured twice OR naturally paired individuals
 
 ---
 
 **FEEDBACK EXAMPLES FOR 1-POINT ANSWERS:**
 
-If student compares independent groups:
-- "Credit for effort, but this question compares two different groups (men vs women), not the same people measured twice."
-- "Good attempt, but dependent t-test requires the SAME subjects measured under both conditions."
-- "Thanks for trying, but your question involves independent groups. Dependent t-test is for paired data only."
+If student compares same people twice:
+- "Credit for effort, but this question measures the same people twice (before/after). Independent t-test requires two separate groups."
+- "Good attempt, but independent t-test is for comparing DIFFERENT people in two groups, not the same people under two conditions."
+- "Thanks for trying, but your question uses paired/dependent data. Independent t-test needs two mutually exclusive groups."
 
 ---
 
@@ -321,7 +340,7 @@ Return grading in this exact JSON format:
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
   "component_1_explanation": "<brief explanation for header>",
-  "component_2_score": <0-5>,
+  "component_2_score": <0-6>,
   "component_2_explanation": "<brief explanation for Question 1>",
   "component_3_score": <0-5>,
   "component_3_explanation": "<brief explanation for Question 2>",
@@ -331,7 +350,7 @@ Return grading in this exact JSON format:
   "max_points": 20,
   "percentage": <percentage as number>,
   "feedback": "<SHORT teacher's comment, not an invitation for discussion>",
-  "vibe": "<one-sentence overall impression of the student's understanding of dependent-samples t-test>"
+  "vibe": "<one-sentence overall impression of the student's understanding of independent-samples t-test>"
 }}"""
 
         result = self.grade_with_prompt(
@@ -357,8 +376,8 @@ Return grading in this exact JSON format:
     def print_grading_results(self, grading):
         """Display grading results."""
         print("=" * 60)
-        print("GRADING RESULTS - HW8_1")
-        print("Dependent-Samples T-Test Research Questions")
+        print("GRADING RESULTS - HW9_1")
+        print("Independent-Samples T-Test Research Questions")
         print("=" * 60)
 
         if 'component_1_score' in grading:
@@ -418,14 +437,14 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Initialize evaluator
-    evaluator = HW8_1Evaluator()
+    evaluator = HW9_1Evaluator()
 
     # Prompt user for student's answer
     print("=" * 60)
-    print("QUESTION 8.1 EVALUATOR")
-    print("Dependent-Samples T-Test Research Questions")
+    print("QUESTION 9.1 EVALUATOR")
+    print("Independent-Samples T-Test Research Questions")
     print("=" * 60)
-    print("\nPlease enter the student's answer to QUESTION 8_1.")
+    print("\nPlease enter the student's answer to QUESTION 9_1.")
     print("(Press Enter twice when finished, or type 'END' on a new line)\n")
 
     lines = []
@@ -451,7 +470,7 @@ if __name__ == "__main__":
     print("=" * 60)
 
     # Grade with Groq API
-    grading = evaluator.grade_question_hw8_1_answer(student_answer)
+    grading = evaluator.grade_hw9_1_answer(student_answer)
 
     # Display results
     evaluator.print_grading_results(grading)
