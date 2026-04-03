@@ -72,6 +72,13 @@ from classwork.classwork_10 import (
     CW10_4Evaluator,
     CW10_5Evaluator
 )
+from classwork.classwork_12 import (
+    CW12_1Evaluator,
+    # CW12_2Evaluator,
+    # CW12_3Evaluator,
+    # CW12_4Evaluator,
+    # CW12_5Evaluator
+)
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 
@@ -211,6 +218,11 @@ def main():
         "cw10_5": (CW10_5Evaluator, "CLASSWORK 10.5",
                    "ANOVA Method Selection and Justification",  # TODO name it
                    "grade_question_cw10_5_answer", {}),
+
+        "cw12_1": (CW12_1Evaluator, "CLASSWORK 12.1",
+                   "Correlation Method Selection and Justification",
+                   "grade_question_cw12_1_answer", {}),
+
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),

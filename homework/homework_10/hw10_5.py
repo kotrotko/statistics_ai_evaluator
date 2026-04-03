@@ -67,7 +67,10 @@ class HW10_5Evaluator(BaseEvaluator):
         if elements_found["no_autoformatting"]:
             evidence.append("No autoformatting found")
 
-        return elements_found, evidence if evidence else ["No clear formatting indicators found"]
+        return {
+            "elements_found": elements_found,
+            "evidence": evidence if evidence else ["No clear formatting indicators found"]
+        }
 
     def grade_hw10_5_answer(self, student_answer: str, test_mode: bool = False):
         """
