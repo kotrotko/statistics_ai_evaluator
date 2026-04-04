@@ -41,7 +41,7 @@ from homework.homework_12 import (
     HW12_1Evaluator,
     HW12_2Evaluator,
     HW12_3Evaluator,
-    # HW12_4Evaluator,
+    HW12_4Evaluator,
     # HW12_5Evaluator
 )
 
@@ -324,6 +324,9 @@ def main():
         "hw12_3": (HW12_3Evaluator, "HOMEWORK 12.3",
                    "Direction and Magnitude of Correlation Coefficient Calculation",
                    "grade_hw12_3_answer", {}),
+        "hw12_4": (HW12_4Evaluator, "HOMEWORK 12.4",
+                   "Correlation Matrix: Direction and Magnitude",
+                   "grade_hw12_4_answer", {}),
 
 
         "mid_v1_1": (QuestionMidV1_1Evaluator,
