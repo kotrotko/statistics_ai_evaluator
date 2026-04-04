@@ -77,7 +77,7 @@ from classwork.classwork_12 import (
     CW12_2Evaluator,
     CW12_3Evaluator,
     CW12_4Evaluator,
-    # CW12_5Evaluator
+    CW12_5Evaluator
 )
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
@@ -231,6 +231,9 @@ def main():
         "cw12_4": (CW12_4Evaluator, "CLASSWORK 12.4",
                    "Correlation Hypothesis Testing",
                    "grade_question_cw12_4_answer", {}),
+        "cw12_5": (CW12_5Evaluator, "CLASSWORK 12.5",
+                   "Correlation Summary",
+                   "grade_question_cw12_5_answer", {}),
 
 
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
