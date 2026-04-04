@@ -37,6 +37,13 @@ from homework.homework_10 import (
     HW10_4Evaluator,
     HW10_5Evaluator
 )
+from homework.homework_12 import (
+    HW12_1Evaluator,
+    # HW12_2Evaluator,
+    # HW12_3Evaluator,
+    # HW12_4Evaluator,
+    # HW12_5Evaluator
+)
 
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
 from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
@@ -296,8 +303,6 @@ def main():
         "hw10_1": (HW10_1Evaluator, "HOMEWORK 10.1",
                   "Standard Error Calculation",
                   "grade_hw10_1_answer", {}),
-
-
         "hw10_2": (HW10_2Evaluator, "HOMEWORK 10.2",
                    "Standard Error Calculation",
                    "grade_hw10_2_answer", {}),
@@ -310,6 +315,9 @@ def main():
         "hw10_5": (HW10_5Evaluator, "HOMEWORK 10.5",
                    "Standard Error Calculation",
                    "grade_hw10_5_answer", {}),
+        "hw12_1": (HW12_1Evaluator, "HOMEWORK 12.1",
+                   "Three characteristics of a correlation coefficient",
+                   "grade_hw12_1_answer", {}),
 
 
 
