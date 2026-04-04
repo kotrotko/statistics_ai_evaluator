@@ -40,7 +40,7 @@ from homework.homework_10 import (
 from homework.homework_12 import (
     HW12_1Evaluator,
     HW12_2Evaluator,
-    # HW12_3Evaluator,
+    HW12_3Evaluator,
     # HW12_4Evaluator,
     # HW12_5Evaluator
 )
@@ -321,6 +321,9 @@ def main():
         "hw12_2": (HW12_2Evaluator, "HOMEWORK 12.2",
                    "Data Visualization Importance",
                    "grade_hw12_2_answer", {}),
+        "hw12_3": (HW12_3Evaluator, "HOMEWORK 12.3",
+                   "Direction and Magnitude of Correlation Coefficient Calculation",
+                   "grade_hw12_3_answer", {}),
 
 
         "mid_v1_1": (QuestionMidV1_1Evaluator,
