@@ -74,9 +74,9 @@ from classwork.classwork_10 import (
 )
 from classwork.classwork_12 import (
     CW12_1Evaluator,
-    # CW12_2Evaluator,
-    # CW12_3Evaluator,
-    # CW12_4Evaluator,
+    CW12_2Evaluator,
+    CW12_3Evaluator,
+    CW12_4Evaluator,
     # CW12_5Evaluator
 )
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
@@ -222,6 +222,16 @@ def main():
         "cw12_1": (CW12_1Evaluator, "CLASSWORK 12.1",
                    "Correlation Method Selection and Justification",
                    "grade_question_cw12_1_answer", {}),
+        "cw12_2": (CW12_2Evaluator, "CLASSWORK 12.2",
+                   "Correlation Normality Check",
+                   "grade_question_cw12_2_answer", {}),
+        "cw12_3": (CW12_3Evaluator, "CLASSWORK 12.3",
+                   "Correlation Hypothesis Testing Setup",
+                   "grade_question_cw12_3_answer", {}),
+        "cw12_4": (CW12_4Evaluator, "CLASSWORK 12.4",
+                   "Correlation Hypothesis Testing",
+                   "grade_question_cw12_4_answer", {}),
+
 
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
