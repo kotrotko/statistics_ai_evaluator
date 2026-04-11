@@ -86,6 +86,14 @@ from classwork.classwork_12 import (
     CW12_4Evaluator,
     CW12_5Evaluator
 )
+from classwork.classwork_13 import (
+    CW13_1Evaluator,
+    CW13_2Evaluator,
+    CW13_3Evaluator,
+    CW13_4Evaluator,
+    CW13_5Evaluator
+)
+
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 
@@ -241,6 +249,21 @@ def main():
         "cw12_5": (CW12_5Evaluator, "CLASSWORK 12.5",
                    "Correlation Summary",
                    "grade_question_cw12_5_answer", {}),
+        "cw13_1": (CW13_1Evaluator, "CLASSWORK 13.1",
+                   "Linear Regression Method Selection and Justification",
+                   "grade_question_cw13_1_answer", {}),
+        "cw13_2": (CW13_2Evaluator, "CLASSWORK 13.2",
+                   "Linear Regression Method Selection and Justification",
+                   "grade_question_cw13_2_answer", {}),
+        "cw13_3": (CW13_3Evaluator, "CLASSWORK 13.3",
+                   "Linear Regression Method Selection and Justification",
+                   "grade_question_cw13_3_answer", {}),
+        "cw13_4": (CW13_4Evaluator, "CLASSWORK 13.4",
+                   "Linear Regression Method Selection and Justification",
+                   "grade_question_cw13_4_answer", {}),
+        "cw13_5": (CW13_5Evaluator, "CLASSWORK 13.5",
+                   "Linear Regression Method Selection and Justification",
+                   "grade_question_cw13_5_answer", {}),
 
 
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",

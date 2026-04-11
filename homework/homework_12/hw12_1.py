@@ -27,7 +27,7 @@ class HW12_1Evaluator(BaseEvaluator):
         super().__init__(
             model="llama-3.3-70b-versatile",
             temperature=0.3,
-            max_tokens=1500
+            max_tokens=1200
         )
 
     def check_formatting_elements(self, student_answer: str) -> dict:
@@ -41,6 +41,7 @@ class HW12_1Evaluator(BaseEvaluator):
             Dictionary with found elements and evidence
         """
         text_lower = student_answer.lower()
+        first_lines = student_answer[:200]
 
         elements_found = {
             "paper_title": False,
@@ -163,7 +164,7 @@ Use a **STRICT rubric-based approach**. Total score MUST be exactly 20 points.
 2. 0 only if completely blank
 3. Feedback should be SHORT, written as a teacher's comment
 4. Feedback CANNOT be an invitation for further discussion
-5. For low-scoring answers, use encouraging language: "Credit for trying, but..."
+5. For low-scoring answers, use encouraging language: "Credit for trying..."
 
 ---
 
