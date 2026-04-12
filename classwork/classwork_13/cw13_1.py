@@ -52,13 +52,25 @@ class CW13_1Evaluator(BaseEvaluator):
                 evidence.append("Title found")
                 break
 
-        if re.search(
-                r'linear\s*regression|predictor|criterion|outcome\s*variable|dependent\s*variable|jasp|research\s+question|state\s+the\s+problem|problem\s+statement',
-                text_lower):
+        pedagogical_markers = [
+            "what is a predictor?",
+            "which variable is dependent?",
+            "formulate research question",
+        ]
+
+        if any(marker in text_lower for marker in pedagogical_markers):
             elements_found["task_description"] = True
             evidence.append("Task description found")
         else:
             evidence.append("Task description NOT found")
+
+        # if re.search(
+        #         r'linear\s*regression|predictor|criterion|outcome\s*variable|dependent\s*variable|jasp|research\s+question|state\s+the\s+problem|problem\s+statement',
+        #         text_lower):
+        #     elements_found["task_description"] = True
+        #     evidence.append("Task description found")
+        # else:
+        #     evidence.append("Task description NOT found") // TODO: Restore
 
         autoformat_patterns = [
             r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',
