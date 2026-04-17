@@ -62,7 +62,7 @@ class CW13_2Evaluator(BaseEvaluator):
 
         # Checkpoint 1 — Task description (pedagogical markers, plain string matching)
         pedagogical_markers = [
-            "Include the table, number and title it",
+            "visually check both the homoscedasticity and linearity",
         ]
 
         if any(marker in text_lower for marker in pedagogical_markers):

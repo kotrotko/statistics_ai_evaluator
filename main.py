@@ -22,13 +22,10 @@ from homework.homework_7.graders_hw7.hw7_3 import HW7_3Evaluator
 from homework.homework_7.graders_hw7.hw7_4 import HW7_4Evaluator
 from homework.homework_7.graders_hw7.hw7_5 import HW7_5Evaluator
 from homework.homework_8.graders_hw8.hw8_1 import HW8_1Evaluator
-# from classwork.classwork_7 import Question7_1Evaluator, Question7_2Evaluator, Question7_3Evaluator, Question7_4Evaluator, Question7_5Evaluator
 from homework.homework_9 import (
     HW9_1Evaluator,
     HW9_2Evaluator,
     HW9_3Evaluator,
-    # HW9_4Evaluator,
-    # HW9_5Evaluator
 )
 from homework.homework_10 import (
     HW10_1Evaluator,
@@ -44,7 +41,13 @@ from homework.homework_12 import (
     HW12_4Evaluator,
     HW12_5Evaluator
 )
-
+from homework.homework_13 import (
+    HW13_1Evaluator,
+    HW13_2Evaluator,
+    HW13_3Evaluator,
+    HW13_4Evaluator,
+    HW13_5Evaluator
+)
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
 from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
 from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evaluator
@@ -95,23 +98,16 @@ from classwork.classwork_13 import (
 )
 from classwork.classwork_14 import (
     CW14_1Evaluator,
-    # CW14_2Evaluator,
-    # CW14_3Evaluator,
-    # CW14_4Evaluator,
-    # CW14_5Evaluator
+    CW14_2Evaluator,
 )
 from classwork.classwork_15 import (
     CW15_1Evaluator,
-    # CW15_2Evaluator,
-    # CW15_3Evaluator,
-    # CW15_4Evaluator,
-    # CW15_5Evaluator
 )
-
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 
 _input_handler = InputHandler()
+
 
 def run_evaluator(evaluator_class, question_name, question_description, grading_method, **kwargs):
     """
@@ -124,11 +120,9 @@ def run_evaluator(evaluator_class, question_name, question_description, grading_
         grading_method: Method name to call on evaluator
         **kwargs: Additional arguments for print_grading_results
     """
-    # Create instances
     evaluator = evaluator_class()
     input_handler = InputHandler()
 
-    # Collect student input
     student_answer = input_handler.collect_and_validate_input(
         question_name=question_name,
         question_description=question_description,
@@ -212,8 +206,7 @@ def main():
                   "grade_question_cw8_3_answer", {}),
         "cw8_4": (CW8_4Evaluator, "CLASSWORK 8.4",
                   "Means Comparison - Justification / Table / Inference / Effect Size / Plot",
-                  "grade_cw8_4_answer",
-                  {}),
+                  "grade_cw8_4_answer", {}),
         "cw8_5": (CW8_5Evaluator, "CLASSWORK 8.5",
                   "Summary - APA Result / Research Question Answer",
                   "grade_cw8_5_answer", {}),
@@ -233,21 +226,20 @@ def main():
                   "Statistical Analysis and Interpretation",
                   "grade_cw9_5_answer", {}),
         "cw10_1": (CW10_1Evaluator, "CLASSWORK 10.1",
-                  "ANOVA Method Selection and Justification",
-                  "grade_question_cw10_1_answer", {}),
+                   "ANOVA Method Selection and Justification",
+                   "grade_question_cw10_1_answer", {}),
         "cw10_2": (CW10_2Evaluator, "CLASSWORK 10.2",
-                   "ANOVA Method Selection and Justification", # TODO name it
+                   "ANOVA Method Selection and Justification",
                    "grade_question_cw10_2_answer", {}),
         "cw10_3": (CW10_3Evaluator, "CLASSWORK 10.3",
-                   "ANOVA Method Selection and Justification",  # TODO name it
+                   "ANOVA Method Selection and Justification",
                    "grade_question_cw10_3_answer", {}),
         "cw10_4": (CW10_4Evaluator, "CLASSWORK 10.4",
-                   "ANOVA Method Selection and Justification",  # TODO name it
+                   "ANOVA Method Selection and Justification",
                    "grade_question_cw10_4_answer", {}),
         "cw10_5": (CW10_5Evaluator, "CLASSWORK 10.5",
-                   "ANOVA Method Selection and Justification",  # TODO name it
+                   "ANOVA Method Selection and Justification",
                    "grade_question_cw10_5_answer", {}),
-
         "cw12_1": (CW12_1Evaluator, "CLASSWORK 12.1",
                    "Correlation Method Selection and Justification",
                    "grade_question_cw12_1_answer", {}),
@@ -264,53 +256,29 @@ def main():
                    "Correlation Summary",
                    "grade_question_cw12_5_answer", {}),
         "cw13_1": (CW13_1Evaluator, "CLASSWORK 13.1",
-                   "Linear Regression Method Selection and Justification",
+                   "Linear Regression - Problem Statement and Research Question",
                    "grade_question_cw13_1_answer", {}),
         "cw13_2": (CW13_2Evaluator, "CLASSWORK 13.2",
-                   "Linear Regression Method Selection and Justification",
+                   "Linear Regression - Assumption Checks",
                    "grade_question_cw13_2_answer", {}),
         "cw13_3": (CW13_3Evaluator, "CLASSWORK 13.3",
-                   "Linear Regression Method Selection and Justification",
+                   "Linear Regression - Step System",
                    "grade_question_cw13_3_answer", {}),
         "cw13_4": (CW13_4Evaluator, "CLASSWORK 13.4",
-                   "Linear Regression Method Selection and Justification",
+                   "Linear Regression - Equation and R²",
                    "grade_question_cw13_4_answer", {}),
         "cw13_5": (CW13_5Evaluator, "CLASSWORK 13.5",
-                   "Linear Regression Method Selection and Justification",
+                   "Linear Regression - APA Results and Research Question",
                    "grade_question_cw13_5_answer", {}),
-
         "cw14_1": (CW14_1Evaluator, "CLASSWORK 14.1",
-                   "Linear Regression Method Selection and Justification",
+                   "Chi Square - Problem Statement and Research Question",
                    "grade_question_cw14_1_answer", {}),
-        # "cw14_2": (CW14_2Evaluator, "CLASSWORK 14.2",
-        #            "Linear Regression Method Selection and Justification",
-        #            "grade_question_cw14_2_answer", {}),
-        # "cw14_3": (CW14_3Evaluator, "CLASSWORK 14.3",
-        #            "Linear Regression Method Selection and Justification",
-        #            "grade_question_cw14_3_answer", {}),
-        # "cw14_4": (CW14_4Evaluator, "CLASSWORK 14.4",
-        #            "Linear Regression Method Selection and Justification",
-        #            "grade_question_cw14_4_answer", {}),
-        # "cw14_5": (CW14_5Evaluator, "CLASSWORK 14.5",
-        #            "Linear Regression Method Selection and Justification",
-        #            "grade_question_cw14_5_answer", {}),
-
+        "cw14_2": (CW14_2Evaluator, "CLASSWORK 14.2",
+                   "Chi Square - Step System",
+                   "grade_question_cw14_2_answer", {}),
         "cw15_1": (CW15_1Evaluator, "CLASSWORK 15.1",
-                   "Linear Regression Method Selection and Justification",
+                   "EFA - Initial Setup, Assumption Checks, and Model Fit",
                    "grade_question_cw15_1_answer", {}),
-        # "cw15_2": (CW15_2Evaluator, "CLASSWORK 15.2",
-        #            "Linear Regression Method Selection and Justification",
-        #            "grade_question_cw15_2_answer", {}),
-        # "cw15_3": (CW15_3Evaluator, "CLASSWORK 15.3",
-        #            "Linear Regression Method Selection and Justification",
-        #            "grade_question_cw15_3_answer", {}),
-        # "cw15_4": (CW15_4Evaluator, "CLASSWORK 15.4",
-        #            "Linear Regression Method Selection and Justification",
-        #            "grade_question_cw15_4_answer", {}),
-        # "cw15_5": (CW15_5Evaluator, "CLASSWORK 15.5",
-        #            "Linear Regression Method Selection and Justification",
-        #            "grade_question_cw15_5_answer", {}),
-
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),
@@ -369,8 +337,8 @@ def main():
                   "Standard Error Calculation",
                   "grade_hw9_3_answer", {}),
         "hw10_1": (HW10_1Evaluator, "HOMEWORK 10.1",
-                  "Standard Error Calculation",
-                  "grade_hw10_1_answer", {}),
+                   "Standard Error Calculation",
+                   "grade_hw10_1_answer", {}),
         "hw10_2": (HW10_2Evaluator, "HOMEWORK 10.2",
                    "Standard Error Calculation",
                    "grade_hw10_2_answer", {}),
@@ -384,22 +352,35 @@ def main():
                    "Standard Error Calculation",
                    "grade_hw10_5_answer", {}),
         "hw12_1": (HW12_1Evaluator, "HOMEWORK 12.1",
-                   "Three characteristics of a correlation coefficient",
+                   "Three Characteristics of a Correlation Coefficient",
                    "grade_hw12_1_answer", {}),
         "hw12_2": (HW12_2Evaluator, "HOMEWORK 12.2",
                    "Data Visualization Importance",
                    "grade_hw12_2_answer", {}),
         "hw12_3": (HW12_3Evaluator, "HOMEWORK 12.3",
-                   "Direction and Magnitude of Correlation Coefficient Calculation",
+                   "Direction and Magnitude of Correlation Coefficients",
                    "grade_hw12_3_answer", {}),
         "hw12_4": (HW12_4Evaluator, "HOMEWORK 12.4",
                    "Correlation Matrix: Direction and Magnitude",
                    "grade_hw12_4_answer", {}),
         "hw12_5": (HW12_5Evaluator, "HOMEWORK 12.5",
-                   "Correlation Hypothesis  Testing",
+                   "Correlation Hypothesis Testing",
                    "grade_hw12_5_answer", {}),
-
-
+        "hw13_1": (HW13_1Evaluator, "HOMEWORK 13.1",
+                   "What is a Residual?",
+                   "grade_hw13_1_answer", {}),
+        "hw13_2": (HW13_2Evaluator, "HOMEWORK 13.2",
+                   "Two Parameters of the Line of Best Fit",
+                   "grade_hw13_2_answer", {}),
+        "hw13_3": (HW13_3Evaluator, "HOMEWORK 13.3",
+                   "ANOVA Tables for Simple Linear Regression",
+                   "grade_hw13_3_answer", {}),
+        "hw13_4": (HW13_4Evaluator, "HOMEWORK 13.4",
+                   "Predicting Scores Using Line of Best Fit",
+                   "grade_hw13_4_answer", {}),
+        "hw13_5": (HW13_5Evaluator, "HOMEWORK 13.5",
+                   "Line of Best Fit and Hypothesis Testing",
+                   "grade_hw13_5_answer", {}),
         "mid_v1_1": (QuestionMidV1_1Evaluator,
                      "MIDTERM V1 - QUESTION 1",
                      "Manual Computations",
@@ -417,18 +398,9 @@ def main():
         print("Type 0 to exit")
         print("=" * 60)
 
-        # 1. Get all keys from the dictionary (excluding '0' which is handled separately)
-        # We sort them to keep the list predictable for the user
         available_options = ", ".join(evaluators.keys())
-
-        # 2. Use an f-string to inject those keys into the prompt automatically
         prompt = f"Select an evaluator (0, {available_options}):\n"
-
         choice = input(prompt).strip()
-        # choice = input(prompt).splitlines()[0].strip() TODO check and remove
-        # sys.stdout.write(prompt)
-        # sys.stdout.flush()
-        # choice = sys.stdin.readline().strip()
 
         if choice == "0":
             print("\n Goodbye!")
@@ -443,8 +415,6 @@ def main():
 
         choice_input = input("\nWould you like to evaluate another student? (y/n): ").strip().lower()
 
-        # If the user just pressed Enter by mistake, 'choice_input' is empty.
-        # This 'if' prevents the error message from showing for empty inputs.
         if not choice_input:
             continue
 

@@ -68,9 +68,10 @@ class HW12_1Evaluator(BaseEvaluator):
 
         # STEP 3 — Task description (strict)
         # Only phrases a student would NOT write as part of their answer
-        task_patterns = [
-            r'three\s+characteristics\s+of\s+a\s+correlation\s+coefficient',
-            r'what\s+are\s+the\s+three\s+characteristics',
+        pedagogical_markers = [
+            "what is a residual",
+            "residual?",
+            "task 1. what is a residual"
         ]
         if any(re.search(pattern, text_lower) for pattern in task_patterns):
             elements_found["task_description"] = True
