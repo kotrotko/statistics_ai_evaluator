@@ -42,7 +42,7 @@ class HW13_2Evaluator(BaseEvaluator):
 
         # Task description (pedagogical marker)
         pedagogical_markers = [
-            "Visually check both the homoscedasticity and linearity",
+            "what are the two parameters of the line of best fit, and what do they represent?",
         ]
 
         if any(marker in text_lower for marker in pedagogical_markers):

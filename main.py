@@ -99,9 +99,16 @@ from classwork.classwork_13 import (
 from classwork.classwork_14 import (
     CW14_1Evaluator,
     CW14_2Evaluator,
+    # CW14_3Evaluator,
+    CW14_4Evaluator,
+    # CW14_5Evaluator
 )
 from classwork.classwork_15 import (
     CW15_1Evaluator,
+    # CW14_2Evaluator,
+    # CW14_3Evaluator,
+    # CW14_4Evaluator,
+    # CW14_5Evaluator
 )
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
@@ -261,14 +268,14 @@ def main():
         "cw13_2": (CW13_2Evaluator, "CLASSWORK 13.2",
                    "Linear Regression - Assumption Checks",
                    "grade_question_cw13_2_answer", {}),
-        "cw13_3": (CW13_3Evaluator, "CLASSWORK 13.3",
-                   "Linear Regression - Step System",
-                   "grade_question_cw13_3_answer", {}),
+        # "cw13_3": (CW13_3Evaluator, "CLASSWORK 13.3",
+        #            "Linear Regression - Step System",
+        #            "grade_question_cw13_3_answer", {}),
         "cw13_4": (CW13_4Evaluator, "CLASSWORK 13.4",
                    "Linear Regression - Equation and R²",
                    "grade_question_cw13_4_answer", {}),
         "cw13_5": (CW13_5Evaluator, "CLASSWORK 13.5",
-                   "Linear Regression - APA Results and Research Question",
+                   "Linear Regression - Results and Answer to Research Question",
                    "grade_question_cw13_5_answer", {}),
         "cw14_1": (CW14_1Evaluator, "CLASSWORK 14.1",
                    "Chi Square - Problem Statement and Research Question",
@@ -276,6 +283,15 @@ def main():
         "cw14_2": (CW14_2Evaluator, "CLASSWORK 14.2",
                    "Chi Square - Step System",
                    "grade_question_cw14_2_answer", {}),
+        # "cw14_3": (CW14_3Evaluator, "CLASSWORK 14.3",
+        #            "Chi Square - Test for Independence",
+        #            "grade_question_cw14_3_answer", {}),
+        "cw14_4": (CW14_4Evaluator, "CLASSWORK 14.4",
+                   "Chi Square - Cramer's V Effect Size",
+                   "grade_question_cw14_4_answer", {}),
+        # "cw14_5": (CW14_5Evaluator, "CLASSWORK 14.5",
+        #            "Chi Square - Results and Answer to Research Question",
+        #            "grade_question_cw14_5_answer", {}),
         "cw15_1": (CW15_1Evaluator, "CLASSWORK 15.1",
                    "EFA - Initial Setup, Assumption Checks, and Model Fit",
                    "grade_question_cw15_1_answer", {}),
