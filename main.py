@@ -99,9 +99,9 @@ from classwork.classwork_13 import (
 from classwork.classwork_14 import (
     CW14_1Evaluator,
     CW14_2Evaluator,
-    # CW14_3Evaluator,
+    CW14_3Evaluator,
     CW14_4Evaluator,
-    # CW14_5Evaluator
+    CW14_5Evaluator
 )
 from classwork.classwork_15 import (
     CW15_1Evaluator,
@@ -283,15 +283,15 @@ def main():
         "cw14_2": (CW14_2Evaluator, "CLASSWORK 14.2",
                    "Chi Square - Step System",
                    "grade_question_cw14_2_answer", {}),
-        # "cw14_3": (CW14_3Evaluator, "CLASSWORK 14.3",
-        #            "Chi Square - Test for Independence",
-        #            "grade_question_cw14_3_answer", {}),
+        "cw14_3": (CW14_3Evaluator, "CLASSWORK 14.3",
+                   "Chi Square - Test for Independence",
+                   "grade_question_cw14_3_answer", {}),
         "cw14_4": (CW14_4Evaluator, "CLASSWORK 14.4",
                    "Chi Square - Cramer's V Effect Size",
                    "grade_question_cw14_4_answer", {}),
-        # "cw14_5": (CW14_5Evaluator, "CLASSWORK 14.5",
-        #            "Chi Square - Results and Answer to Research Question",
-        #            "grade_question_cw14_5_answer", {}),
+        "cw14_5": (CW14_5Evaluator, "CLASSWORK 14.5",
+                   "Chi Square - Results and Answer to Research Question",
+                   "grade_question_cw14_5_answer", {}),
         "cw15_1": (CW15_1Evaluator, "CLASSWORK 15.1",
                    "EFA - Initial Setup, Assumption Checks, and Model Fit",
                    "grade_question_cw15_1_answer", {}),
