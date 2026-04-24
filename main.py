@@ -52,8 +52,8 @@ from homework.homework_13 import (
 from homework.homework_14 import (
     HW14_1Evaluator,
     HW14_2Evaluator,
-    # HW14_3Evaluator,
-    # HW14_4Evaluator,
+    HW14_3Evaluator,
+    HW14_4Evaluator,
     # HW14_5Evaluator
 )
 
@@ -413,12 +413,12 @@ def main():
         "hw14_2": (HW14_2Evaluator, "HOMEWORK 14.2",
                    "What does a test-for-independence assess",
                    "grade_hw14_2_answer", {}),
-        # "hw14_3": (HW14_3Evaluator, "HOMEWORK 14.3",
-        #            "Effect size for chi-square test",
-        #            "grade_hw14_3_answer", {}),
-        # "hw14_4": (HW14_4Evaluator, "HOMEWORK 14.4",
-        #            "Chi-Square Goodness-Of-Fit for Pizza",
-        #            "grade_hw14_4_answer", {}),
+        "hw14_3": (HW14_3Evaluator, "HOMEWORK 14.3",
+                   "Effect size for chi-square test",
+                   "grade_hw14_3_answer", {}),
+        "hw14_4": (HW14_4Evaluator, "HOMEWORK 14.4",
+                   "Chi-Square Goodness-Of-Fit for Pizza",
+                   "grade_hw14_4_answer", {}),
         # "hw14_5": (HW14_5Evaluator, "HOMEWORK 14.5",
         #            "Chi-Square for independence against discrimination",
         #            "grade_hw14_5_answer", {}),
