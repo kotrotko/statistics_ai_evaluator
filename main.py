@@ -51,7 +51,7 @@ from homework.homework_13 import (
 
 from homework.homework_14 import (
     HW14_1Evaluator,
-    # HW14_2Evaluator,
+    HW14_2Evaluator,
     # HW14_3Evaluator,
     # HW14_4Evaluator,
     # HW14_5Evaluator
@@ -410,9 +410,9 @@ def main():
         "hw14_1": (HW14_1Evaluator, "HOMEWORK 14.1",
                    "What does a goodness-of-fit test assess?",
                    "grade_hw14_1_answer", {}),
-        # "hw14_2": (HW14_2Evaluator, "HOMEWORK 14.2",
-        #            "What does a test-for-independence assess",
-        #            "grade_hw14_2_answer", {}),
+        "hw14_2": (HW14_2Evaluator, "HOMEWORK 14.2",
+                   "What does a test-for-independence assess",
+                   "grade_hw14_2_answer", {}),
         # "hw14_3": (HW14_3Evaluator, "HOMEWORK 14.3",
         #            "Effect size for chi-square test",
         #            "grade_hw14_3_answer", {}),
