@@ -48,6 +48,15 @@ from homework.homework_13 import (
     HW13_4Evaluator,
     HW13_5Evaluator
 )
+
+from homework.homework_14 import (
+    HW14_1Evaluator,
+    # HW14_2Evaluator,
+    # HW14_3Evaluator,
+    # HW14_4Evaluator,
+    # HW14_5Evaluator
+)
+
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
 from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
 from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evaluator
@@ -105,10 +114,10 @@ from classwork.classwork_14 import (
 )
 from classwork.classwork_15 import (
     CW15_1Evaluator,
-    # CW14_2Evaluator,
-    # CW14_3Evaluator,
-    # CW14_4Evaluator,
-    # CW14_5Evaluator
+    # CW15_2Evaluator,
+    # CW15_3Evaluator,
+    # CW15_4Evaluator,
+    # CW15_5Evaluator
 )
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
@@ -397,6 +406,24 @@ def main():
         "hw13_5": (HW13_5Evaluator, "HOMEWORK 13.5",
                    "Line of Best Fit and Hypothesis Testing",
                    "grade_hw13_5_answer", {}),
+
+        "hw14_1": (HW14_1Evaluator, "HOMEWORK 14.1",
+                   "What does a goodness-of-fit test assess?",
+                   "grade_hw14_1_answer", {}),
+        # "hw14_2": (HW14_2Evaluator, "HOMEWORK 14.2",
+        #            "What does a test-for-independence assess",
+        #            "grade_hw14_2_answer", {}),
+        # "hw14_3": (HW14_3Evaluator, "HOMEWORK 14.3",
+        #            "Effect size for chi-square test",
+        #            "grade_hw14_3_answer", {}),
+        # "hw14_4": (HW14_4Evaluator, "HOMEWORK 14.4",
+        #            "Chi-Square Goodness-Of-Fit for Pizza",
+        #            "grade_hw14_4_answer", {}),
+        # "hw14_5": (HW14_5Evaluator, "HOMEWORK 14.5",
+        #            "Chi-Square for independence against discrimination",
+        #            "grade_hw14_5_answer", {}),
+
+
         "mid_v1_1": (QuestionMidV1_1Evaluator,
                      "MIDTERM V1 - QUESTION 1",
                      "Manual Computations",

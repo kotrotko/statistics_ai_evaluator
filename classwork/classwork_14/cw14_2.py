@@ -17,7 +17,7 @@ class CW14_2Evaluator(BaseEvaluator):
     Step 1. Name the method you choose and justify it based on the data level (5 points).
     Step 2. State the hypotheses in needed form (5 points).
     Step 3. State the significance level α, calculate df, find the critical value. (5 points).
-    Step 4. Using JASP, calculate the χ². Make the statistical inference (5 points).
+    Step 4. Open the JASP > Frequencies > Contingency Tables tool. Make sure that you have Physical Activity on Rows and Fruit Consumption on Columns. Include the "Contingency Tables" table, number it, make sure that it is introduced, numbered, and named (5 points).
     Total (strictly) 20 points.
 
     Evaluates student's ability to follow the step system for Chi Square analysis.
@@ -229,22 +229,22 @@ Student must state α, calculate df correctly, and identify the critical value.
 CRITICAL: df for Chi Square = (rows - 1)(columns - 1). For a 3×3 table: df = 4.
 Accept any correct critical value corresponding to the stated df and α.
 
-Component 5: Step 4 — χ² Result and Statistical Inference (5 points)
-Student must report the χ² value from JASP and make a formal statistical inference.
+Component 5: Step 4 — Contingency Table (5 points)
+Student must include the Contingency Tables output from JASP, properly introduced, numbered, and named,
+with Physical Activity on Rows and Fruit Consumption on Columns.
 
-- 5 points: χ² value and p-value reported, compared to critical value or α,
-  and correct formal inference stated
-  e.g. "χ²(4) = 14.152, p = .007, reject H0: physical activity and fruit consumption
-  are not independent"
-- 4 points: Correct decision made but inference statement incomplete
-- 3 points: χ² value reported and direction correct but no formal inference written
-- 2 points: χ² value mentioned but comparison or inference missing or wrong
-- 1 point: Minimal attempt
+- 5 points: Table present, introduced in text, numbered, and titled with both variable names;
+  Physical Activity on rows and Fruit Consumption on columns
+- 4 points: Table present and introduced but title missing one variable name, or row/column
+  assignment not explicitly stated
+- 3 points: Table present and numbered but not introduced or not named
+- 2 points: Table present but missing number, title, and introduction
+- 1 point: Minimal attempt — reference to contingency table without actual table
 - 0 points: Completely absent
 
-CRITICAL: Inference must explicitly state the decision about H0.
-CRITICAL: Direction of decision must match the reported p-value.
-
+CRITICAL: Table must be introduced with a sentence before it appears.
+CRITICAL: Table must have a number label and a descriptive title naming both variables.
+CRITICAL: Do NOT accept a chi-square test table as a substitute for the contingency table.
 ---
 
 STUDENT ANSWER:
@@ -261,7 +261,7 @@ Return JSON in this exact format:
   "component_4_score": <0-5>,
   "component_4_explanation": "<brief explanation>",
   "component_5_score": <0-5>,
-  "component_5_explanation": "<brief explanation>",
+  "component_5_explanation": "<brief explanation for contingency table>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <percentage>,
@@ -333,7 +333,7 @@ total_points = component_1_score + component_2_score + component_3_score + compo
             if grading.get('component_4_explanation'):
                 print(f"    → {grading.get('component_4_explanation')}")
 
-            print(f"  Component 5 (Step 4: χ² Result and Inference): {grading.get('component_5_score')}/5")
+            print(f"  Component 5 (Step 4: Contingency Table): {grading.get('component_5_score')}/5")
             if grading.get('component_5_explanation'):
                 print(f"    → {grading.get('component_5_explanation')}")
 

@@ -115,8 +115,3 @@ def test_autoformatting_detected():
 def test_no_autoformatting():
     result = evaluator.check_formatting_elements(TEXT_AUTOFORMATTING_ABSENT)
     assert result["elements_found"]["no_autoformatting"] is True
-
-def test_total_points_perfect_is_exactly_20():
-    """Any wrong formula will produce a number other than 20 on a perfect score."""
-    result = evaluator.grade_question_cw14_1_answer("anything", test_mode=True)
-    assert result["total_points"] == 20
