@@ -58,7 +58,8 @@ class CW15_1Evaluator(BaseEvaluator):
                 break
 
         pedagogical_markers = [
-            "we would like to know if these 9 variables could be shrunk down into a number of factors",
+            "add this statement into your paper",
+            "how do you know",
         ]
 
         if any(marker in text_lower for marker in pedagogical_markers):
@@ -248,23 +249,23 @@ DO NOT modify or override component scores based on originality_concern.
 STUDENT ANSWER:
 {student_answer}
 
-Return grading in this exact JSON format:
+Return JSON only:
 {{
   "originality_concern": <true/false>,
-  "formatting_deductions": <0-4>,
-  "formatting_name_deduction": <0-1>,
-  "formatting_title_deduction": <0-1>,
-  "formatting_task_deduction": <0-1>,
-  "formatting_autoformat_deduction": <0-1>,
-  "formatting_explanation": "<brief explanation for deductions>",
   "component_1_score": <0-4>,
-  "component_1_explanation": "<brief explanation for research question statement>",
+  "component_1_name_score": <0-1>,
+  "component_1_title_score": <0-1>,
+  "component_1_task_score": <0-1>,
+  "component_1_autoformat_score": <0-1>,
+  "component_1_explanation": "<brief explanation for formatting>",
   "component_2_score": <0-4>,
-  "component_2_explanation": "<brief explanation for KMO test>",
+  "component_2_explanation": "<brief explanation for research question statement>",
   "component_3_score": <0-4>,
-  "component_3_explanation": "<brief explanation for Bartlett's test>",
+  "component_3_explanation": "<brief explanation for KMO test>",
   "component_4_score": <0-4>,
-  "component_4_explanation": "<brief explanation for Chi Squared model fit>",
+  "component_4_explanation": "<brief explanation for Bartlett's test>",
+  "component_5_score": <0-4>,
+  "component_5_explanation": "<brief explanation for Chi Squared model fit>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <percentage as number>,
@@ -274,18 +275,13 @@ Return grading in this exact JSON format:
 
 SCORING INSTRUCTIONS:
 
-For formatting_name_deduction:
-- If valid name found: 0
-- If NO name found: 1
+component_1_name_score = 1 if valid name found, else 0
+component_1_title_score = 1 if paper_title_present else 0
+component_1_task_score = 1 if task_description_present else 0
+component_1_autoformat_score = 1 if no_autoformatting_present else 0
+component_1_score = component_1_name_score + component_1_title_score + component_1_task_score + component_1_autoformat_score
 
-For formatting_title_deduction: use paper_title_present (0 if True, 1 if False)
-For formatting_task_deduction: use task_description_present (0 if True, 1 if False)
-For formatting_autoformat_deduction: use no_autoformatting_present (0 if True, 1 if False)
-
-formatting_deductions = sum of all four deduction values (0-4)
-
-total_points = (component_1_score + component_2_score + component_3_score + component_4_score) - formatting_deductions
-
+total_points = component_1_score + component_2_score + component_3_score + component_4_score + component_5_score
 """
         result = self.grade_with_prompt(
             student_answer=student_answer,
@@ -301,6 +297,7 @@ total_points = (component_1_score + component_2_score + component_3_score + comp
                 "component_2_score",
                 "component_3_score",
                 "component_4_score",
+                "component_5_score",
             ]
             result = self.validate_component_scores(result, component_keys, 20)
 
@@ -328,21 +325,21 @@ total_points = (component_1_score + component_2_score + component_3_score + comp
                 print(f"   → {grading.get('formatting_explanation')}")
 
             print("\nCONTENT COMPONENTS:")
-            print(f"  Component A (Research Question Statement): {grading.get('component_1_score', 'N/A')}/4")
-            if grading.get('component_1_explanation'):
-                print(f"    → {grading.get('component_1_explanation')}")
-
-            print(f"  Component B (KMO Test): {grading.get('component_2_score', 'N/A')}/4")
+            print(f"  Component A (Research Question Statement): {grading.get('component_2_score', 'N/A')}/4")
             if grading.get('component_2_explanation'):
                 print(f"    → {grading.get('component_2_explanation')}")
 
-            print(f"  Component C (Bartlett's Test): {grading.get('component_3_score', 'N/A')}/4")
+            print(f"  Component B (KMO Test): {grading.get('component_3_score', 'N/A')}/4")
             if grading.get('component_3_explanation'):
                 print(f"    → {grading.get('component_3_explanation')}")
 
-            print(f"  Component D (Chi Squared Model Fit): {grading.get('component_4_score', 'N/A')}/4")
+            print(f"  Component C (Bartlett's Test): {grading.get('component_4_score', 'N/A')}/4")
             if grading.get('component_4_explanation'):
                 print(f"    → {grading.get('component_4_explanation')}")
+
+            print(f"  Component D (Chi Squared Model Fit): {grading.get('component_5_score', 'N/A')}/4")
+            if grading.get('component_5_explanation'):
+                print(f"    → {grading.get('component_5_explanation')}")
 
             print(f"  {'─' * 40}")
 

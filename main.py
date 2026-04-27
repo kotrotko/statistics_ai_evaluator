@@ -54,7 +54,7 @@ from homework.homework_14 import (
     HW14_2Evaluator,
     HW14_3Evaluator,
     HW14_4Evaluator,
-    # HW14_5Evaluator
+    HW14_5Evaluator
 )
 
 from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
@@ -301,9 +301,13 @@ def main():
         "cw14_5": (CW14_5Evaluator, "CLASSWORK 14.5",
                    "Chi Square - Results and Answer to Research Question",
                    "grade_question_cw14_5_answer", {}),
+
         "cw15_1": (CW15_1Evaluator, "CLASSWORK 15.1",
                    "EFA - Initial Setup, Assumption Checks, and Model Fit",
                    "grade_question_cw15_1_answer", {}),
+
+
+
         "hw2_1": (HW2_1Evaluator, "HOMEWORK 2.1",
                   "Pie Chart vs Bar Chart Discussion",
                   "grade_chart_comparison", {}),
@@ -419,9 +423,9 @@ def main():
         "hw14_4": (HW14_4Evaluator, "HOMEWORK 14.4",
                    "Chi-Square Goodness-Of-Fit for Pizza",
                    "grade_hw14_4_answer", {}),
-        # "hw14_5": (HW14_5Evaluator, "HOMEWORK 14.5",
-        #            "Chi-Square for independence against discrimination",
-        #            "grade_hw14_5_answer", {}),
+        "hw14_5": (HW14_5Evaluator, "HOMEWORK 14.5",
+                   "Chi-Square for independence against discrimination",
+                   "grade_hw14_5_answer", {}),
 
 
         "mid_v1_1": (QuestionMidV1_1Evaluator,
