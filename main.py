@@ -115,7 +115,7 @@ from classwork.classwork_14 import (
 from classwork.classwork_15 import (
     CW15_1Evaluator,
     CW15_2Evaluator,
-    # CW15_3Evaluator,
+    CW15_3Evaluator,
     # CW15_4Evaluator,
     # CW15_5Evaluator
 )
@@ -308,6 +308,9 @@ def main():
         "cw15_2": (CW15_2Evaluator, "CLASSWORK 15.2",
                    "EFA - Factor Creation and Rotation",
                    "grade_question_cw15_2_answer", {}),
+        "cw15_3": (CW15_3Evaluator, "CLASSWORK 15.3",
+                   "Communalities",
+                   "grade_question_cw15_3_answer", {}),
 
 
 
