@@ -226,16 +226,16 @@ class CW15_3Evaluator(BaseEvaluator):
                     "component_1_score": 2,
                     "component_1_task_score": 1,
                     "component_1_autoformat_score": 1,
-                    "component_2_score": 10,
+                    "component_2_score": 8,
                     "component_2_intro_score": 1,
                     "component_2_table_ref_score": 1,
                     "component_2_table_number_score": 1,
                     "component_2_table_title_score": 1,
-                    "component_2_table_itself_score": 6,
+                    "component_2_table_itself_score": 4,
                     "component_3_score": 5,
                     "component_4_score": 5,
                 },
-                max_points=22,
+                max_points=20,
                 feedback="[TEST MODE] Complete and accurate answer.",
                 vibe="Student correctly computed communalities and identified the weak item."
             )
@@ -394,6 +394,7 @@ total_points = component_1_score + component_2_score + component_3_score + compo
                 print("\n⚠️  ORIGINALITY CONCERN DETECTED")
                 print("   All points frozen. See feedback below.")
 
+            print("\nCOMPONENT BREAKDOWN:")
             print(f"\nFormatting: {grading.get('component_1_score')}/2")
             print(f"  • Task description:  {grading.get('component_1_task_score')}/1 (string match)")
             print(f"  • No autoformatting: {grading.get('component_1_autoformat_score')}/1 (regex)")

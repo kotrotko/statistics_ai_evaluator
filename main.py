@@ -116,7 +116,7 @@ from classwork.classwork_15 import (
     CW15_1Evaluator,
     CW15_2Evaluator,
     CW15_3Evaluator,
-    # CW15_4Evaluator,
+    CW15_4Evaluator,
     # CW15_5Evaluator
 )
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
@@ -311,6 +311,12 @@ def main():
         "cw15_3": (CW15_3Evaluator, "CLASSWORK 15.3",
                    "Communalities",
                    "grade_question_cw15_3_answer", {}),
+        "cw15_4": (CW15_4Evaluator, "CLASSWORK 15.4",
+                   "Plots",
+                   "grade_question_cw15_4_answer", {}),
+        # "cw15_5": (CW15_5Evaluator, "CLASSWORK 15.5",
+        #            "",
+        #            "grade_question_cw15_5_answer", {}),
 
 
 
