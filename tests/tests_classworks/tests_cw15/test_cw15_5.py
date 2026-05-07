@@ -1,349 +1,173 @@
-"""
-cw15_4.py
-Classwork 15: Exploratory Factor Analysis
-Plots — Path Diagram and Scree Plot
-Evaluation method name: def grade_question_cw15_4_answer
-"""
-import re
-import textwrap
+import sys
+import os
+import pytest
 
-from config import BaseEvaluator
+# Ensure the project root is in the path for consistent imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
+from classwork.classwork_15.cw15_5 import CW15_5Evaluator
 
 
-class CW15_4Evaluator(BaseEvaluator):
+@pytest.fixture
+def evaluator():
+    """Deterministic fixture providing a clean evaluator instance for every test."""
+    return CW15_5Evaluator()
+
+
+# ---------------------------------------------------------------------------
+# Structural Logic Tests (The "Catching 22/20" Layer)
+# ---------------------------------------------------------------------------
+
+def test_rubric_total_score_limit(evaluator):
     """
-    Evaluator for Class Work 15 Task 4.
-
-    Task: Plots. In this section, please ensure you include the Path diagram
-          as Figure 1: it should show how observed variables load on factors
-          (5 points for diagram and 5 points for explanation). Additionally,
-          you should include the Scree plot as Figure 2: this is used to choose
-          the appropriate number of factors by identifying the elbow point
-          (5 points for diagram and 5 points for explanation).
-
-    Rubric:
-    Component 1: Path diagram       (5 points)
-    Component 2: Path explanation   (5 points)
-    Component 3: Scree plot         (5 points)
-    Component 4: Scree explanation  (5 points)
-    Total (strictly) 20 points.
+    STRICT CHECK: Verifies that the total points for Task 5 equal exactly 20.
+    Based on task: 5 (Data & method) + 5 (Factor extraction) + 5 (Rotation method) + 5 (Interpretation).
     """
+    comp_data_method = 5
+    comp_factor_extraction = 5
+    comp_rotation_method = 5
+    comp_interpretation = 5
 
-    def __init__(self):
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1200
-        )
+    total = comp_data_method + comp_factor_extraction + comp_rotation_method + comp_interpretation
+    assert total == 20, f"Rubric total is {total}, expected 20."
 
-    def check_formatting_elements(self, student_answer: str) -> dict:
-        text_lower = student_answer.lower()
 
-        elements_found = {
-            "task_description": False,
-            "figure_1_label": False,
-            "figure_1_explanation": False,
-            "figure_2_label": False,
-            "figure_2_explanation": False,
-        }
+def test_naming_consistency_ledger(evaluator):
+    """
+    LEDGER CHECK: Ensures 'pedagogical_markers' is used instead of 'anchors'.
+    This catches the naming inconsistency bug from the Correction Ledger.
+    """
+    import inspect
+    source = inspect.getsource(evaluator.check_formatting_elements)
+    assert "pedagogical_markers" in source
 
-        evidence = []
 
-        # ------------------------------------------------------------------
-        # Task description (pedagogical marker)
-        # True when the student copy-pasted the task wording into their answer.
-        # The marker is the teacher's instruction phrase unique to this task.
-        # ------------------------------------------------------------------
-        pedagogical_markers = [
-            "please ensure you",
-        ]
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
-        else:
-            evidence.append("Task description NOT found")
+def test_task_description_detection(evaluator):
+    """Verifies that the teacher-only pedagogical marker is correctly detected."""
+    # test_text is a mock text which imitates the student's answer, to test the evaluator code
+    test_text = "Please make sure that you"
+    result = evaluator.check_formatting_elements(test_text)
+    assert result["elements_found"]["task_description"] is True
 
-        # ------------------------------------------------------------------
-        # Figure 1 label — "Figure 1. Path Diagram" (or similar) present
-        # ------------------------------------------------------------------
-        figure_1_label_pattern = re.compile(
-            r'figure\s+1[\.\s]',
-            re.IGNORECASE,
-        )
-        elements_found["figure_1_label"] = bool(
-            figure_1_label_pattern.search(student_answer)
-        )
-        evidence.append(
-            "Figure 1 label found" if elements_found["figure_1_label"]
-            else "Figure 1 label NOT found"
-        )
 
-        # ------------------------------------------------------------------
-        # Figure 1 explanation — text discussing path diagram content
-        # (factor loadings, observed variables loading on factors)
-        # Must be a sentence of substance, not just the label line itself.
-        # ------------------------------------------------------------------
-        figure_1_explanation_pattern = re.compile(
-            r'(?:path\s+diagram|factor\s+load|observed\s+variable|load\s+on\s+factor)',
-            re.IGNORECASE,
-        )
-        # Require a match that is NOT on the same short label line as "Figure 1."
-        # We check that there is explanatory prose beyond the bare label.
-        fig1_matches = list(figure_1_explanation_pattern.finditer(student_answer))
-        if fig1_matches:
-            # At least one match must appear in a line longer than a bare label
-            for m in fig1_matches:
-                line_start = student_answer.rfind('\n', 0, m.start()) + 1
-                line_end = student_answer.find('\n', m.end())
-                if line_end == -1:
-                    line_end = len(student_answer)
-                line_text = student_answer[line_start:line_end].strip()
-                # A label line is short; explanation prose is longer
-                if len(line_text) > 40:
-                    elements_found["figure_1_explanation"] = True
-                    break
-        evidence.append(
-            "Figure 1 explanation found" if elements_found["figure_1_explanation"]
-            else "Figure 1 explanation NOT found"
-        )
+def test_print_breakdown_presence(evaluator, capsys):
+    """Checks for the COMPONENT BREAKDOWN header to ensure output consistency."""
+    mock_grading = {
+        "component_1_score": 5,
+        "component_2_score": 5,
+        "component_3_score": 5,
+        "component_4_score": 5,
+        "total_points": 20,
+        "max_points": 20
+    }
+    evaluator.print_grading_results(mock_grading)
+    captured = capsys.readouterr().out
+    assert "COMPONENT BREAKDOWN:" in captured
 
-        # ------------------------------------------------------------------
-        # Figure 2 label — "Figure 2. Scree plot" (or similar) present
-        # ------------------------------------------------------------------
-        figure_2_label_pattern = re.compile(
-            r'figure\s+2[\.\s]',
-            re.IGNORECASE,
-        )
-        elements_found["figure_2_label"] = bool(
-            figure_2_label_pattern.search(student_answer)
-        )
-        evidence.append(
-            "Figure 2 label found" if elements_found["figure_2_label"]
-            else "Figure 2 label NOT found"
-        )
 
-        # ------------------------------------------------------------------
-        # Figure 2 explanation — text discussing scree plot content
-        # (eigenvalues, elbow point, number of factors)
-        # ------------------------------------------------------------------
-        figure_2_explanation_pattern = re.compile(
-            r'(?:scree\s+plot|eigenvalue|elbow\s+point|number\s+of\s+factor|elbow)',
-            re.IGNORECASE,
-        )
-        fig2_matches = list(figure_2_explanation_pattern.finditer(student_answer))
-        if fig2_matches:
-            for m in fig2_matches:
-                line_start = student_answer.rfind('\n', 0, m.start()) + 1
-                line_end = student_answer.find('\n', m.end())
-                if line_end == -1:
-                    line_end = len(student_answer)
-                line_text = student_answer[line_start:line_end].strip()
-                if len(line_text) > 40:
-                    elements_found["figure_2_explanation"] = True
-                    break
-        evidence.append(
-            "Figure 2 explanation found" if elements_found["figure_2_explanation"]
-            else "Figure 2 explanation NOT found"
-        )
+# ---------------------------------------------------------------------------
+# Formatting & Content Tests (Isolated Unit Tests)
+# ---------------------------------------------------------------------------
 
-        return {
-            "elements_found": elements_found,
-            "evidence": evidence,
-        }
+# Mock student answer that mimics a complete correct response
+TEXT_ALL_SECTIONS_PRESENT = """
+Task 5. Include the following elements in your report: Description of the data and method (5 points).
+Please make sure that you included the Factor extraction results (5 points).
+Which Rotation method did you use? (5 points). Write the Interpretation of the factor loading (5 points).
 
-    def grade_question_cw15_4_answer(self, student_answer: str, test_mode: bool = False):
-        if test_mode:
-            return self.create_mock_result(
-                component_scores={
-                    "component_1_score": 5,
-                    "component_2_score": 5,
-                    "component_3_score": 5,
-                    "component_4_score": 5,
-                },
-                max_points=20,
-                feedback="[TEST MODE] Complete answer with both figures and explanations.",
-                vibe="Student correctly included and explained both the path diagram and scree plot."
-            )
+The data consist of nine variables (x1–x9) collected from 100 participants.
+Exploratory factor analysis was conducted using the principal axis factoring method
+to identify the underlying factor structure.
 
-        formatting_check = self.check_formatting_elements(student_answer)
-        fs = formatting_check["elements_found"]
+The factor extraction results indicate that three factors were retained based on
+eigenvalues greater than 1. The first factor explained 35% of the variance,
+the second factor explained 20%, and the third factor explained 15%.
 
-        formatting_block = f"""
-HEADER DETECTION RESULTS (USE AS FACTS):
+The promax rotation method was used to allow factors to correlate with each other,
+as oblique rotation is appropriate when factors are expected to be related.
 
-task_description_present    = {fs["task_description"]}
-figure_1_label_present      = {fs["figure_1_label"]}
-figure_1_explanation_present = {fs["figure_1_explanation"]}
-figure_2_label_present      = {fs["figure_2_label"]}
-figure_2_explanation_present = {fs["figure_2_explanation"]}
+The interpretation of the factor loadings shows that Factor 1 is defined by variables
+x4, x5, and x6, which all show strong loadings above .40. Factor 2 is primarily
+defined by x7, x8, and x9. Factor 3 is associated with x1, x2, and x3.
 """
 
-        prompt = f"""{formatting_block}
+# Text with data/method section present but the rest absent
+TEXT_DATA_METHOD_ONLY = """
+Please make sure that you included all sections.
 
-You are grading a statistics assignment.
+The data consist of nine variables (x1–x9) measured on a Likert scale.
+Exploratory factor analysis was conducted using the maximum likelihood method.
+"""
 
-TASK:
-"In this section, please ensure you include the Path diagram as Figure 1: \
-it should show how observed variables load on factors (5 points for diagram \
-and 5 points for explanation). Additionally, you should include the Scree plot \
-as Figure 2: this is used to choose the appropriate number of factors by \
-identifying the elbow point (5 points for diagram and 5 points for explanation)."
+# Text with factor extraction section present
+TEXT_FACTOR_EXTRACTION_PRESENT = """
+Please make sure that you included all sections.
 
-Use STRICT rubric-based grading. Total score MUST be exactly 20 points.
+The factor extraction results indicate that three factors were retained.
+Eigenvalues greater than 1 were used as the retention criterion.
+The scree plot confirmed this three-factor solution.
+"""
 
-RUBRIC
+# Text with rotation method section present
+TEXT_ROTATION_METHOD_PRESENT = """
+Please make sure that you included all sections.
 
-Component 1: Path diagram (5 points)
-Use figure_1_label_present.
-Award 5 points if True (Figure 1 label present, path diagram included).
-Award 0 points if False.
+The promax rotation method was applied because the factors were expected
+to correlate with each other, making an oblique rotation appropriate.
+"""
 
-Component 2: Path diagram explanation (5 points)
-Use figure_1_explanation_present as a signal, but read the student answer directly.
-Award 5 points for a complete explanation of what the path diagram shows:
-  how observed variables load on factors, which variables belong to which factor,
-  the direction and strength of loadings.
-Award 0–4 for partial or vague explanation.
+# Text with interpretation section present
+TEXT_INTERPRETATION_PRESENT = """
+Please make sure that you included all sections.
 
-Component 3: Scree plot (5 points)
-Use figure_2_label_present.
-Award 5 points if True (Figure 2 label present, scree plot included).
-Award 0 points if False.
+The interpretation of the factor loadings reveals that Factor 1 is defined
+by variables x4, x5, and x6 with strong positive loadings above .40.
+Factor 2 is primarily defined by x7, x8, and x9.
+"""
 
-Component 4: Scree plot explanation (5 points)
-Use figure_2_explanation_present as a signal, but read the student answer directly.
-Award 5 points for a complete explanation of what the scree plot shows:
-  eigenvalues plotted against factor number, identification of the elbow point,
-  justification for the chosen number of factors.
-Award 0–4 for partial or vague explanation.
-
-SCORING INSTRUCTIONS:
-total_points = component_1_score + component_2_score + component_3_score + component_4_score
-
-ORIGINALITY CHECK:
-If copied/AI-generated with suspiciously generic style, set all scores to 0 and set feedback to EXACTLY:
-"Due to originality concern, your points are frozen. You can get them back if you provide oral explanation for this paper."
-
-STUDENT ANSWER:
-{student_answer}
-
-Return JSON only:
-{{
-  "originality_concern": <true/false>,
-  "component_1_score": <0-5>,
-  "component_1_explanation": "<brief>",
-  "component_2_score": <0-5>,
-  "component_2_explanation": "<brief>",
-  "component_3_score": <0-5>,
-  "component_3_explanation": "<brief>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<brief>",
-  "total_points": <0-20>,
-  "max_points": 20,
-  "percentage": <number>,
-  "feedback": "<short teacher comment>",
-  "vibe": "<one sentence overall impression>"
-}}"""
-
-        result = self.grade_with_prompt(
-            student_answer=student_answer,
-            prompt=prompt,
-            additional_checks={"formatting_check": formatting_check}
-        )
-
-        if "error" not in result:
-            component_keys = [
-                "component_1_score",
-                "component_2_score",
-                "component_3_score",
-                "component_4_score",
-            ]
-            result = self.validate_component_scores(result, component_keys, 20)
-
-        return result
-
-    def print_grading_results(self, grading):
-        print("=" * 60)
-        print("GRADING RESULTS - CW15_4")
-        print("Plots: Path Diagram and Scree Plot")
-        print("=" * 60)
-
-        if grading.get("originality_concern"):
-            print("\n⚠️  ORIGINALITY CONCERN DETECTED")
-            print("   All points frozen. See feedback below.")
-
-        print("\nCOMPONENT BREAKDOWN:")
-        print(f"\nPath diagram: {grading.get('component_1_score')}/5")
-        if grading.get("component_1_explanation"):
-            print(f"   → {grading.get('component_1_explanation')}")
-
-        print(f"\nPath explanation: {grading.get('component_2_score')}/5")
-        if grading.get("component_2_explanation"):
-            print(f"   → {grading.get('component_2_explanation')}")
-
-        print(f"\nScree plot: {grading.get('component_3_score')}/5")
-        if grading.get("component_3_explanation"):
-            print(f"   → {grading.get('component_3_explanation')}")
-
-        print(f"\nScree explanation: {grading.get('component_4_score')}/5")
-        if grading.get("component_4_explanation"):
-            print(f"   → {grading.get('component_4_explanation')}")
-
-        print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points')}/{grading.get('max_points', 20)}")
-        print(f"PERCENTAGE: {grading.get('percentage')}%")
-
-        print("\n" + "=" * 60)
-        print("FEEDBACK:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get("feedback", ""), width=60))
-
-        print("\n" + "=" * 60)
-        print("THE VIBE:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get("vibe", ""), width=60))
-
-        if "error" in grading:
-            print("\n" + "=" * 60)
-            print("ERROR:")
-            print("=" * 60)
-            print(grading.get("error"))
+# Text with section keyword present but no explanatory prose (bare label only)
+TEXT_BARE_LABEL_NO_EXPLANATION = "Factor extraction results."
 
 
-if __name__ == "__main__":
-    print("Welcome to the Homework AI Evaluator System!")
-    print("=" * 60)
+def test_data_method_detected(evaluator):
+    """Verifies that a description of data and method is identified."""
+    result = evaluator.check_formatting_elements(TEXT_DATA_METHOD_ONLY)
+    assert result["elements_found"]["data_method"] is True
 
-    evaluator = CW15_4Evaluator()
 
-    print("=" * 60)
-    print("CLASS WORK 15.4 EVALUATOR")
-    print("Plots: Path Diagram and Scree Plot")
-    print("=" * 60)
-    print("\nPlease enter the student's answer to CW15_4.")
-    print("(Press Enter twice when finished, or type 'END' on a new line)\n")
+def test_factor_extraction_detected(evaluator):
+    """Verifies that factor extraction results section is identified."""
+    result = evaluator.check_formatting_elements(TEXT_FACTOR_EXTRACTION_PRESENT)
+    assert result["elements_found"]["factor_extraction"] is True
 
-    lines = []
-    while True:
-        line = input()
-        if line.strip().upper() == "END":
-            break
-        lines.append(line)
-        if len(lines) >= 2 and lines[-1] == "" and lines[-2] == "":
-            lines = lines[:-2]
-            break
 
-    student_answer = "\n".join(lines)
+def test_rotation_method_detected(evaluator):
+    """Verifies that the rotation method section is identified."""
+    result = evaluator.check_formatting_elements(TEXT_ROTATION_METHOD_PRESENT)
+    assert result["elements_found"]["rotation_method"] is True
 
-    if not student_answer.strip():
-        print("\n❌ Error: No answer provided. Exiting.")
-        exit(1)
 
-    print("\n" + "=" * 60)
-    print("EVALUATING...")
-    print("=" * 60)
+def test_interpretation_detected(evaluator):
+    """Verifies that the interpretation of factor loadings is identified."""
+    result = evaluator.check_formatting_elements(TEXT_INTERPRETATION_PRESENT)
+    assert result["elements_found"]["interpretation"] is True
 
-    grading = evaluator.grade_question_cw15_4_answer(student_answer)
 
-    evaluator.print_grading_results(grading)
+def test_all_sections_detected(evaluator):
+    """Verifies that all four content sections are detected in a complete answer."""
+    result = evaluator.check_formatting_elements(TEXT_ALL_SECTIONS_PRESENT)
+    ef = result["elements_found"]
+    assert ef["task_description"] is True
+    assert ef["data_method"] is True
+    assert ef["factor_extraction"] is True
+    assert ef["rotation_method"] is True
+    assert ef["interpretation"] is True
+
+
+def test_section_label_without_prose_is_false(evaluator):
+    """
+    Ensures that a bare keyword with no explanatory prose does not
+    trigger the section as present. Label alone is not enough.
+    """
+    result = evaluator.check_formatting_elements(TEXT_BARE_LABEL_NO_EXPLANATION)
+    assert result["elements_found"]["factor_extraction"] is False

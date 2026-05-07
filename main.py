@@ -3,9 +3,109 @@ Main application for statistics grading system.
 """
 
 from config.input_handler import InputHandler
-from classwork.classwork_1.graders import Question1_1Evaluator, Question1_2Evaluator
-from classwork.classwork_2.graders import Question2_1Evaluator, Question2_2Evaluator, Question2_3Evaluator
+
+from classwork.classwork_1 import (
+    CW1_1Evaluator,
+    # CW1_2Evaluator,
+    # CW1_3Evaluator,
+    # CW1_4Evaluator,
+    # CW1_5Evaluator
+)
+# from classwork.classwork_1.graders import Question1_1Evaluator, Question1_2Evaluator
+
+from classwork.classwork_2 import (
+    CW2_1Evaluator,
+    # CW2_2Evaluator,
+    # CW2_3Evaluator,
+    # CW2_4Evaluator,
+    # CW2_5Evaluator
+)
+from classwork.classwork_2.graders import Question2_2Evaluator, Question2_3Evaluator
 from classwork.classwork_2.graders.question2_4_evaluator import Question2_4Evaluator
+
+from classwork.classwork_3 import (
+    CW3_1Evaluator,
+    # CW3_2Evaluator,
+    # CW3_3Evaluator,
+    # CW3_4Evaluator,
+    # CW3_5Evaluator
+)
+
+from classwork.classwork_4 import (
+    CW4_1Evaluator,
+    # CW4_2Evaluator,
+    # CW4_3Evaluator,
+    # CW4_4Evaluator,
+    # CW4_5Evaluator
+)
+
+from classwork.classwork_5 import (
+    CW5_1Evaluator,
+    # CW5_2Evaluator,
+    # CW5_3Evaluator,
+    # CW5_4Evaluator,
+    # CW5_5Evaluator
+)
+
+from classwork.classwork_7 import (
+    CW7_1Evaluator,
+    # CW7_2Evaluator,
+    # CW7_3Evaluator,
+    # CW7_4Evaluator,
+    # CW7_5Evaluator
+)
+
+from classwork.classwork_8 import (
+    CW8_1Evaluator,
+    # CW8_2Evaluator,
+    # CW8_3Evaluator,
+    # CW8_4Evaluator,
+    # CW8_5Evaluator
+)
+
+from classwork.classwork_9 import (
+    CW9_1Evaluator,
+    # CW9_2Evaluator,
+    # CW9_3Evaluator,
+    # CW9_4Evaluator,
+    # CW9_5Evaluator
+)
+from classwork.classwork_10 import (
+    CW10_1Evaluator,
+    CW10_2Evaluator,
+    CW10_3Evaluator,
+    CW10_4Evaluator,
+    CW10_5Evaluator
+)
+from classwork.classwork_12 import (
+    CW12_1Evaluator,
+    CW12_2Evaluator,
+    CW12_3Evaluator,
+    CW12_4Evaluator,
+    CW12_5Evaluator
+)
+from classwork.classwork_13 import (
+    CW13_1Evaluator,
+    CW13_2Evaluator,
+    CW13_3Evaluator,
+    CW13_4Evaluator,
+    CW13_5Evaluator
+)
+from classwork.classwork_14 import (
+    CW14_1Evaluator,
+    CW14_2Evaluator,
+    CW14_3Evaluator,
+    CW14_4Evaluator,
+    CW14_5Evaluator
+)
+from classwork.classwork_15 import (
+    CW15_1Evaluator,
+    CW15_2Evaluator,
+    CW15_3Evaluator,
+    CW15_4Evaluator,
+    CW15_5Evaluator
+)
+
 from homework.homework_2.graders_hw2 import HW2_2Evaluator
 from homework.homework_2.graders_hw2 import HW2_1Evaluator
 from homework.homework_3.graders_hw3.hw3_1 import HW3_1Evaluator
@@ -63,62 +163,7 @@ from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evalu
 from classwork.classwork_4.graders.question4_1_evaluator import Question4_1Evaluator
 from classwork.classwork_5.graders.question5_1_evaluator import Question5_1Evaluator
 from classwork.classwork_5.graders.question5_2_evaluator import Question5_2Evaluator
-from classwork.classwork_7 import (
-    Question7_1Evaluator,
-    Question7_2Evaluator,
-    Question7_3Evaluator,
-    Question7_4Evaluator,
-    Question7_5Evaluator
-)
-from classwork.classwork_8.graders import (
-    CW8_1Evaluator,
-    CW8_2Evaluator,
-    CW8_3Evaluator,
-    CW8_4Evaluator,
-    CW8_5Evaluator
-)
-from classwork.classwork_9 import (
-    CW9_1Evaluator,
-    CW9_2Evaluator,
-    CW9_3Evaluator,
-    CW9_4Evaluator,
-    CW9_5Evaluator
-)
-from classwork.classwork_10 import (
-    CW10_1Evaluator,
-    CW10_2Evaluator,
-    CW10_3Evaluator,
-    CW10_4Evaluator,
-    CW10_5Evaluator
-)
-from classwork.classwork_12 import (
-    CW12_1Evaluator,
-    CW12_2Evaluator,
-    CW12_3Evaluator,
-    CW12_4Evaluator,
-    CW12_5Evaluator
-)
-from classwork.classwork_13 import (
-    CW13_1Evaluator,
-    CW13_2Evaluator,
-    CW13_3Evaluator,
-    CW13_4Evaluator,
-    CW13_5Evaluator
-)
-from classwork.classwork_14 import (
-    CW14_1Evaluator,
-    CW14_2Evaluator,
-    CW14_3Evaluator,
-    CW14_4Evaluator,
-    CW14_5Evaluator
-)
-from classwork.classwork_15 import (
-    CW15_1Evaluator,
-    CW15_2Evaluator,
-    CW15_3Evaluator,
-    CW15_4Evaluator,
-    # CW15_5Evaluator
-)
+
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 
@@ -160,15 +205,16 @@ def run_evaluator(evaluator_class, question_name, question_description, grading_
 def main():
 
     evaluators = {
-        "1_1": (Question1_1Evaluator, "QUESTION 1.1",
-                "File Setup + Mean Formula with Equation Tools",
-                "grade_question1_1_answer", {}),
-        "1_2": (Question1_2Evaluator, "QUESTION 1.2",
-                "Mean Calculation with JASP",
-                "grade_question1_2_answer", {"mode": "real"}),
-        "2_1": (Question2_1Evaluator, "QUESTION 2.1",
+
+        "cw1_1": (CW1_1Evaluator, "CLASSWORK 1.1",
+                "General Skills: Mean Formula",
+                "grade_question_cw1_1_answer", {}),
+        # "1_2": (Question1_2Evaluator, "QUESTION 1.2",
+        #         "Mean Calculation with JASP",
+        #         "grade_question1_2_answer", {"mode": "real"}),
+        "cw2_1": (CW2_1Evaluator, "CLASSWORK 2.1",
                 "Frequencies + Cumulative Frequencies + Percentiles",
-                "grade_frequencies_percentiles", {}),
+                "grade_question_cw2_1_answer", {}),
         "2_2": (Question2_2Evaluator, "QUESTION 2.2",
                 "APA Format + Diagram + Numbering + JASP",
                 "grade_question2_2_answer", {}),
@@ -178,6 +224,11 @@ def main():
         "2_4": (Question2_4Evaluator, "QUESTION 2.4",
                 "Radar Chart + Dataset Description + Circular Transformation",
                 "grade_radar_chart", {}),
+
+        "cw3_1": (CW3_1Evaluator, "CLASSWORK 3.1",
+                  "Mean, Median, Mode by Gender (GPA & IQ)",
+                  "grade_question_cw3_1_answer", {}),
+
         "3_1": (Question3_1Evaluator, "QUESTION 3.1",
                 "Central Tendency by Gender",
                 "grade_question3_1_answer", {}),
@@ -187,60 +238,70 @@ def main():
         "3_3": (Question3_3Evaluator, "QUESTION 3.3",
                 "Distribution Plots with Density Curves by Gender",
                 "grade_distribution_plots", {}),
+
+        "cw4_1": (CW4_1Evaluator, "CLASSWORK 4.1",
+                  "Mean, SD Table + Normal Distribution Figures for IQ and GPA",
+                  "grade_question_cw4_1_answer", {}),
+
         "4_1": (Question4_1Evaluator, "QUESTION 4.1",
                 "Multiple Comparisons Error Probability",
-                "grade_question4_1_answer", {}),
+                "grade_question_cw4_1_answer", {}),
+
+        "cw5_1": (CW5_1Evaluator, "CLASSWORK 5.1",
+                  "Central Limit Theorem - Standard Error True/False Question",
+                  "grade_question_cw5_1_answer", {}),
+
         "5_1": (Question5_1Evaluator, "QUESTION 5.1",
                 "Central Limit Theorem - Standard Error True/False",
                 "grade_question5_1_answer", {}),
         "5_2": (Question5_2Evaluator, "QUESTION 5.2",
                 "Standard Error Calculation",
                 "grade_question_hw5_2_answer", {}),
-        "7_1": (Question7_1Evaluator, "QUESTION 7.1",
-                "Hypothesis Testing - Problem Statement / RQ / Hypotheses / α df CV",
+        "cw7_1": (CW7_1Evaluator, "QUESTION 7.1",
+                "One Group T Test - Problem Statement / RQ / Hypotheses / α df CV",
                 "grade_question7_1_answer", {}),
-        "7_2": (Question7_2Evaluator, "QUESTION 7.2",
-                "Normality Check - Shapiro-Wilk / Table / Conclusion / Reasoning",
-                "grade_question7_2_answer", {}),
-        "7_3": (Question7_3Evaluator, "QUESTION 7.3",
-                "Wilcoxon Signed Rank Test - Test Value / Approach / Table / Mean & Median",
-                "grade_question7_3_answer", {}),
-        "7_4": (Question7_4Evaluator, "QUESTION 7.4",
-                "Wilcoxon Table / APA Formatting / Interpretation / Descriptive Plot",
-                "grade_question7_4_answer", {}),
-        "7_5": (Question7_5Evaluator, "QUESTION 7.5",
-                "Output Description / Effect Size / Gender Context / Cultural Context",
-                "grade_question7_5_answer", {}),
+        # "7_2": (Question7_2Evaluator, "QUESTION 7.2",
+        #         "Normality Check - Shapiro-Wilk / Table / Conclusion / Reasoning",
+        #         "grade_question7_2_answer", {}),
+        # "7_3": (Question7_3Evaluator, "QUESTION 7.3",
+        #         "Wilcoxon Signed Rank Test - Test Value / Approach / Table / Mean & Median",
+        #         "grade_question7_3_answer", {}),
+        # "7_4": (Question7_4Evaluator, "QUESTION 7.4",
+        #         "Wilcoxon Table / APA Formatting / Interpretation / Descriptive Plot",
+        #         "grade_question7_4_answer", {}),
+        # "7_5": (Question7_5Evaluator, "QUESTION 7.5",
+        #         "Output Description / Effect Size / Gender Context / Cultural Context",
+        #         "grade_question7_5_answer", {}),
         "cw8_1": (CW8_1Evaluator, "CLASSWORK 8.1",
                   "Statistical Method Selection and Justification",
                   "grade_question_cw8_1_answer", {}),
-        "cw8_2": (CW8_2Evaluator, "CLASSWORK 8.2",
-                  "Normality Check - Method / Conclusion / Reasoning",
-                  "grade_cw8_2_answer", {}),
-        "cw8_3": (CW8_3Evaluator, "CLASSWORK 8.3",
-                  "Hypothesis Testing Setup - Hypotheses / α / df / CV",
-                  "grade_question_cw8_3_answer", {}),
-        "cw8_4": (CW8_4Evaluator, "CLASSWORK 8.4",
-                  "Means Comparison - Justification / Table / Inference / Effect Size / Plot",
-                  "grade_cw8_4_answer", {}),
-        "cw8_5": (CW8_5Evaluator, "CLASSWORK 8.5",
-                  "Summary - APA Result / Research Question Answer",
-                  "grade_cw8_5_answer", {}),
+        # "cw8_2": (CW8_2Evaluator, "CLASSWORK 8.2",
+        #           "Normality Check - Method / Conclusion / Reasoning",
+        #           "grade_cw8_2_answer", {}),
+        # "cw8_3": (CW8_3Evaluator, "CLASSWORK 8.3",
+        #           "Hypothesis Testing Setup - Hypotheses / α / df / CV",
+        #           "grade_question_cw8_3_answer", {}),
+        # "cw8_4": (CW8_4Evaluator, "CLASSWORK 8.4",
+        #           "Means Comparison - Justification / Table / Inference / Effect Size / Plot",
+        #           "grade_cw8_4_answer", {}),
+        # "cw8_5": (CW8_5Evaluator, "CLASSWORK 8.5",
+        #           "Summary - APA Result / Research Question Answer",
+        #           "grade_cw8_5_answer", {}),
         "cw9_1": (CW9_1Evaluator, "CLASSWORK 9.1",
-                  "Statistical Method Selection and Justification",
+                  "Problem statement, RQ, method, and justification",
                   "grade_question_cw9_1_answer", {}),
-        "cw9_2": (CW9_2Evaluator, "CLASSWORK 9.2",
-                  "Normality Check - Method / Normal Distribution / Reasoning",
-                  "grade_question_cw9_2_answer", {}),
-        "cw9_3": (CW9_3Evaluator, "CLASSWORK 9.3",
-                  "Variance Homogeneity Check - Method / Homogenous Variance / Method Form Selection",
-                  "grade_question_cw9_3_answer", {}),
-        "cw9_4": (CW9_4Evaluator, "CLASSWORK 9.4",
-                  "Hypothesis Testing Setup - Hypotheses / α / df / CV",
-                  "grade_cw9_4_answer", {}),
-        "cw9_5": (CW9_5Evaluator, "CLASSWORK 9.5",
-                  "Statistical Analysis and Interpretation",
-                  "grade_cw9_5_answer", {}),
+        # "cw9_2": (CW9_2Evaluator, "CLASSWORK 9.2",
+        #           "Normality Check - Method / Normal Distribution / Reasoning",
+        #           "grade_question_cw9_2_answer", {}),
+        # "cw9_3": (CW9_3Evaluator, "CLASSWORK 9.3",
+        #           "Variance Homogeneity Check - Method / Homogenous Variance / Method Form Selection",
+        #           "grade_question_cw9_3_answer", {}),
+        # "cw9_4": (CW9_4Evaluator, "CLASSWORK 9.4",
+        #           "Hypothesis Testing Setup - Hypotheses / α / df / CV",
+        #           "grade_cw9_4_answer", {}),
+        # "cw9_5": (CW9_5Evaluator, "CLASSWORK 9.5",
+        #           "Statistical Analysis and Interpretation",
+        #           "grade_cw9_5_answer", {}),
         "cw10_1": (CW10_1Evaluator, "CLASSWORK 10.1",
                    "ANOVA Method Selection and Justification",
                    "grade_question_cw10_1_answer", {}),
@@ -314,9 +375,9 @@ def main():
         "cw15_4": (CW15_4Evaluator, "CLASSWORK 15.4",
                    "Plots",
                    "grade_question_cw15_4_answer", {}),
-        # "cw15_5": (CW15_5Evaluator, "CLASSWORK 15.5",
-        #            "",
-        #            "grade_question_cw15_5_answer", {}),
+        "cw15_5": (CW15_5Evaluator, "CLASSWORK 15.5",
+                   "Summary",
+                   "grade_question_cw15_5_answer", {}),
 
 
 

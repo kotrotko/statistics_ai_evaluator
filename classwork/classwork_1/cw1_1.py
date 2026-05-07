@@ -1,4 +1,11 @@
 """
+cw1_1.py
+Classwork 1: File management: Basic skills
+General Skills: Mean Formula
+Evaluation method name: def grade_question_cw1_1_answer
+"""
+
+"""
 question1_1_evaluator.py
 File Setup + Mean Formula with Equation Tools
 """
@@ -9,7 +16,7 @@ from config import BaseEvaluator
 from config.output_formatter import OutputFormatter
 
 
-class Question1_1Evaluator(BaseEvaluator):
+class CW1_1Evaluator(BaseEvaluator):
     """
     Evaluator for Question 1_1: File Setup and Mean Formula.
 
@@ -86,7 +93,7 @@ class Question1_1Evaluator(BaseEvaluator):
             "all_present": all(columns_found.values())
         }
 
-    def grade_question1_1_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_question_cw1_1_answer(self, student_answer: str, test_mode: bool = False):
         """
         Grade Question 1_1: File setup and mean formula writing.
         Returns detailed grading breakdown.
@@ -119,90 +126,90 @@ class Question1_1Evaluator(BaseEvaluator):
 
         prompt = f"""You are grading a statistics classwork using a **HYBRID approach** - vibe-based holistic grading with strict requirements for specific components.
 
-**TASK DESCRIPTION:**
-Students must:
-1. Prepare classwork file and save in Google Drive folder named `yournameYourlastname_Statistics` (FILE SETUP - evaluated holistically)
-2. Write the mean formula using Word Equation tool with:
-   - Use "Accent" for the bar over x (x̄) (5 points)
-   - Use "Fraction" for division (5 points)
-   - Use "Script" for subscript and superscript (Σ, n, i) (5 points)
-   - Use "Radical" for square root (√) (5 points)
-   - Expected formula: x̄ = (Σxᵢ)/√n
+    **TASK DESCRIPTION:**
+    Students must:
+    1. Prepare classwork file and save in Google Drive folder named `yournameYourlastname_Statistics` (FILE SETUP - evaluated holistically)
+    2. Write the mean formula using Word Equation tool with:
+       - Use "Accent" for the bar over x (x̄) (5 points)
+       - Use "Fraction" for division (5 points)
+       - Use "Script" for subscript and superscript (Σ, n, i) (5 points)
+       - Use "Radical" for square root (√) (5 points)
+       - Expected formula: x̄ = (Σxᵢ)/√n
 
-Total: 20 points
+    Total: 20 points
 
-STUDENT ANSWER:
-{student_answer}
+    STUDENT ANSWER:
+    {student_answer}
 
-**IMPORTANT NOTES:**
-- Students submit text descriptions of their work since visual elements (actual formatted equations, folder screenshots) cannot be captured in text
-- If student REFERENCES or DESCRIBES the equation elements (e.g., "I used the accent for x-bar", "I added the radical for square root"), ASSUME they completed it in their actual document
-- DO NOT penalize for "missing" visual elements if they clearly describe what they did
+    **IMPORTANT NOTES:**
+    - Students submit text descriptions of their work since visual elements (actual formatted equations, folder screenshots) cannot be captured in text
+    - If student REFERENCES or DESCRIBES the equation elements (e.g., "I used the accent for x-bar", "I added the radical for square root"), ASSUME they completed it in their actual document
+    - DO NOT penalize for "missing" visual elements if they clearly describe what they did
 
-**HYBRID GRADING APPROACH:**
+    **HYBRID GRADING APPROACH:**
 
-**Component 1: Accent (x̄) - STRICT (0-5 points)**
-- 5 points: Student correctly used the Accent tool for x̄
-- 4 points: Used Accent with minor issues
-- 2-3 points: Partial or unclear usage
-- 0 points: Did not use Accent tool
+    **Component 1: Accent (x̄) - STRICT (0-5 points)**
+    - 5 points: Student correctly used the Accent tool for x̄
+    - 4 points: Used Accent with minor issues
+    - 2-3 points: Partial or unclear usage
+    - 0 points: Did not use Accent tool
 
-**Component 2: Fraction (division) - STRICT (0-5 points)**
-- 5 points: Student correctly used the Fraction tool for division
-- 4 points: Used Fraction with minor issues
-- 2-3 points: Partial or unclear usage
-- 0 points: Did not use Fraction tool
+    **Component 2: Fraction (division) - STRICT (0-5 points)**
+    - 5 points: Student correctly used the Fraction tool for division
+    - 4 points: Used Fraction with minor issues
+    - 2-3 points: Partial or unclear usage
+    - 0 points: Did not use Fraction tool
 
-**Component 3: Script (subscript/superscript) - STRICT (0-5 points)**
-- 5 points: Student correctly used Script for Σ, subscripts, and superscripts
-- 4 points: Used Script with minor issues
-- 2-3 points: Partial use (only subscript OR only superscript)
-- 0 points: Did not use Script tool
+    **Component 3: Script (subscript/superscript) - STRICT (0-5 points)**
+    - 5 points: Student correctly used Script for Σ, subscripts, and superscripts
+    - 4 points: Used Script with minor issues
+    - 2-3 points: Partial use (only subscript OR only superscript)
+    - 0 points: Did not use Script tool
 
-**Component 4: Radical (√) - STRICT (0-5 points)**
-- 5 points: Student correctly used the Radical tool for √n
-- 4 points: Used Radical with minor issues
-- 2-3 points: Partial or unclear usage
-- 0 points: Did not use Radical tool
+    **Component 4: Radical (√) - STRICT (0-5 points)**
+    - 5 points: Student correctly used the Radical tool for √n
+    - 4 points: Used Radical with minor issues
+    - 2-3 points: Partial or unclear usage
+    - 0 points: Did not use Radical tool
 
-**CRITICAL RULES:**
-1. Each equation component is STRICT - must be present to earn points
-2. If student meets requirements exactly: 5/5 points
-3. If student does extra correct work beyond requirements: 5/5 points + praise in explanation
-4. Minor formatting issues are okay if the tool usage is correct
+    **CRITICAL RULES:**
+    1. Each equation component is STRICT - must be present to earn points
+    2. If student meets requirements exactly: 5/5 points
+    3. If student does extra correct work beyond requirements: 5/5 points + praise in explanation
+    4. Minor formatting issues are okay if the tool usage is correct
 
-**SCORING PROCESS:**
-1. Score Component 1 (Accent): __/5
-2. Score Component 2 (Fraction): __/5
-3. Score Component 3 (Script): __/5
-4. Score Component 4 (Radical): __/5
-5. Total = sum of four scores
-6. Consider file setup in overall feedback/vibe
+    **SCORING PROCESS:**
+    1. Score Component 1 (Accent): __/5
+    2. Score Component 2 (Fraction): __/5
+    3. Score Component 3 (Script): __/5
+    4. Score Component 4 (Radical): __/5
+    5. Total = sum of four scores
+    6. Consider file setup in overall feedback/vibe
 
-**FEEDBACK STRUCTURE:**
-Provide narrative feedback that:
-- Acknowledges what equation elements they successfully used
-- Points out any missing components specifically
-- Comments on file setup if mentioned
-- Explains what would improve their score
-- Remains encouraging and constructive
+    **FEEDBACK STRUCTURE:**
+    Provide narrative feedback that:
+    - Acknowledges what equation elements they successfully used
+    - Points out any missing components specifically
+    - Comments on file setup if mentioned
+    - Explains what would improve their score
+    - Remains encouraging and constructive
 
-Return your grading in this exact JSON format:
-{{
-  "component_1_score": <0-5>,
-  "component_1_explanation": "<if score < 5: one sentence explaining what's missing or problematic; if score = 5 AND student did good extra work beyond requirements (provided helpful examples, added clear explanations, showed original insight, caught errors): one sentence of praise; otherwise empty string>",
-  "component_2_score": <0-5>,
-  "component_2_explanation": "<if score < 5: one sentence explaining what's missing or problematic; if score = 5 AND student did good extra work beyond requirements (provided helpful examples, added clear explanations, showed original insight, caught errors): one sentence of praise; otherwise empty string>",
-  "component_3_score": <0-5>,
-  "component_3_explanation": "<if score < 5: one sentence explaining what's missing or problematic; if score = 5 AND student did good extra work beyond requirements (provided helpful examples, added clear explanations, showed original insight, caught errors): one sentence of praise; otherwise empty string>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<if score < 5: one sentence explaining what's missing or problematic; if score = 5 AND student did good extra work beyond requirements (provided helpful examples, added clear explanations, showed original insight, caught errors): one sentence of praise; otherwise empty string>",
-  "total_points": <sum of above, 0-20>,
-  "max_points": 20,
-  "percentage": <percentage>,
-  "feedback": "<narrative explanation - which tools they used well, what's missing, how to improve>",
-  "vibe": "<one-sentence overall impression of their equation tool mastery>"
-}}"""
+    Return your grading in this exact JSON format:
+    {{
+      "component_1_score": <0-5>,
+      "component_1_explanation": "<if score < 5: one sentence explaining what's missing or problematic; if score = 5 AND student did good extra work beyond requirements (provided helpful examples, added clear explanations, showed original insight, caught errors): one sentence of praise; otherwise empty string>",
+      "component_2_score": <0-5>,
+      "component_2_explanation": "<if score < 5: one sentence explaining what's missing or problematic; if score = 5 AND student did good extra work beyond requirements (provided helpful examples, added clear explanations, showed original insight, caught errors): one sentence of praise; otherwise empty string>",
+      "component_3_score": <0-5>,
+      "component_3_explanation": "<if score < 5: one sentence explaining what's missing or problematic; if score = 5 AND student did good extra work beyond requirements (provided helpful examples, added clear explanations, showed original insight, caught errors): one sentence of praise; otherwise empty string>",
+      "component_4_score": <0-5>,
+      "component_4_explanation": "<if score < 5: one sentence explaining what's missing or problematic; if score = 5 AND student did good extra work beyond requirements (provided helpful examples, added clear explanations, showed original insight, caught errors): one sentence of praise; otherwise empty string>",
+      "total_points": <sum of above, 0-20>,
+      "max_points": 20,
+      "percentage": <percentage>,
+      "feedback": "<narrative explanation - which tools they used well, what's missing, how to improve>",
+      "vibe": "<one-sentence overall impression of their equation tool mastery>"
+    }}"""
         # Check for required columns
         column_check = self.check_required_columns(student_answer)
 

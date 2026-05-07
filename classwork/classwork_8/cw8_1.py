@@ -1,25 +1,23 @@
 """
-cw9_1.py
-Classwork 9: Independent groups t-test
+cw8_1.py
+Classwork 8: Paired t-test
 Problem statement, RQ, method, and justification.
-Evaluation method name: def grade_question_cw9_1_answer
+Evaluation method name: def grade_question_cw8_1_answer
 """
-
 import re
 
 from config import BaseEvaluator
 from config.output_formatter import OutputFormatter
 
 
-class CW9_1Evaluator(BaseEvaluator):
+class CW8_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Independent groups t-test (CW9_1).
+    Evaluator for Paired t-test (CW8_1).
 
-    Task:
-    State the problem (5 points).
-    Formulate the main Research Question (5 points).
-    Name the statistical method appropriate for this research design (5 points).
-    Explain why this method is suitable based on the research design (5 points).
+    Task: State the problem (5 points).
+    Formulate the main Research question (5 points).
+    Name the statistical method you use (5 points) and explain why this
+    method is suitable for our problem solving, based on research design (5 points).
 
     Evaluates student's ability to state a problem, formulate a research question,
     identify the appropriate statistical method, and justify the choice based on research design.
@@ -60,52 +58,60 @@ class CW9_1Evaluator(BaseEvaluator):
 
         evidence = []
 
-        # STEP 1 — Title (strict)
+        # STEP 1 — Name (strict)
+        name_patterns = [
+            r'name\s*:\s*\w+',
+            r'student\s*:\s*\w+',
+            r'by\s*:\s*\w+',
+            r'^\s*[A-Z][a-z]+\s+[A-Z][a-z]+',
+        ]
+        for pattern in name_patterns:
+            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
+                elements_found["name"] = True
+                evidence.append("Name found")
+                break
+        if not elements_found["name"]:
+            evidence.append("Name NOT found")
+
+        # STEP 2 — Title (strict)
         title_patterns = [
-            r'^\s*classwork\s*9',
-            r'^\s*cw\s*9\b',
-            r'^\s*class\s*work\s*(week\s*)?9',
-            r'^\s*in.?class\s*9'
+            r'^\s*classwork\s*8',
+            r'^\s*cw\s*8\b',
+            r'^\s*class\s*work\s*8',
+            r'^\s*in.?class\s*8'
         ]
         for pattern in title_patterns:
             if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
-                elements_found["paper_title"] = True
+                elements_found["title"] = True
                 evidence.append("Title found")
                 break
-        if not elements_found["paper_title"]:
+        if not elements_found["title"]:
             evidence.append("Title NOT found")
 
-        # STEP 2 — Task description (strict)
-        if re.search(
-    r'task|assignment|instructions?|question\s*:|state\s+the\s+problem|research\s+question|statistical\s+method',
-            text_lower):
+        # STEP 3 — Task description (strict)
+        if re.search(r'task|assignment|instructions?|question\s*:|state\s+the\s+problem|research\s+question|statistical\s+method', text_lower):
             elements_found["task_description"] = True
             evidence.append("Task description found")
         else:
-            evidence.append("Task description NOT found"
-        )
+            evidence.append("Task description NOT found")
 
-        # STEP 3 — No autoformatting (strict)
-        autoformat_patterns = [
-            r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',  # only 2+ consecutive numbered lines
-            r'^\s*[-•*]\s+\S',  # bullet list: -, •, *
-        ]
-        for pattern in autoformat_patterns:
-            if re.search(pattern, student_answer, re.MULTILINE):
-                elements_found["autoformatting"] = False
-                evidence.append("Autoformatting detected")
-                break
-        if elements_found["autoformatting"]:
-            evidence.append("No autoformatting found")
+        # STEP 4 — Autoformatting (no bullet points)
+        autoformat_violations = len(re.findall(r'^\s*[-•*]\s', student_answer, re.MULTILINE))
+        bold_violations = len(re.findall(r'\*\*|__', student_answer))
+        if autoformat_violations <= 2 and bold_violations <= 2:
+            elements_found["autoformatting"] = True
+            evidence.append("No excessive autoformatting detected")
+        else:
+            evidence.append(f"Autoformatting detected: {autoformat_violations} bullets, {bold_violations} bold markers")
 
         return {
             "elements_found": elements_found,
             "evidence": evidence if evidence else ["No clear formatting indicators found"]
         }
 
-    def grade_question_cw9_1_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_question_cw8_1_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Classwork 9_1: Independent groups t-test.
+        Grade Classwork 8_1: Paired t-test.
         Returns detailed grading breakdown.
 
         Args:
@@ -136,9 +142,9 @@ class CW9_1Evaluator(BaseEvaluator):
                     "formatting_check": {
                         "elements_found": {
                             # "student_name": True,
-                            "paper_title": True,
+                            "title": True,
                             "task_description": True,
-                            "no_autoformatting": True,
+                            "autoformatting": True,
                         },
                         "evidence": ["Test mode - all elements present"]
                     }
@@ -168,7 +174,7 @@ Total: 20 points.
 
 **Component 1: Formatting (4 points total)**
 - Student name present: 1 point
-- Paper title present (e.g., "Class Work 9 Independent Groups"): 1 point
+- Paper title present (e.g., "Class Work 8 Repeated Measures"): 1 point
 - Task description copied correctly from assignment: 1 point
 - No autoformatting: 1 point
 
@@ -179,22 +185,25 @@ STEP 1 — Search the student answer for this exact phrase or its direct paraphr
 - Only award 2 if the student states a conclusion instead of a gap.
 - Completely blank: 0 points
 
+Example of a 4-point answer: "We do not know whether there are any differences between the lunar cycle (full moon days) and normal days in human behavior, especially in the behavior of dementia patients."
+Example of a 2-point answer: "The full moon affects dementia patients negatively." — This is a conclusion, not a research gap.
+
 **Component 3: Research Question (4 points)**
 IMPORTANT: If the answer matches or closely matches the example below, you MUST award 4 points.
-- Phrased as a clear question with question mark, and included directionality word (e.g. "any") that allows to determine one- or two-tailed hypothesis: 4 points
-Example of a full-score answer: "Does participation in directed reading activities compared to a standard curriculum improve the reading ability of third-grade pupils?"
+- Phrased as a clear question with question mark, references lunar cycle and dementia patients, and includes directionality word (e.g. "any") that allows to determine one- or two-tailed hypothesis: 4 points
+Example of a full-score answer: "Does the frequency of the Lunar cycle compare to the normal days has any impact on the behavior of the dementia patients?"
 - Present but weakly formulated: 2 points
 - Completely blank: 0 points
 
 **Component 4: Statistical Method Named (4 points)**
-- Correctly names independent groups t-test: 4 points
+- Correctly names paired sample t-test (or dependent samples t-test): 4 points
 - Names a related but imprecise method: 2 points
 - Attempted but incorrect: 1 point
 - Completely blank: 0 points
 
 **Component 5: Justification Based on Research Design (4 points)**
-- Explains independent groups design AND links it to the method: 4 points
-- Mentions independent groups design but weak link to method: 2 points
+- Explains paired/dependent design AND links it to the method: 4 points
+- Mentions paired design but weak link to method: 2 points
 - Attempted but justification is unclear or irrelevant: 1 point
 - Completely blank: 0 points
 
@@ -210,16 +219,19 @@ Example of a full-score answer: "Does participation in directed reading activiti
 **CORRECT ANSWER GUIDANCE:**
 
 Problem Statement:
-We do not know whether directed reading activities significantly improve the reading ability of third-grade pupils compared to those following a standard curriculum without such intervention.
+We do not know whether there are any differences between the lunar cycle (full moon days) and normal days in human behavior, especially in the behavior of dementia patients.
 
 Research Question: 
-Does participation in directed reading activities compared to a standard curriculum improve the reading ability of third-grade pupils?
+Does the frequency of the lunar cycle have any impact on the behavior of dementia patients?
+
+Research Question:
+Do college students with insomnia report higher sleep quality scores after completing a 4-week sleep intervention compared to before the intervention?
 
 Statistical Method:
-Independent groups t-test
+Paired sample t-test
 
 Justification:
-Because we have two separate and unrelated groups of third-grade pupils — one treatment class and one control class — we are using the independent samples t-test; the samples are independent by design.
+Because we have the paired design for the same participants, we use the paired t-test; the samples are dependent by design.
 
 ---
 
@@ -282,9 +294,8 @@ Return grading in this exact JSON format:
         return result
 
     def print_grading_results(self, grading):
-        """Display grading results using OutputFormatter
-        Args: grading: Grading result disctionary
-        """
+        """Display grading results using OutputFormatter."""
+
         component_labels = {
             "component_1_score": "Formatting (Name/Title/Task/Autoformat)",
             "component_2_score": "Problem Statement",
@@ -311,12 +322,13 @@ Return grading in this exact JSON format:
 
         self.formatter.print_grading_results(
             grading=grading,
-            question_name="CW9_1",
-            question_description="Independent Samples: Problem / RQ / Method / Justification",
+            question_name="CW8_1",
+            question_description="Paired t-test: Problem / RQ / Method / Justification",
             component_labels=component_labels,
             max_score=4,
             component_types=component_types,
             check_configs=None,
             width=60,
-            mode="HYBRID"
+            mode="STRICT"
         )
+

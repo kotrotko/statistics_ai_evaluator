@@ -1,24 +1,5 @@
-# from .graders.question7_1_evaluator import Question7_1Evaluator
-# from .graders.question7_2_evaluator import Question7_2Evaluator
-# from .graders.question7_3_evaluator import Question7_3Evaluator
-# from .graders.question7_4_evaluator import Question7_4Evaluator
-# from .graders.question7_5_evaluator import Question7_5Evaluator
-
-"""
-Classwork 7 Graders Package
-Exposes all CW7 evaluator classes for cleaner imports.
-"""
-
-from .graders.question7_1_evaluator import Question7_1Evaluator
-from .graders.question7_2_evaluator import Question7_2Evaluator
-from .graders.question7_3_evaluator import Question7_3Evaluator
-from .graders.question7_4_evaluator import Question7_4Evaluator
-from .graders.question7_5_evaluator import Question7_5Evaluator
-
-__all__ = [
-    'Question7_1Evaluator',
-    'Question7_2Evaluator',
-    'Question7_3Evaluator',
-    'Question7_4Evaluator',
-    'Question7_5Evaluator'
-]
+from .cw7_1 import CW7_1Evaluator
+# from .cw5_2 import CW5_2Evaluator
+# from .cw5_3 import CW5_3Evaluator
+# from .cw5_4 import CW5_4Evaluator
+# from .cw5_5 import CW5_5Evaluator
