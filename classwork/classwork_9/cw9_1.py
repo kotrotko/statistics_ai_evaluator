@@ -60,7 +60,23 @@ class CW9_1Evaluator(BaseEvaluator):
 
         evidence = []
 
-        # STEP 1 — Title (strict)
+        # STEP 1 - Name (strict)
+        name_patterns = [
+            r'name\s*:\s*[A-Z][a-z]+',
+            r'student\s*:\s*[A-Z][a-z]+',
+            r'by\s+[A-Z][a-z]+',
+            r'^[A-Z][a-z]+\s+[A-Z][a-z]+'
+        ]
+        for pattern in name_patterns:
+            if re.search(pattern, student_answer):
+                elements_found["name"] = True
+                evidence.append("Name found")
+                break
+            if not elements_found["name"]:
+                evidence.append("Name NOT found")
+
+
+        # STEP 2 — Title (strict)
         title_patterns = [
             r'^\s*classwork\s*9',
             r'^\s*cw\s*9\b',
@@ -75,7 +91,7 @@ class CW9_1Evaluator(BaseEvaluator):
         if not elements_found["paper_title"]:
             evidence.append("Title NOT found")
 
-        # STEP 2 — Task description (strict)
+        # STEP 3 — Task description (strict)
         if re.search(
     r'task|assignment|instructions?|question\s*:|state\s+the\s+problem|research\s+question|statistical\s+method',
             text_lower):
@@ -85,7 +101,7 @@ class CW9_1Evaluator(BaseEvaluator):
             evidence.append("Task description NOT found"
         )
 
-        # STEP 3 — No autoformatting (strict)
+        # STEP 4 — No autoformatting (strict)
         autoformat_patterns = [
             r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',  # only 2+ consecutive numbered lines
             r'^\s*[-•*]\s+\S',  # bullet list: -, •, *

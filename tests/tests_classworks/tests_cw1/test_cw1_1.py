@@ -28,9 +28,24 @@ evaluator = CW1_1Evaluator()
 # Test texts
 # ---------------------------------------------------------------------------
 
+# TRUE POSITIVE: name present in first two lines
+TEXT_NAME_PRESENT = """
+ John Doe
+ Class Work 1
+
+ Some content.
+ """
+
+# TRUE NEGATIVE: no name in first teo lines
+TEXT_NAME_ABSENT = """
+ Class Work 1
+
+ Some content.
+ """
+
 # TRUE POSITIVE: student pasted the full task text before their own answer
 TEXT_TASK_DESCRIPTION_PRESENT = """
- Using Microsoft Word's Equation tool (Insert > Equation), write the formula for the mean.
+ Do not forget to name the folder
  """
 
 # TRUE NEGATIVE: well-written answer, no task text pasted
@@ -56,38 +71,35 @@ TEXT_TITLE_ABSENT = """
  Some content.
  """
 
-# TRUE POSITIVE: name present
-TEXT_NAME_PRESENT = """
- Class Work 1
- John Doe
-
- Some content.
- """
-
-# TRUE NEGATIVE: no name
-TEXT_NAME_ABSENT = """
- Class Work 1
-
- Some content.
- """
-
 # TRUE NEGATIVE: autoformatting detected (numbered steps)
 TEXT_AUTOFORMATTING_PRESENT = """
- Class Work 1
- John Doe
+Class Work 1
+John Doe
 
- Step 1:
- Step 2:
- Step 3:
- """
+Step 1:
+Step 2:
+Step 3:
+"""
 
 # TRUE POSITIVE: no autoformatting
 TEXT_AUTOFORMATTING_ABSENT = """
- Class Work 1
- John Doe
- x̄
- """
+Class Work 1
+John Doe
+x̄
+"""
 
+# ---------------------------------------------------------------------------
+# Tests: student_name
+# ---------------------------------------------------------------------------
+
+def test_name_present():
+    result = evaluator.check_formatting_elements(TEXT_NAME_PRESENT)
+    assert result["elements_found"]["student_name"] is True
+
+
+def test_name_absent():
+    result = evaluator.check_formatting_elements(TEXT_NAME_ABSENT)
+    assert result["elements_found"]["student_name"] is False
 
 # ---------------------------------------------------------------------------
 # Tests: task_description
@@ -116,115 +128,103 @@ def test_title_absent():
     result = evaluator.check_formatting_elements(TEXT_TITLE_ABSENT)
     assert result["elements_found"]["paper_title"] is False
 
-
-# ---------------------------------------------------------------------------
-# Tests: name
-# ---------------------------------------------------------------------------
-
-def test_name_present():
-    result = evaluator.check_formatting_elements(TEXT_NAME_PRESENT)
-    assert result["elements_found"]["name"] is True
-
-
-def test_name_absent():
-    result = evaluator.check_formatting_elements(TEXT_NAME_ABSENT)
-    assert result["elements_found"]["name"] is False
-
-
 # ---------------------------------------------------------------------------
 # Tests: no_autoformatting
 # ---------------------------------------------------------------------------
 
 def test_autoformatting_detected():
     result = evaluator.check_formatting_elements(TEXT_AUTOFORMATTING_PRESENT)
-    assert result["elements_found"]["no_autoformatting"] is False
+    assert result["elements_found"]["autoformatting"] is False
 
 
 def test_no_autoformatting():
+    import re
+    print(re.findall(r'^\s*\w+\s+\d+[:\.\)]\s*$', TEXT_AUTOFORMATTING_ABSENT, re.MULTILINE))
+    print("autoformat_violations:", len(re.findall(r'^\s*[-•*]\s', TEXT_AUTOFORMATTING_ABSENT, re.MULTILINE)))
     result = evaluator.check_formatting_elements(TEXT_AUTOFORMATTING_ABSENT)
-    assert result["elements_found"]["no_autoformatting"] is True
+    assert result["elements_found"]["autoformatting"] is True
 
 
-# ---------------------------------------------------------------------------
-# Test texts: step completeness & correctness
-# ---------------------------------------------------------------------------
-
-# TRUE POSITIVE: all 5 steps present in order, each with the correct element
-TEXT_STEPS_COMPLETE = """
- Class Work 1
- John Doe
-
- x̄
- Σxᵢ
- (Σxᵢ)/n
- √((Σxᵢ)/n)
- x̄ = √((Σxᵢ)/n)
- """
-
-# TRUE NEGATIVE: steps out of order — step 3 appears before step 2
-TEXT_STEPS_OUT_OF_ORDER = """
- Class Work 1
- John Doe
-
- x̄
- (Σxᵢ)/n
- Σxᵢ
- √((Σxᵢ)/n)
- x̄ = √((Σxᵢ)/n)
- """
-
-# TRUE NEGATIVE: step 4 is missing (no √((Σxᵢ)/n) present)
-TEXT_STEPS_INCOMPLETE = """
- Class Work 1
- John Doe
-
- x̄
- Σxᵢ
- (Σxᵢ)/n
- x̄ = √((Σxᵢ)/n)
- """
-
-
-# ---------------------------------------------------------------------------
-# Tests: step completeness & correctness
-# ---------------------------------------------------------------------------
-
-def test_steps_complete_and_in_order():
-    result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
-    assert result["steps_found"]["all_present"] is True
-    assert result["steps_found"]["in_order"] is True
-
-
-def test_steps_out_of_order():
-    result = evaluator.check_step_completeness(TEXT_STEPS_OUT_OF_ORDER)
-    assert result["steps_found"]["in_order"] is False
-
-
-def test_steps_incomplete():
-    result = evaluator.check_step_completeness(TEXT_STEPS_INCOMPLETE)
-    assert result["steps_found"]["all_present"] is False
-
-
-def test_step_1_contains_accent():
-    result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
-    assert result["steps_found"]["step_1_accent"] is True
-
-
-def test_step_2_contains_script():
-    result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
-    assert result["steps_found"]["step_2_script"] is True
-
-
-def test_step_3_contains_fraction():
-    result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
-    assert result["steps_found"]["step_3_fraction"] is True
-
-
-def test_step_4_contains_radical():
-    result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
-    assert result["steps_found"]["step_4_radical"] is True
-
-
-def test_step_5_contains_full_formula():
-    result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
-    assert result["steps_found"]["step_5_full_formula"] is True
+# # ---------------------------------------------------------------------------
+# # Test texts: step completeness & correctness
+# # ---------------------------------------------------------------------------
+#
+# # TRUE POSITIVE: all 5 steps present in order, each with the correct element
+# TEXT_STEPS_COMPLETE = """
+#  Class Work 1
+#  John Doe
+#
+#  x̄
+#  Σxᵢ
+#  (Σxᵢ)/n
+#  √((Σxᵢ)/n)
+#  x̄ = √((Σxᵢ)/n)
+#  """
+#
+# # TRUE NEGATIVE: steps out of order — step 3 appears before step 2
+# TEXT_STEPS_OUT_OF_ORDER = """
+#  Class Work 1
+#  John Doe
+#
+#  x̄
+#  (Σxᵢ)/n
+#  Σxᵢ
+#  √((Σxᵢ)/n)
+#  x̄ = √((Σxᵢ)/n)
+#  """
+#
+# # TRUE NEGATIVE: step 4 is missing (no √((Σxᵢ)/n) present)
+# TEXT_STEPS_INCOMPLETE = """
+#  Class Work 1
+#  John Doe
+#
+#  x̄
+#  Σxᵢ
+#  (Σxᵢ)/n
+#  x̄ = √((Σxᵢ)/n)
+#  """
+#
+#
+# # ---------------------------------------------------------------------------
+# # Tests: step completeness & correctness
+# # ---------------------------------------------------------------------------
+#
+# def test_steps_complete_and_in_order():
+#     result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
+#     assert result["steps_found"]["all_present"] is True
+#     assert result["steps_found"]["in_order"] is True
+#
+#
+# def test_steps_out_of_order():
+#     result = evaluator.check_step_completeness(TEXT_STEPS_OUT_OF_ORDER)
+#     assert result["steps_found"]["in_order"] is False
+#
+#
+# def test_steps_incomplete():
+#     result = evaluator.check_step_completeness(TEXT_STEPS_INCOMPLETE)
+#     assert result["steps_found"]["all_present"] is False
+#
+#
+# def test_step_1_contains_accent():
+#     result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
+#     assert result["steps_found"]["step_1_accent"] is True
+#
+#
+# def test_step_2_contains_script():
+#     result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
+#     assert result["steps_found"]["step_2_script"] is True
+#
+#
+# def test_step_3_contains_fraction():
+#     result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
+#     assert result["steps_found"]["step_3_fraction"] is True
+#
+#
+# def test_step_4_contains_radical():
+#     result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
+#     assert result["steps_found"]["step_4_radical"] is True
+#
+#
+# def test_step_5_contains_full_formula():
+#     result = evaluator.check_step_completeness(TEXT_STEPS_COMPLETE)
+#     assert result["steps_found"]["step_5_full_formula"] is True

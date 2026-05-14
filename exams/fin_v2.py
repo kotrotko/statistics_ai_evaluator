@@ -1,29 +1,22 @@
 """
-cw15_1.py
-Classwork 15: Exploratory Factor Analysis
-Initial setup, assumption checks, and model fit
-Evaluation method name: def grade_question_cw15_1_answer
+fin_v2.py
+Final Exam Variant 2: Mean, Median, and Distribution Shape
+Evaluation method name: def grade_question_fin_v2_answer
 """
-
 import re
 
 from config import BaseEvaluator
 from config.output_formatter import OutputFormatter
 
-
-class CW15_1Evaluator(BaseEvaluator):
+class FIN_V2_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Classwork 15_1.
+    Evaluator for Final Exam Variant 2.
 
     Task:
-    A. Main research question: "We would like to know if these 9 variables could be shrunk
-    down into a number of factors, and hopefully fewer than 9. We would like to see some
-    correlations between these items and, as a result, a much smaller number of factors."
-    Add this statement into your paper (5 points).
-    B. Assumption checks. KMO test: Is the sample adequate for factor analysis? (5 points).
-    C. Add the Bartlett's test. Is it significant? Are correlations sufficient to proceed? (5 points).
-    D. Evaluation of Model fit. Include the Chi Squared Test table. Does our model fit? (5 points).
-    Total (strictly) 20 points.
+    Let’s assume the distribution is unimodal.  If the mean time to respond to a stimulus is much lower than the median time to respond, what can you say about the shape of the distribution of response times? Will your answer be the same if distribution is not unimodal?
+
+    Formatting: 4 points (name 1pt, title 1pt, task description 1pt, no autoformatting 1pt).
+    Total: 20 points.
     """
 
     def __init__(self):
@@ -33,6 +26,67 @@ class CW15_1Evaluator(BaseEvaluator):
             max_tokens=1200
         )
         self.formatter = OutputFormatter(default_width=60)
+
+    def check_originality(self, student_answer: str) -> dict:
+        """
+        Check for potential AI-generated or copied text.
+
+        Args:
+            student_answer: The student's response text
+
+        Returns:
+            Dictionary with originality assessment
+        """
+        text_lower = student_answer.lower()
+
+        # Common AI text indicators
+        ai_phrases = [
+            r'as an ai',
+            r'i don\'t have',
+            r'i cannot',
+            r'my knowledge cutoff',
+            r'i\'m sorry, but',
+            r'i apologize',
+            r'as a language model',
+            r'i\'m trained',
+            r'according to my training'
+        ]
+
+        # Generic/template phrases
+        template_phrases = [
+            r'lorem ipsum',
+            r'this is a sample',
+            r'example answer',
+            r'\[insert.*here\]'
+        ]
+
+        # Overly formal academic phrases
+        formal_phrases = [
+            r'it\'s important to note that',
+            r'it is worth noting',
+            r'in conclusion, it can be said'
+        ]
+
+        suspicious_patterns = []
+
+        for pattern in ai_phrases + template_phrases + formal_phrases:
+            if re.search(pattern, text_lower):
+                suspicious_patterns.append(pattern)
+
+        # Check for excessive formal transitions
+        formal_indicators = len(re.findall(
+            r'\b(thus|therefore|furthermore|moreover|consequently|hence)\b',
+            text_lower
+        ))
+
+        is_suspicious = len(suspicious_patterns) > 0 or formal_indicators > 5
+
+        return {
+            "is_suspicious": is_suspicious,
+            "suspicious_patterns": suspicious_patterns,
+            "formal_indicator_count": formal_indicators,
+            "assessment": "Potential originality concern" if is_suspicious else "Appears original"
+        }
 
     def check_formatting_elements(self, student_answer: str) -> dict:
         text_lower = student_answer.lower()
@@ -47,6 +101,7 @@ class CW15_1Evaluator(BaseEvaluator):
 
         evidence = []
 
+        # isolated LLM call for name detection
         first_two_lines = "\n".join(student_answer.strip().splitlines()[:2])
         name_check = self.grade_with_prompt(
             student_answer=first_two_lines,
@@ -68,15 +123,13 @@ class CW15_1Evaluator(BaseEvaluator):
         else:
             evidence.append("Name NOT found")
 
-
+        # Title patterns for Final Exam Variant 2
         title_patterns = [
-            r'^\s*classwork\s*15',
-            r'^\s*cw\s*15\b',
-            r'^\s*class\s*work\s*(week\s*)?15',
-            r'^\s*in.?class\s*15'
+            r'^\s*final\s*exam\s*(variant\s*)?2\b',
+            r'^\s*fin\s*v?\.?\s*2\b',
+            r'^\s*final\s*2\b',
+            r'^\s*variant\s*2\b',
         ]
-        
-        # task description
 
         for pattern in title_patterns:
             if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
@@ -84,9 +137,12 @@ class CW15_1Evaluator(BaseEvaluator):
                 evidence.append("Title found")
                 break
 
+        if not elements_found["paper_title"]:
+            evidence.append("Title NOT found")
+
+        # pedagogical markers for task description
         pedagogical_markers = [
-            "add this statement into your paper",
-            "how do you know",
+            "what can you say",
         ]
 
         if any(marker in text_lower for marker in pedagogical_markers):
@@ -95,7 +151,8 @@ class CW15_1Evaluator(BaseEvaluator):
         else:
             evidence.append("Task description NOT found")
 
-    # autoformatting
+        # autoformatting
+
         # catches bullet points: - item, • item, * item
         autoformat_violations = len(re.findall(r'^\s*[-•*]\s', student_answer, re.MULTILINE))
 
@@ -113,7 +170,9 @@ class CW15_1Evaluator(BaseEvaluator):
             "evidence": evidence
         }
 
-    def grade_question_cw15_1_answer(self, student_answer: str):
+    def check_required_elements(self, student_answer: str) -> dict://TODO: implement
+
+    def grade_question_fin_v2_answer(self, student_answer: str):
 
         formatting_check = self.check_formatting_elements(student_answer)
         formatting_summary = formatting_check["elements_found"]
@@ -121,19 +180,18 @@ class CW15_1Evaluator(BaseEvaluator):
         formatting_block = f"""
 HEADER DETECTION RESULTS (DO NOT RE-EVALUATE):
 
-student_name_present = {formatting_summary["student_name"]}
 paper_title_present = {formatting_summary["paper_title"]}
 task_description_present = {formatting_summary["task_description"]}
-no_autoformatting_present = {formatting_summary["no_autoformatting"]}
+no_autoformatting_present = {formatting_summary["autoformatting"]}
 """
 
         prompt = f"""{formatting_block}
 
-You are grading a statistics classwork assignment.
+You are grading a statistics final exam paper.
 
 TASK:
 
-"Exploratory Factor Analysis: Initial setup, assumption checks, and model fit"
+"Mean, Median, Symmetry, and Unimodality"
 
 Use STRICT rubric-based grading. Total score MUST be exactly 20 points.
 
@@ -145,7 +203,8 @@ Component 1: Formatting (4 points)
 Start with 4 points.
 
 Step 1 Name (1 point)
-Use student_name_present
+- Valid name = two capitalized words like John Doe
+- Must appear in first two lines before any content
 
 Step 2 Title (1 point)
 Use paper_title_present
@@ -156,36 +215,46 @@ Use task_description_present
 Step 4 No autoformatting (1 point)
 Use no_autoformatting_present
 
-Component 2: Main Research Question (4 points)
-Student must include the following statement verbatim or near-verbatim:
-"We would like to know if these 9 variables could be shrunk down into a number of factors, and hopefully fewer than 9. We would like to see some correlations between these items and, as a result, a much smaller number of factors."
+Component 2: Symmetry Statement (14 points)
+The student must include the following statement verbatim or near-verbatim:
+"If the mean time to respond to a stimulus is equal to the median time to respond,
+it indicates that the distribution of response times is symmetric."
 
-- 4 points: Statement included fully and correctly.
-- 2 points: Statement partially present or heavily paraphrased.
-- 0 points: Absent or unrelated.
+Grading scale:
+- 14 points: Statement fully present and correctly interpreted (explains WHY equal mean and median
+  implies symmetry, e.g. no skew, balanced tails, mirror image around center).
+- 7 points: Statement partially present or heavily paraphrased, with some correct interpretation.
+- 0 points: Absent or completely unrelated.
 
-Component 3: KMO Test and Sample Adequacy (4 points)
-- 4 points: KMO value reported and correctly interpreted (Adequacy based on value).
-- 2 points: KMO mentioned but value missing or interpretation incorrect.
+Component 3: Unimodality Statement (2 points)
+The student must include the following statement verbatim or near-verbatim:
+"In a unimodal distribution, where there is only one peak, the equality of mean and median
+suggests that the data is evenly distributed around the center."
+
+Grading scale:
+- 2 points: Statement fully present and correctly interpreted.
+- 1 point: Statement partially present or interpretation is missing/incorrect.
 - 0 points: Absent.
 
-Component 4: Bartlett's Test (4 points)
-- 4 points: Bartlett's test result reported (χ², df, p-value) and correctly interpreted (Significant = proceed).
-- 2 points: Result reported but interpretation missing or incorrect.
-- 0 points: Absent.
+---
 
-Component 5: Chi Squared Model Fit Table (4 points)
-- 4 points: Table present in APA style (numbered/titled) and interpretation correct (Non-significant = good fit).
-- 2 points: Table present but not APA, or interpretation incorrect.
-- 0 points: Absent.
+EXAMPLE OF A COMPLETE ANSWER
 
+John Doe
+Final Exam Variant 1
+
+If the mean time to respond to a stimulus is equal to the median time to respond, it indicates that the distribution of response times is symmetric.
+
+In a unimodal distribution, where there is only one peak, the equality of mean and median suggests that the data is evenly distributed around the center.
 
 ---
 
 ORIGINALITY CHECK:
-IMPORTANT: The "Task Description" (the research question statement) is required and should be excluded from originality concerns.
-Evaluate ONLY the student's own interpretations. 
-If remaining text is AI-generated/generic, set all scores to 0 and set feedback to EXACTLY:
+IMPORTANT: The two required statements (symmetry and unimodality) are assigned text and must be
+excluded from originality concerns.
+Evaluate ONLY the student's own interpretations and elaborations.
+If the student's own writing (beyond the required statements) appears AI-generated or generic,
+set all scores to 0 and set feedback to EXACTLY:
 "Due to originality concern, your points are frozen. You can get them back if you provide oral explanation for this paper."
 
 STUDENT ANSWER:
@@ -200,14 +269,10 @@ Return JSON only:
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
   "component_1_explanation": "<brief>",
-  "component_2_score": <0-4>,
+  "component_2_score": <0-14>,
   "component_2_explanation": "<brief>",
-  "component_3_score": <0-4>,
+  "component_3_score": <0-2>,
   "component_3_explanation": "<brief>",
-  "component_4_score": <0-4>,
-  "component_4_explanation": "<brief>",
-  "component_5_score": <0-4>,
-  "component_5_explanation": "<brief>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <number>,
@@ -228,8 +293,6 @@ Return JSON only:
                 "component_1_score",
                 "component_2_score",
                 "component_3_score",
-                "component_4_score",
-                "component_5_score",
             ]
             result = self.validate_component_scores(result, component_keys, 20)
 
@@ -243,34 +306,28 @@ Return JSON only:
         """
         component_labels = {
             "component_1_score": "Formatting (Name/Title/Task/Autoformatting)",
-            "component_2_score": "Main Research Question",
-            "component_3_score": "KMO Test and Sample Adequacy",
-            "component_4_score": "Bartlett's Test",
-            "component_5_score": "Chi Squared Model Fit Table",
+            "component_2_score": "Symmetry Statement",
+            "component_3_score": "Unimodality Statement",
         }
 
         component_types = {
             "component_1_score": "HYBRID",
             "component_2_score": "HYBRID",
             "component_3_score": "HYBRID",
-            "component_4_score": "HYBRID",
-            "component_5_score": "HYBRID",
         }
 
         max_scores = {
             "component_1_score": 4,
-            "component_2_score": 4,
-            "component_3_score": 4,
-            "component_4_score": 4,
-            "component_5_score": 4,
+            "component_2_score": 14,
+            "component_3_score": 2,
         }
 
         self.formatter.print_grading_results(
             grading=grading,
-            question_name="CW15_1",
-            question_description="EFA - Initial Setup, Assumption Checks, and Model Fit",
+            question_name="FIN_V2_1",
+            question_description="Final Exam Variant 2 - Mean, Median, Symmetry, and Unimodality",
             component_labels=component_labels,
-            max_score=4,
+            max_score=max_scores,
             component_types=component_types,
             check_configs=None,
             width=60,

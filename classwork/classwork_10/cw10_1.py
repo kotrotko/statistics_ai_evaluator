@@ -133,6 +133,10 @@ class CW10_1Evaluator(BaseEvaluator):
             return self.create_mock_result(
                 component_scores={
                     "component_1_score": 4,
+                    "component_1_name_score": 1,
+                    "component_1_title_score": 1,
+                    "component_1_task_score": 1,
+                    "component_1_autoformat_score": 1,
                     "component_2_score": 4,
                     "component_3_score": 4,
                     "component_4_score": 4,
@@ -155,9 +159,7 @@ class CW10_1Evaluator(BaseEvaluator):
                 }
             )
 
-        prompt = f"""You are grading a statistics homework using a **STRICT rubric-based approach** with originality checking.
-
-You are grading a statistics classwork assignment.
+        prompt = f"""You are grading a statistics classwork assignment.
 
 **TASK DESCRIPTION:**
 
@@ -165,8 +167,6 @@ You are grading a statistics classwork assignment.
 • Should it be included in your analysis? Why? (5 points)  
 • State the problem with your own words (5 points)  
 • Formulate the main Research question (5 points)
-
-Total score MUST be exactly 20 points.
 
 **IMPORTANT GRADING RULES:**
 1. Total score MUST be exactly 20 points
@@ -176,13 +176,13 @@ Total score MUST be exactly 20 points.
 
 **RUBRIC**
 
-Component 1: Formatting (4 points total)
+Component 1: Formatting (4 points)
 - Student name present: 1 point
-- Paper title present (e.g., "Classwork 5"): 1 point
+- Paper title present (e.g., "Classwork 10"): 1 point
 - Task is copied correctly from assignment: 1 point
 - No autoformatting: 1 point
 
-**Component 2: Role of Participant Variable (4 points)**
+Component 2: Role of Participant Variable (4 points)
 The 'Participant' variable is an identifier/ID variable that uniquely identifies each subject in the study.
 - 4 points: Correctly identifies as ID/identifier variable with clear explanation
 - 3 points: Partially correct (e.g., mentions uniqueness but lacks precision)
@@ -190,7 +190,7 @@ The 'Participant' variable is an identifier/ID variable that uniquely identifies
 - 1 point: Attempted but mostly incorrect
 - 0 points: Completely blank
 
-**Component 3: Should It Be Included & Why (4 points)**
+Component 3: Should It Be Included & Why (4 points)
 The Participant variable should NOT be included in the analysis because:
 - It's an identifier, not a variable of interest
 - It doesn't contain meaningful data for statistical analysis
@@ -202,15 +202,14 @@ The Participant variable should NOT be included in the analysis because:
 - 1 point: Attempted but mostly wrong
 - 0 points: Completely blank
 
-**Component 4: Problem Statement (4 points)**
-Should describe the Facebook friends dataset context (examining relationship between personality characteristics and number of Facebook friends).
+Component 4: Problem Statement (4 points)s
 - 4 points: Clear, specific, well-articulated problem in own words
 - 3 points: Problem present but vague or lacks context
 - 2 points: Problem poorly articulated but shows some understanding
 - 1 point: Attempted but unclear or off-topic
 - 0 points: Completely blank
 
-**Component 5: Research Question (4 points)**
+Component 5: Research Question (4 points)
 Should formulate a testable question about the relationship between groups/conditions and number of Facebook friends.
 - 4 points: Clear, testable question directly addressing the problem
 - 3 points: Question present but vague or partially addresses problem

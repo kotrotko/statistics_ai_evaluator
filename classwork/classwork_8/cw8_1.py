@@ -33,6 +33,7 @@ class CW8_1Evaluator(BaseEvaluator):
             temperature=0.3,
             max_tokens=1200
         )
+        # Initialize output formatter
         self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:

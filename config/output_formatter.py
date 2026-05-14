@@ -114,7 +114,9 @@ class OutputFormatter:
             if component_types and key in component_types:
                 comp_type = f" [{component_types[key]}]"
 
-            print(f"  {label}{comp_type}: {score}/{max_score}")
+            # print(f"  {label}{comp_type}: {score}/{max_score}")
+            component_max = max_score[key] if isinstance(max_score, dict) else max_score
+            print(f"  {label}{comp_type}: {score}/{component_max}")
 
             # Print explanation if present
             explanation_key = key.replace('_score', '_explanation')

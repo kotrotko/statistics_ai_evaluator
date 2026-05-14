@@ -166,6 +166,8 @@ from classwork.classwork_5.graders.question5_2_evaluator import Question5_2Evalu
 
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
+from exams.fin_v1 import FIN_V1_1Evaluator
+from exams.final_v1.fin_v1_2 import FIN_V1_2Evaluator
 
 _input_handler = InputHandler()
 
@@ -509,6 +511,16 @@ def main():
                      "MIDTERM V1 - QUESTION 2",
                      "Histogram Creation - Body/Tails Labeling & Distribution Shape",
                      "grade_midv1_question2_answer", {}),
+
+        "fin_v1_1": (FIN_V1_1Evaluator,
+             "FINAL V1 - QUESTION 1",
+             "Mean, Median, Symmetry, and Unimodality",
+             "grade_question_fin_v1_answer", {}),
+
+        "fin_v1_2": (FIN_V1_2Evaluator,
+                "FINAL V1 - QUESTION 2",
+                "Method and Hypotheses statement",
+                "grade_question_fin_v1_2_answer", {}),
     }
 
     while True:

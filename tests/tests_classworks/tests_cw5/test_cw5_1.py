@@ -1,6 +1,6 @@
 """
-tests/tests_classworks/tests_cw15/test_cw15_1.py
-Unit tests for CW15_1Evaluator.check_formatting_elements()
+tests/tests_classworks/tests_cw5/test_cw5_1.py
+Unit tests for CW5_1Evaluator.check_formatting_elements()
 TDD: these tests are written before the evaluator exists.
 Tests are isolated — no LLM calls are made.
 """
@@ -11,76 +11,71 @@ import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-from classwork.classwork_15.cw15_1 import CW15_1Evaluator
+from classwork.classwork_5.cw5_1 import CW5_1Evaluator
 
-evaluator = CW15_1Evaluator()
+evaluator = CW5_1Evaluator()
 
 # ---------------------------------------------------------------------------
 # Test texts
 # ---------------------------------------------------------------------------
 
-# TRUE POSITIVE: name present on first two lines
+# TRUE POSITIVE: name present in first two lines
 TEXT_NAME_PRESENT = """
 John Doe
-Class Work 15
-
-Some content
+Class Work 5
 """
 
-# TRUE NEGATIVE: no name in first teo lines
+# TRUE NEGATIVE: no name in first two lines
 TEXT_NAME_ABSENT = """
-Class Work 15
-
-Some content.
+Class Work 5
+Task 1. Central Limit Theorem
 """
 
 # TRUE POSITIVE: student pasted the full task text before their own answer
 TEXT_TASK_DESCRIPTION_PRESENT = """
-    add this statement into your paper,
-    how do you know,
+True or False?
 """
 
 # TRUE NEGATIVE: well-written answer, no task text pasted
 TEXT_TASK_DESCRIPTION_ABSENT = """
-Class Work 15
-Jane Doe
+John Doe
+Class Work 5
 
-The KMO value is 0.752, indicating that the sample is adequate for factor analysis.
-Bartlett's test was significant at p < .001.
+The statement is true.
 """
 
 # TRUE POSITIVE: title present
 TEXT_TITLE_PRESENT = """
-Class Work 15
 John Doe
+Class Work 5
 
-Some answer here.
+Some content.
 """
 
 # TRUE NEGATIVE: no title
 TEXT_TITLE_ABSENT = """
 John Doe
 
-Some answer here.
+Some content.
 """
 
 # TRUE NEGATIVE: autoformatting detected (bullet points)
 TEXT_AUTOFORMATTING_PRESENT = """
-Class Work 15
 John Doe
+Class Work 5
 
-- The KMO value is 0.752, indicating sampling adequacy.
-- Bartlett's test is significant at p < .001.
+- The standard error decreases.
+- The sample size increases.
 """
 
 # TRUE POSITIVE: no autoformatting
 TEXT_AUTOFORMATTING_ABSENT = """
-Class Work 15
 John Doe
+Class Work 5
 
-The KMO value is 0.752, indicating sampling adequacy.
-Bartlett's test is significant at p < .001.
+The statement is true.
 """
+
 
 # ---------------------------------------------------------------------------
 # Tests: student_name
@@ -125,7 +120,7 @@ def test_title_absent():
 
 
 # ---------------------------------------------------------------------------
-# Tests: no_autoformatting
+# Tests: autoformatting
 # ---------------------------------------------------------------------------
 
 def test_autoformatting_detected():

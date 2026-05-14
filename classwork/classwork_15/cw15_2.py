@@ -234,7 +234,7 @@ Return JSON only:
   "component_5_explanation": "<brief explanation for oblique rotation comparison>",
   "total_points": <0-20>,
   "max_points": 20,
-  "percentage": <percentage as number>,
+  "percentage": <percentage>,
   "feedback": "<SHORT teacher's comment, not an invitation for discussion>",
   "vibe": "<one-sentence overall impression>"
 }}

@@ -1,6 +1,7 @@
 """
-cw5_1_evaluator.py
-Central Limit Theorem - Standard Error True/False Question
+fin_v1.py
+Final Exam Variant 1: Mean, Median, Symmetry, and Unimodality
+Evaluation method name: def grade_question_fin_v1_answer
 """
 
 import re
@@ -9,25 +10,24 @@ from config import BaseEvaluator
 from config.output_formatter import OutputFormatter
 
 
-class CW5_1Evaluator(BaseEvaluator):
+class FIN_V1_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Central Limit Theorem True/False Question.
+    Evaluator for Final Exam Variant 1.
 
-    Evaluates student's understanding of how sample size affects standard error
-    according to the central limit theorem.
+    Task description:
+    Let’s assume the distribution is unimodal. If the mean time to respond to a stimulus is equal to the median time to respond, what can you say about the shape of the distribution of response times? Will your answer be the same if distribution is not unimodal?
 
-    Inherits common functionality from BaseEvaluator.
-    Contains only question-specific logic.
+    Rubricator: Formatting (4 points in total, including:1 point for name, 1 point for title, 1 point for task description and 1 for autoformatting). Symmetry statement (14 points). Unimodality (2 points).
+
+    Total: 20 points.
     """
 
     def __init__(self):
-        """Initialize evaluator with API handler."""
         super().__init__(
             model="llama-3.3-70b-versatile",
             temperature=0.3,
             max_tokens=1200
         )
-        # Initialize output formatter
         self.formatter = OutputFormatter(default_width=60)
 
     def check_originality(self, student_answer: str) -> dict:
@@ -109,16 +109,16 @@ class CW5_1Evaluator(BaseEvaluator):
         name_check = self.grade_with_prompt(
             student_answer=first_two_lines,
             prompt=f"""Does the following text contain a student name?
-    A valid student name is exactly two words, each starting with a capital letter,
-    like "John Doe". It must not be a title, heading, or course-related phrase.
+            A valid student name is exactly two words, each starting with a capital letter,
+            like "John Doe". It must not be a title, heading, or course-related phrase.
 
-    Text: {first_two_lines}
+            Text: {first_two_lines}
 
-    Return JSON only:
-    {{
-      "student_name_present": <true/false>,
-      "evidence": "<one phrase you found or 'none'>"
-    }}"""
+            Return JSON only:
+            {{
+              "student_name_present": <true/false>,
+              "evidence": "<one phrase you found or 'none'>"
+            }}"""
         )
         if name_check.get("student_name_present") is True:
             elements_found["student_name"] = True
@@ -126,12 +126,12 @@ class CW5_1Evaluator(BaseEvaluator):
         else:
             evidence.append("Name NOT found")
 
-        # title patterns for classwork 5
+        # Title patterns for Final Exam Variant 1
         title_patterns = [
-            r'^\s*final\s*exam\s*(variant\s*)?2\b',
-            r'^\s*fin\s*v?\b',
-            r'^\s*class\s*work\s*(week\s*)?5\b',
-            r'^\s*in.?class\s*5\b'
+            r'^\s*final\s*exam\s*(variant\s*)?1',
+            r'^\s*fin\s*v?\.?\s*1\b',
+            r'^\s*final\s*1\b',
+            r'^\s*variant\s*1\b',
         ]
 
         for pattern in title_patterns:
@@ -143,9 +143,9 @@ class CW5_1Evaluator(BaseEvaluator):
         if not elements_found["paper_title"]:
             evidence.append("Title NOT found")
 
-        # pedagogical marker for task description
+        # pedagogical markers for task description
         pedagogical_markers = [
-            "true or false?",
+            "what can you say",
         ]
 
         if any(marker in text_lower for marker in pedagogical_markers):
@@ -174,51 +174,60 @@ class CW5_1Evaluator(BaseEvaluator):
 
     def check_required_elements(self, student_answer: str) -> dict:
         """
-        Check if required elements are present.
+        Check if required elements are present with lightweight LLM-based precheck for required conceptual elements.
 
-        Args:
-            student_answer: The student's response text
-
-        Returns:
-            Dictionary with found elements and evidence
+        This method is intentionally minimal to avoid duplicating
+        the full grading logic already implemented in
+        grade_question_fin_v1_answer().
         """
-        text_lower = student_answer.lower()
+        evaluation = self.grade_with_prompt(
+            student_answer=student_answer,
+            prompt=f"""
+    Check whether the student answer contains the TWO required concepts.
+
+    Required concepts:
+
+    1. Equal mean and median imply symmetry.
+
+    2. In a unimodal distribution, equal mean and median
+    suggest evenly distributed data around the center.
+
+    Accept paraphrases.
+
+    STUDENT ANSWER:
+    {student_answer}
+
+    Return JSON only:
+    {{
+      "symmetry_statement": true/false,
+      "unimodality_statement": true/false
+    }}
+    """
+        )
+
+        elements_found = {
+            "symmetry_statement": False,
+            "unimodality_statement": False,
+        }
 
         evidence = []
 
-        elements_found = {
-            "has_explicit_answer": False,
-            "has_reasoning": False,
-        }
+        try:
 
-        answer_patterns = [
-            r'\btrue\b',
-            r'\bfalse\b',
-            r'\bcorrect\b',
-            r'\bincorrect\b'
-        ]
-        for pattern in answer_patterns:
-            if re.search(pattern, text_lower):
-                elements_found["has_explicit_answer"] = True
-                evidence.append(f"Found answer indicator")
-                break
+            if evaluation.get("symmetry_statement") is True:
+                elements_found["symmetry_statement"] = True
+                evidence.append("Symmetry statement found")
+            else:
+                evidence.append("Symmetry statement NOT found")
 
-        # Check for reasoning
-        reasoning_indicators = [
-            r'\bbecause\b',
-            r'\bsince\b',
-            r'\bas\b.*\bincreases\b',
-            r'\bformula\b',
-            r'\bse\b.*=',
-            r'σ',
-            r'\bsqrt\b',
-            r'√',
-            r'\bn\b.*\bincreases\b'
-        ]
-        reasoning_count = sum(1 for pattern in reasoning_indicators if re.search(pattern, text_lower))
-        if reasoning_count >= 2 or len(student_answer) > 100:
-            elements_found["has_reasoning"] = True
-            evidence.append(f"Found {reasoning_count} reasoning indicators")
+            if evaluation.get("unimodality_statement") is True:
+                elements_found["unimodality_statement"] = True
+                evidence.append("Unimodality statement found")
+            else:
+                evidence.append("Unimodality statement NOT found")
+
+        except Exception:
+            evidence.append("LLM evaluation failed")
 
         return {
             "elements_found": elements_found,
@@ -226,26 +235,25 @@ class CW5_1Evaluator(BaseEvaluator):
             "all_present": all(elements_found.values())
         }
 
-    def grade_question_cw5_1_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_question_fin_v1_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Question 5.1: Central Limit Theorem True/False Question.
-        Returns detailed grading breakdown.
+            Grade Final Exam Variant 1: Mean, Median, Symmetry, and Unimodality.
+            Returns detailed grading breakdown.
 
-        Args:
-            student_answer: The student's response text
-            test_mode: If True, returns mock data without calling API
+            Args:
+                student_answer: The student's response text
         """
-
         # Test mode for verification without API
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 3,
-                    "component_2_score": 17,
+                    "component_1_score": 4,
+                    "component_2_score": 14,
+                    "component_3_score": 2,
                 },
                 max_points=20,
-                feedback="[TEST MODE] Excellent understanding of CLT and standard error.",
-                vibe="Student demonstrates clear grasp of central limit theorem concepts",
+                feedback="[TEST MODE] Good answer with proper symmetry and unimodality statements.",
+                vibe="Student demonstrates solid understanding of mean, median, and distribution shape",
                 additional_data={
                     "originality_check": {
                         "is_suspicious": False,
@@ -263,8 +271,7 @@ class CW5_1Evaluator(BaseEvaluator):
                     }
                 }
             )
-
-        # Check originality first
+            # Check originality first
         originality_check = self.check_originality(student_answer)
 
         # If originality concern detected, return 0 with freeze message
@@ -283,10 +290,10 @@ class CW5_1Evaluator(BaseEvaluator):
                 "evaluation_stopped": True
             }
 
-        prompt = f"""You are grading a statistics homework using a **STRICT rubric-based approach** with originality checking.
+        prompt = f"""You are grading a statistics final exam paper.
 
 **TASK DESCRIPTION:**
-Students must answer: True or False? According to the central limit theorem, the standard error for a sample mean becomes smaller as the sample size increases.
+If the mean time to respond to a stimulus is equal to the median time to respond, what can you say about the shape of the distribution of response times? Let’s assume the distribution is unimodal.
 
 Total: 20 points.
 
@@ -296,51 +303,81 @@ Total: 20 points.
 3. Feedback should be SHORT, written as a teacher's comment
 4. Feedback CANNOT be an invitation for further discussion
 
-**RUBRIC:**
+---
+
+**RUBRIC**
 
 **Component 1: Formatting (4 points total)**
 - Student name present: 1 point
-- Paper title present (e.g., "Classwork 5"): 1 point
+- Paper title present (e.g., "Final Exam Variant 1"): 1 point
 - Task is copied correctly from assignment: 1 point
 - No autoformatting: 1 point
 
-**Component 2: Direct Answer (8 points total)**
-- Explicit True/False answer present: 8 points
-- No answer present: 0 points
+Component 2: Symmetry Statement (14 points)
+The student must include the statement like following verbatim or near-verbatim:
+"If the mean time to respond to a stimulus is equal to the median time to respond,
+it indicates that the distribution of response times is symmetric."
 
-**TYPICAL MISTAKES AND PENALTIES:**
-- No explicit True/False conclusion: −5 points from Component 2
-- Irrelevant or incorrect reasoning: up to −10 points from Component 2
+- 14 points: Statement fully present and correctly interpreted (explains WHY equal mean and median
+  implies symmetry, e.g. no skew, balanced tails, mirror image around center).
+- 7 points: Statement partially present or heavily paraphrased, with some correct interpretation.
+- 0 points: Absent or completely unrelated.
 
-Component 3: Explanation (8 points total)
-- Reasoning references SE = σ/√n or equivalent logic: 4 points
-- Reasoning is complete, logical, and clearly explained: 4 points
+Component 3: Unimodality Statement (2 points)
+The student must include the statement like following verbatim or near-verbatim:
+"In a unimodal distribution, where there is only one peak, the equality of mean and median
+suggests that the data is evenly distributed around the center."
 
-**CORRECT ANSWER GUIDANCE:**
-The statement is TRUE. Standard error = σ/√n, so as n increases, SE decreases.
+- 2 points: Statement fully present and correctly interpreted.
+- 1 point: Statement partially present or interpretation is missing/incorrect.
+- 0 points: Absent.
+
+---
+
+EXAMPLE OF A COMPLETE ANSWER
+
+John Doe
+Final Exam Variant 1
+
+If the mean time to respond to a stimulus is equal to the median time to respond, it indicates that the distribution of response times is symmetric.
+
+In a unimodal distribution, where there is only one peak, the equality of mean and median suggests that the data is evenly distributed around the center.
+
+---
+
+ORIGINALITY CHECK:
+IMPORTANT: The two required statements (symmetry and unimodality) are assigned text and must be
+excluded from originality concerns.
+Evaluate ONLY the student's own interpretations and elaborations.
+If the student's own writing (beyond the required statements) appears AI-generated or generic,
+set all scores to 0 and set feedback to EXACTLY:
+"Due to originality concern, your points are frozen. You can get them back if you provide oral explanation for this paper."
 
 STUDENT ANSWER:
 {student_answer}
 
-Return grading in this exact JSON format:
+Return JSON only:
 {{
+  "originality_concern": <true/false>,
   "component_1_score": <0-4>,
-  "component_1_explanation": "<brief explanation for task setup>",
-  "component_2_score": <0-8>,
-  "component_2_explanation": "<brief explanation for direct answer>",
-  "component_3_score": <0-8>,
-  "component_3_explanation": "<brief explanation for explanation quality>",
+  "component_1_name_score": <0-1>,
+  "component_1_title_score": <0-1>,
+  "component_1_task_score": <0-1>,
+  "component_1_autoformat_score": <0-1>,
+  "component_1_explanation": "<brief>",
+  "component_2_score": <0-14>,
+  "component_2_explanation": "<brief>",
+  "component_3_score": <0-2>,
+  "component_3_explanation": "<brief>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <percentage>,
-  "feedback": "<SHORT teacher's comment, not an invitation for discussion>",
-  "vibe": "<one-sentence overall impression>"
+  "feedback": "<short teacher comment>",
+  "vibe": "<one sentence overall impression>"
 }}"""
-
         # Check for required elements
         element_check = self.check_required_elements(student_answer)
 
-        # Use parent class method for API call and parsing
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
@@ -355,42 +392,40 @@ Return grading in this exact JSON format:
             component_keys = [
                 "component_1_score",
                 "component_2_score",
-                "component_3_score"
+                "component_3_score",
             ]
             result = self.validate_component_scores(result, component_keys, 20)
 
         return result
 
     def print_grading_results(self, grading):
-        """
-        Display grading results using OutputFormatter.
+        """Display grading results using OutputFormatter.
 
         Args:
             grading: Grading result dictionary
         """
         component_labels = {
-            "component_1_score": "Task Setup (Name/Title/Task/Formatting)",
-            "component_2_score": "Direct Answer (True/False)",
-            "component_3_score": "Explanation (Reasoning Quality)"
+            "component_1_score": "Task Setup (Name/Title/Task/Autoformatting)",
+            "component_2_score": "Symmetry Statement",
+            "component_3_score": "Unimodality Statement",
         }
 
         component_types = {
-            "component_1_score": "STRICT",
+            "component_1_score": "HYBRID",
             "component_2_score": "HYBRID",
-            "component_3_score": "HYBRID"
+            "component_3_score": "HYBRID",
         }
 
-        # Define max scores for each component
         max_scores = {
             "component_1_score": 4,
-            "component_2_score": 8,
-            "component_3_score": 8
+            "component_2_score": 14,
+            "component_3_score": 2,
         }
 
         self.formatter.print_grading_results(
             grading=grading,
-            question_name="QUESTION 5_1",
-            question_description="Central Limit Theorem - Standard Error True/False",
+            question_name="FIN_V1_1",
+            question_description="Mean, Median, Symmetry, and Unimodality",
             component_labels=component_labels,
             max_score=max_scores,
             component_types=component_types,
