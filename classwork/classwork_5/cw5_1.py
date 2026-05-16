@@ -92,6 +92,16 @@ class CW5_1Evaluator(BaseEvaluator):
         }
 
     def check_formatting_elements(self, student_answer: str) -> dict:
+        """
+           Check formatting elements in the student's answer.
+
+           Args:
+               student_answer: The student's response text
+
+           Returns:
+               Dictionary with elements_found (dict of bools) and evidence (list of str)
+       """
+
         text_lower = student_answer.lower()
         first_lines = student_answer[:200]
 
@@ -157,7 +167,7 @@ class CW5_1Evaluator(BaseEvaluator):
         # autoformatting
         # catches bullet points: - item, • item, * item
         autoformat_violations = len(re.findall(r'^\s*[-•*]\s', student_answer, re.MULTILINE))
-
+        print(f"DEBUG autoformat_violations: {autoformat_violations}")
         # catches numbered headings without bullets: Step 1:, Task 2., Question 3)
         step_violations = len(re.findall(r'^\s*\w+\s+\d+[:\.\)]\s*$', student_answer, re.MULTILINE))
 

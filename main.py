@@ -6,12 +6,11 @@ from config.input_handler import InputHandler
 
 from classwork.classwork_1 import (
     CW1_1Evaluator,
-    # CW1_2Evaluator,
+    CW1_2Evaluator,
     # CW1_3Evaluator,
     # CW1_4Evaluator,
     # CW1_5Evaluator
 )
-# from classwork.classwork_1.graders import Question1_1Evaluator, Question1_2Evaluator
 
 from classwork.classwork_2 import (
     CW2_1Evaluator,
@@ -211,9 +210,10 @@ def main():
         "cw1_1": (CW1_1Evaluator, "CLASSWORK 1.1",
                 "General Skills: Mean Formula",
                 "grade_question_cw1_1_answer", {}),
-        # "1_2": (Question1_2Evaluator, "QUESTION 1.2",
-        #         "Mean Calculation with JASP",
-        #         "grade_question1_2_answer", {"mode": "real"}),
+        "cw1_2": (CW1_2Evaluator, "CLASSWORK 1.2",
+                "Mean Calculation with JASP",
+                "grade_question_cw1_2_answer", {}),
+
         "cw2_1": (CW2_1Evaluator, "CLASSWORK 2.1",
                 "Frequencies + Cumulative Frequencies + Percentiles",
                 "grade_question_cw2_1_answer", {}),

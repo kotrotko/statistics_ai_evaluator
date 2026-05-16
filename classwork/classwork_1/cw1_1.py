@@ -5,11 +5,6 @@ General Skills: Mean Formula
 Evaluation method name: def grade_question_cw1_1_answer
 """
 
-"""
-question1_1_evaluator.py
-File Setup + Mean Formula with Equation Tools
-"""
-
 import re
 
 from config import BaseEvaluator
@@ -18,8 +13,6 @@ from config.output_formatter import OutputFormatter
 
 class CW1_1Evaluator(BaseEvaluator):
     """
-    Evaluator for Question 1_1: File Setup and Mean Formula.
-
     Inherits common functionality from BaseEvaluator.
     Contains only question-specific logic.
     """
