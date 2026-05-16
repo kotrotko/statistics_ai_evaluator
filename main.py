@@ -14,12 +14,11 @@ from classwork.classwork_1 import (
 
 from classwork.classwork_2 import (
     CW2_1Evaluator,
-    # CW2_2Evaluator,
+    CW2_2Evaluator,
     # CW2_3Evaluator,
     # CW2_4Evaluator,
     # CW2_5Evaluator
 )
-from classwork.classwork_2.graders import Question2_2Evaluator, Question2_3Evaluator
 from classwork.classwork_2.graders.question2_4_evaluator import Question2_4Evaluator
 
 from classwork.classwork_3 import (
@@ -217,12 +216,12 @@ def main():
         "cw2_1": (CW2_1Evaluator, "CLASSWORK 2.1",
                 "Frequencies + Cumulative Frequencies + Percentiles",
                 "grade_question_cw2_1_answer", {}),
-        "2_2": (Question2_2Evaluator, "QUESTION 2.2",
+        "cw2_2": (CW2_2Evaluator, "CLASSWORK 2.2",
                 "APA Format + Diagram + Numbering + JASP",
-                "grade_question2_2_answer", {}),
-        "2_3": (Question2_3Evaluator, "QUESTION 2.3",
-                "Excel Histogram + Figure Formatting + Chart Comparison",
-                "grade_question2_3_answer", {}),
+                "grade_question_cw2_2_answer", {}),
+        # "2_3": (Question2_3Evaluator, "QUESTION 2.3",
+        #         "Excel Histogram + Figure Formatting + Chart Comparison",
+        #         "grade_question2_3_answer", {}),
         "2_4": (Question2_4Evaluator, "QUESTION 2.4",
                 "Radar Chart + Dataset Description + Circular Transformation",
                 "grade_radar_chart", {}),

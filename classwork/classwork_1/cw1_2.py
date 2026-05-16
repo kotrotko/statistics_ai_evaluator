@@ -139,6 +139,7 @@ class CW1_2Evaluator(BaseEvaluator):
                     "sd_check": {"sd_found": False, "evidence": "Test mode - SD properly removed"}
                 }
             )
+        # Check formatting elements
         formatting_check = self.check_formatting_elements(student_answer)
 
         # Check if SD was removed
@@ -171,8 +172,12 @@ Evidence: {sd_check['evidence']}
 
 **HYBRID GRADING APPROACH:**
 
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description present (1 point if True): {formatting_check['elements_found']['task_description']}
+No autoformatting (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
 **Component 1: Formatting (2 points)**
-Start with 2 points.
 
 Step 1 Task description (1 point)
 Use task_description_present.
