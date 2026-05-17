@@ -23,7 +23,7 @@ from classwork.classwork_2.graders.question2_4_evaluator import Question2_4Evalu
 
 from classwork.classwork_3 import (
     CW3_1Evaluator,
-    # CW3_2Evaluator,
+    CW3_2Evaluator,
     # CW3_3Evaluator,
     # CW3_4Evaluator,
     # CW3_5Evaluator
@@ -85,7 +85,6 @@ from classwork.classwork_12 import (
 from classwork.classwork_13 import (
     CW13_1Evaluator,
     CW13_2Evaluator,
-    CW13_3Evaluator,
     CW13_4Evaluator,
     CW13_5Evaluator
 )
@@ -155,8 +154,6 @@ from homework.homework_14 import (
     HW14_5Evaluator
 )
 
-from classwork.classwork_3.graders.question3_1_evaluator import Question3_1Evaluator
-from classwork.classwork_3.graders.question3_2_evaluator import Question3_2Evaluator
 from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evaluator
 from classwork.classwork_4.graders.question4_1_evaluator import Question4_1Evaluator
 from classwork.classwork_5.graders.question5_1_evaluator import Question5_1Evaluator
@@ -230,12 +227,12 @@ def main():
                   "Mean, Median, Mode by Gender (GPA & IQ)",
                   "grade_question_cw3_1_answer", {}),
 
-        "3_1": (Question3_1Evaluator, "QUESTION 3.1",
-                "Central Tendency by Gender",
-                "grade_question3_1_answer", {}),
-        "3_2": (Question3_2Evaluator, "QUESTION 3.2",
+        # "3_1": (Question3_1Evaluator, "QUESTION 3.1",
+        #         "Central Tendency by Gender",
+        #         "grade_question3_1_answer", {}),
+        "cw3_2": (CW3_2Evaluator, "CLASSWORK 3.2",
                 "Range, Variance, Standard Deviation (GPA & IQ)",
-                "grade_variability", {}),
+                "grade_question_cw3_2_answer", {}),
         "3_3": (Question3_3Evaluator, "QUESTION 3.3",
                 "Distribution Plots with Density Curves by Gender",
                 "grade_distribution_plots", {}),

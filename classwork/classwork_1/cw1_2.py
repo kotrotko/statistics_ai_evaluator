@@ -8,6 +8,7 @@ Evaluation method name: def grade_question_cw1_1_answer
 import re
 from config import BaseEvaluator
 from config.output_formatter import OutputFormatter
+from config.formatting_checks import check_formatting_elements_type2
 
 class CW1_2Evaluator(BaseEvaluator):
     """
@@ -24,52 +25,52 @@ class CW1_2Evaluator(BaseEvaluator):
         )
         self.formatter = OutputFormatter(default_width=60)
 
-    def check_formatting_elements(self, student_answer: str) -> dict:
-        """
-        Check formatting elements in the student's answer.
-
-        Args:
-            student_answer: The student's response text
-
-        Returns:
-            Dictionary with elements_found (dict of bools) and evidence (list of str)
-        """
-        text_lower = student_answer.lower()
-
-        elements_found = {
-            "task_description": False,
-            "autoformatting": False,
-        }
-
-        evidence = []
-
-        # Key phrases that would only appear if the student copied the task description
-        pedagogical_markers = [
-            "what is valid?",
-            "what is missing?",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
-        else:
-            evidence.append("Task description NOT found")
-
-        # autoformatting
-        # catches bullet points: - item, • item, * item
-        autoformat_violations = len(re.findall(r'^\s*[-•*]\s', student_answer, re.MULTILINE))
-        print(f"DEBUG autoformat_violations: {autoformat_violations}")
-
-        if autoformat_violations > 0:
-            evidence.append("Autoformatting detected")
-        else:
-            elements_found["autoformatting"] = True
-            evidence.append("No autoformatting detected")
-
-        return {
-            "elements_found": elements_found,
-            "evidence": evidence
-        }
+    # def check_formatting_elements(self, student_answer: str) -> dict:
+    #     """
+    #     Check formatting elements in the student's answer.
+    #
+    #     Args:
+    #         student_answer: The student's response text
+    #
+    #     Returns:
+    #         Dictionary with elements_found (dict of bools) and evidence (list of str)
+    #     """
+    #     text_lower = student_answer.lower()
+    #
+    #     elements_found = {
+    #         "task_description": False,
+    #         "autoformatting": False,
+    #     }
+    #
+    #     evidence = []
+    #
+    #     # Key phrases that would only appear if the student copied the task description
+    #     pedagogical_markers = [
+    #         "what is valid?",
+    #         "what is missing?",
+    #     ]
+    #
+    #     if any(marker in text_lower for marker in pedagogical_markers):
+    #         elements_found["task_description"] = True
+    #         evidence.append("Task description found")
+    #     else:
+    #         evidence.append("Task description NOT found")
+    #
+    #     # autoformatting
+    #     # catches bullet points: - item, • item, * item
+    #     autoformat_violations = len(re.findall(r'^\s*[-•*]\s', student_answer, re.MULTILINE))
+    #     print(f"DEBUG autoformat_violations: {autoformat_violations}")
+    #
+    #     if autoformat_violations > 0:
+    #         evidence.append("Autoformatting detected")
+    #     else:
+    #         elements_found["autoformatting"] = True
+    #         evidence.append("No autoformatting detected")
+    #
+    #     return {
+    #         "elements_found": elements_found,
+    #         "evidence": evidence
+    #     }
 
     def check_sd_removed(self, student_answer: str) -> dict:
         """
@@ -140,7 +141,10 @@ class CW1_2Evaluator(BaseEvaluator):
                 }
             )
         # Check formatting elements
-        formatting_check = self.check_formatting_elements(student_answer)
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["what is valid?", "what is missing?"]
+        )
 
         # Check if SD was removed
         sd_check = self.check_sd_removed(student_answer)

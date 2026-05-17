@@ -1,20 +1,22 @@
 """
 cw2_2.py
+Classwork 2
 APA Format Findings + Diagram Insertion + Diagram Formatting + JASP Progressive Disclosure
+Evaluation method name: def grade_question_cw2_2_answer
+
 """
 
 import re
 
 from config import BaseEvaluator
 from config.output_formatter import OutputFormatter
-
+from config.formatting_checks import check_formatting_elements_type2
 
 class CW2_2Evaluator(BaseEvaluator):
     """
     Evaluator for Question 2_2: APA Format, Diagram Insertion, and JASP Features.
 
     Inherits common functionality from BaseEvaluator.
-    Contains only question-specific logic.
     """
 
     def __init__(self):
@@ -26,52 +28,6 @@ class CW2_2Evaluator(BaseEvaluator):
         )
         # Initialize output formatter
         self.formatter = OutputFormatter(default_width=60)
-
-    def check_formatting_elements(self, student_answer: str) -> dict:
-        """
-        Check formatting elements in the student's answer.
-
-        Args:
-            student_answer: The student's response text
-
-        Returns:
-            Dictionary with elements_found (dict of bools) and evidence (list of str)
-        """
-        text_lower = student_answer.lower()
-
-        elements_found = {
-            "task_description": False,
-            "autoformatting": False,
-        }
-
-        evidence = []
-
-        # Key phrases that would only appear if the student copied the task description
-        pedagogical_markers = [
-            "do not forget",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
-        else:
-            evidence.append("Task description NOT found")
-
-        # autoformatting
-        # catches bullet points: - item, • item, * item
-        autoformat_violations = len(re.findall(r'^\s*[-•*]\s', student_answer, re.MULTILINE))
-        print(f"DEBUG autoformat_violations: {autoformat_violations}")
-
-        if autoformat_violations > 0:
-            evidence.append("Autoformatting detected")
-        else:
-            elements_found["autoformatting"] = True
-            evidence.append("No autoformatting detected")
-
-        return {
-            "elements_found": elements_found,
-            "evidence": evidence
-        }
 
     def check_required_elements(self, student_answer: str) -> dict:
 
@@ -147,8 +103,8 @@ class CW2_2Evaluator(BaseEvaluator):
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 4,
-                    "component_2_score": 5,
+                    "component_1_score": 2,
+                    "component_2_score": 3,
                     "component_3_score": 5,
                     "component_4_score": 5,
                     "component_5_score": 5,
@@ -171,7 +127,10 @@ class CW2_2Evaluator(BaseEvaluator):
             )
 
         # Check formatting elements
-        formatting_check = self.check_formatting_elements(student_answer)
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["do not forget"]
+        )
 
         prompt = f"""You are grading a statistics classwork using a **HYBRID approach** - vibe-based holistic grading with strict requirements for specific components.
 
@@ -227,22 +186,6 @@ Use autoformatting_present.
 - 4 points: Correct explanation with minor inaccuracies
 - 2-3 points: Partial understanding or vague explanation
 - 0-1 points: Incorrect explanation or did not answer
-
-**CRITICAL RULES:**
-1. Each component is STRICT - must be present to earn points
-2. If student meets requirements exactly: 5/5 points
-3. If student does extra correct work beyond requirements: 5/5 points + praise in explanation
-4. Minor issues are acceptable if the core requirement is met
-5. PRECONDITION for Component 1: Check for statistical tokens FIRST. No tokens = 0 points automatically, skip rubric evaluation.
-
-**SCORING PROCESS:**
-1. Score Component 1 (APA Format): __/5
-2. Score Component 2 (Diagram Insertion): __/5
-3. Score Component 3 (Numbering/Title): __/5
-4. Score Component 4 (Progressive Disclosure): __/5
-5. Total = sum of four scores
-
-**FEEDBACK STRUCTURE:**
 
 **FEEDBACK STRUCTURE:**
 Provide narrative feedback that:
