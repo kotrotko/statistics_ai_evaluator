@@ -1,7 +1,7 @@
 """
 cw4_1.py
 Classwork 4: Normal Distribution And Probability
-Mean, SD Table + Normal Distribution Figures for IQ and GPA
+Theoretical Normal Distribution for IQ and GPA based on mean and SD
 Evaluation method name: def grade_question_cw4_1_answer
 """
 

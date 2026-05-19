@@ -12,7 +12,7 @@ from config.formatting_checks import check_formatting_elements_type2
 
 class CW3_2Evaluator(BaseEvaluator):
     """
-    Evaluator for Question 3_2: Variability Measures (Range, Variance, Standard Deviation).
+    Evaluator for Variability Measures (Range, Variance, Standard Deviation).
     Inherits common functionality from BaseEvaluator.
     """
 
@@ -92,7 +92,8 @@ STUDENT ANSWER:
 
 **AUTOMATIC FORMATTING DETECTION RESULT:**
 Task description present (1 point if True): {formatting_check['elements_found']['task_description']}
-No autoformatting (1 point if True): {formatting_check['elements_found']['autoformatting']}
+No autoformatting (1 point if True): 
+{formatting_check['elements_found']['autoformatting']}
 Evidence: {formatting_check['evidence']}
 
 **AUTOMATIC DETECTION:**
@@ -157,7 +158,6 @@ Return JSON only:
   "feedback": "<narrative feedback>",
   "vibe": "<one-sentence overall impression>"
 }}"""
-
 
         result = self.grade_with_prompt(
             student_answer=student_answer,

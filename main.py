@@ -31,7 +31,7 @@ from classwork.classwork_3 import (
 
 from classwork.classwork_4 import (
     CW4_1Evaluator,
-    # CW4_2Evaluator,
+    CW4_2Evaluator,
     # CW4_3Evaluator,
     # CW4_4Evaluator,
     # CW4_5Evaluator
@@ -39,7 +39,7 @@ from classwork.classwork_4 import (
 
 from classwork.classwork_5 import (
     CW5_1Evaluator,
-    # CW5_2Evaluator,
+    CW5_2Evaluator,
     # CW5_3Evaluator,
     # CW5_4Evaluator,
     # CW5_5Evaluator
@@ -155,9 +155,6 @@ from homework.homework_14 import (
 )
 
 from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evaluator
-from classwork.classwork_4.graders.question4_1_evaluator import Question4_1Evaluator
-from classwork.classwork_5.graders.question5_1_evaluator import Question5_1Evaluator
-from classwork.classwork_5.graders.question5_2_evaluator import Question5_2Evaluator
 
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
@@ -241,20 +238,17 @@ def main():
                   "Mean, SD Table + Normal Distribution Figures for IQ and GPA",
                   "grade_question_cw4_1_answer", {}),
 
-        "4_1": (Question4_1Evaluator, "QUESTION 4.1",
-                "Multiple Comparisons Error Probability",
-                "grade_question_cw4_1_answer", {}),
+        "cw4_2": (CW4_2Evaluator, "CLASSWORK 4.2",
+                "Theoretical Normal Distribution for IQ and GPA based on mean and SD",
+                "grade_question_cw4_2_answer", {}),
 
         "cw5_1": (CW5_1Evaluator, "CLASSWORK 5.1",
                   "Central Limit Theorem - Standard Error True/False Question",
                   "grade_question_cw5_1_answer", {}),
+        "cw5_2": (CW5_2Evaluator, "CLASSWORK 5.2",
+                  "Standard Error Calculation Improving Task",
+                  "grade_question_cw5_2_answer", {}),
 
-        "5_1": (Question5_1Evaluator, "QUESTION 5.1",
-                "Central Limit Theorem - Standard Error True/False",
-                "grade_question5_1_answer", {}),
-        "5_2": (Question5_2Evaluator, "QUESTION 5.2",
-                "Standard Error Calculation",
-                "grade_question_hw5_2_answer", {}),
         "cw7_1": (CW7_1Evaluator, "QUESTION 7.1",
                 "One Group T Test - Problem Statement / RQ / Hypotheses / α df CV",
                 "grade_question7_1_answer", {}),
