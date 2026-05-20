@@ -47,7 +47,7 @@ from classwork.classwork_5 import (
 
 from classwork.classwork_7 import (
     CW7_1Evaluator,
-    # CW7_2Evaluator,
+    CW7_2Evaluator,
     # CW7_3Evaluator,
     # CW7_4Evaluator,
     # CW7_5Evaluator
@@ -252,9 +252,9 @@ def main():
         "cw7_1": (CW7_1Evaluator, "QUESTION 7.1",
                 "One Group T Test - Problem Statement / RQ / Hypotheses / α df CV",
                 "grade_question7_1_answer", {}),
-        # "7_2": (Question7_2Evaluator, "QUESTION 7.2",
-        #         "Normality Check - Shapiro-Wilk / Table / Conclusion / Reasoning",
-        #         "grade_question7_2_answer", {}),
+        "cw7_2": (CW7_2Evaluator, "QUESTION 7.2",
+                "Normality Checking - Shapiro-Wilk / Table / Normality inference / Reasoning",
+                "grade_question_cw7_2_answer", {}),
         # "7_3": (Question7_3Evaluator, "QUESTION 7.3",
         #         "Wilcoxon Signed Rank Test - Test Value / Approach / Table / Mean & Median",
         #         "grade_question7_3_answer", {}),

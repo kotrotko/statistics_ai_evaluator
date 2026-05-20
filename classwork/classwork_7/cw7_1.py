@@ -208,14 +208,14 @@ Per hypothesis (H0 and H1/Ha), award:
 Component 5: α, df, CV (4 points)
 - States α (e.g., α = 0.05): 1 point
 - Calculates df correctly (n−1): 1 point
-- Provides CV as an actual number (e.g., ±1.753): 2 points
+- Provides CV as an actual number (e.g., ±2.131): 2 points
   - Saying "found from table" without a value = 0 points for CV
 
 **CORRECT ANSWER REFERENCE:**
 Problem: We do not know whether men's mean indoor gardening score differs from reference value 73.
 Research Question: Do men score significantly different from 73 on the indoor gardening test?
 H0: μ = 73 | H1: μ ≠ 73 (two-tailed)
-α = 0.05, df = 15, CV = ±1.753
+α = 0.05, df = 15, CV = ±2.131
 
 STUDENT ANSWER:
 {student_answer}
