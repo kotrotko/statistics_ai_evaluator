@@ -143,6 +143,9 @@ Use autoformatting_present.
 - 2-3 points: Mentioned but unclear or incomplete
 - 0 points: Not mentioned
 
+**CORRECT ANSWER REFERENCE:**
+Task 2. Calculate and add the variability measures: range (5 points), variance (5 points), and standard deviation (5 points), also for (a) GPA and (b) IQ variables, split by gender. Include them to the Table 2. Do not forget to introduce it, refer to the table in introductory phrase, number and title this table in APA style (5 points). Table 2 presents the standard deviation, variance, and range of GPA and IQ variables with results stratified by gender using MyClass dataset. Table 2 The Standard Deviation, Variance, and Range for IQ and GPA split by Gender GPA IQ Male Female Male Female Std. Deviation 0.784 0.626 19.077 13.028 Variance 0.614 0.392 363.939 169.734 Range 3.330 2.800 86.700 66.400
+
 **FEEDBACK RULES**
 - Identify which variability measures were calculated correctly
 - Point out missing measures explicitly

@@ -55,7 +55,7 @@ from classwork.classwork_7 import (
 
 from classwork.classwork_8 import (
     CW8_1Evaluator,
-    # CW8_2Evaluator,
+    CW8_2Evaluator,
     # CW8_3Evaluator,
     # CW8_4Evaluator,
     # CW8_5Evaluator
@@ -264,12 +264,13 @@ def main():
         # "7_5": (Question7_5Evaluator, "QUESTION 7.5",
         #         "Output Description / Effect Size / Gender Context / Cultural Context",
         #         "grade_question7_5_answer", {}),
+
         "cw8_1": (CW8_1Evaluator, "CLASSWORK 8.1",
                   "Statistical Method Selection and Justification",
                   "grade_question_cw8_1_answer", {}),
-        # "cw8_2": (CW8_2Evaluator, "CLASSWORK 8.2",
-        #           "Normality Check - Method / Conclusion / Reasoning",
-        #           "grade_cw8_2_answer", {}),
+        "cw8_2": (CW8_2Evaluator, "CLASSWORK 8.2",
+                  "Normality Checking / Shapiro-Wilk / Table / Normality inference / Reasoning",
+                  "grade_cw8_2_answer", {}),
         # "cw8_3": (CW8_3Evaluator, "CLASSWORK 8.3",
         #           "Hypothesis Testing Setup - Hypotheses / α / df / CV",
         #           "grade_question_cw8_3_answer", {}),
@@ -279,6 +280,7 @@ def main():
         # "cw8_5": (CW8_5Evaluator, "CLASSWORK 8.5",
         #           "Summary - APA Result / Research Question Answer",
         #           "grade_cw8_5_answer", {}),
+
         "cw9_1": (CW9_1Evaluator, "CLASSWORK 9.1",
                   "Problem statement, RQ, method, and justification",
                   "grade_question_cw9_1_answer", {}),
@@ -294,6 +296,7 @@ def main():
         # "cw9_5": (CW9_5Evaluator, "CLASSWORK 9.5",
         #           "Statistical Analysis and Interpretation",
         #           "grade_cw9_5_answer", {}),
+
         "cw10_1": (CW10_1Evaluator, "CLASSWORK 10.1",
                    "ANOVA Method Selection and Justification",
                    "grade_question_cw10_1_answer", {}),
