@@ -1,12 +1,13 @@
 """
-cw9_2.py
 Classwork 9: Independent groups comparison
-Assumption checking: normality
+Normality Checking / Shapiro-Wilk / Table / Normality inference / Reasoning
 Evaluation method name: def grade_question_cw9_2_answer
 """
 
 import re
 from config import BaseEvaluator
+from config.output_formatter import OutputFormatter
+from config.formatting_checks import check_formatting_elements_type2
 
 
 class CW9_2Evaluator(BaseEvaluator):
@@ -33,6 +34,8 @@ class CW9_2Evaluator(BaseEvaluator):
             temperature=0.3,
             max_tokens=1200
         )
+        # Initialize output formatter
+        self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:
         """
@@ -49,28 +52,19 @@ class CW9_2Evaluator(BaseEvaluator):
         elements_found = {
             "task_description": False,
             "normality_method": False,
-            "table_present": False,
             "normality_conclusion": False,
             "reasoning": False
         }
 
         evidence = []
 
-        # Checkpoint 1 — Task description (Pedagogical markers)
-        # Standardized naming with discriminative markers from the image
-        pedagogical_markers = [
-            "which method",
-            "name it",
-            "include relevant",
-            "describe your logic",
-            "justify your decision",
-        ]
+        # Checkpoint 1 — Task description
+        task_full_text = "Task 2. Assumption checking: normality. Which method do you apply to check normality? Name it. (5 points). Include the table, introduce, refer, number and title it in APA style (5 points). Are distributions normal, with significance level  = 0.001? (5 points). How did you know? Describe your logic in one sentence. (5 points)."
 
-        if any(marker in text_lower for marker in pedagogical_markers):
+        if task_full_text.lower() in text_lower:
             elements_found["task_description"] = True
-            evidence.append("Task description found (via pedagogical markers)")
+            evidence.append("Task description found")
         else:
-            elements_found["task_description"] = False
             evidence.append("Task description NOT found")
 
         # Checkpoint 2 — Normality method (strict)
@@ -120,20 +114,22 @@ class CW9_2Evaluator(BaseEvaluator):
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 1,
+                    "component_1_score": 2,
                     "component_2_score": 4,
                     "component_3_score": 5,
-                    "component_4_score": 5,
+                    "component_4_score": 4,
                     "component_5_score": 5,
                 },
                 max_points=20,
-                feedback="[TEST MODE] Method stated. Table present with minor APA issues. Normality conclusion clear. Reasoning correct.",
-                vibe="Student shows solid understanding of normality testing and APA formatting",
+
+                feedback="[TEST MODE] Method explicitly stated. Table correctly introduced, numbered, and titled. Normality conclusion clear. Reasoning complete.",
+                vibe="Strong understanding of normality checking procedure and inference.",
+
                 additional_data={
                     "element_check": {
                         "elements_found": {
+                            "task_description": True,
                             "normality_method": True,
-                            "table_present": True,
                             "normality_conclusion": True,
                             "reasoning": True
                         },
@@ -142,100 +138,130 @@ class CW9_2Evaluator(BaseEvaluator):
                     }
                 }
             )
+        element_check = self.check_required_elements(student_answer)
+
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["do you apply", "how did you know"]
+        )
 
         prompt = f"""You are grading a statistics assignment about normality checking using a **STRICT rubric-based approach.
 
 **TASK DESCRIPTION:**
-Students must complete 4 components for normality assumption checking.
+Which method did you apply to check normality? Name it. (5 points). Insert the table, introduce, number, and title it. (5 points). Provide a decision rule. Check the normality assumption with significance level  = 0.001. Make a conclusion: Is this distribution normal? (5 points) Provide your reasoning: how did you know? (5 points).
 
-**IMPORTANT GRADING RULES:**
-1. Total score MUST be exactly 20 points
-2. Focus on conceptual understanding over formatting
-3. Feedback should be SHORT, written as a teacher's comment
-4. Feedback CANNOT be an invitation for further discussion
-
-**RUBRIC:**
-
-**Component 1: Task Description (1 point)**
-- Use task_description from elements_found.
-- 1/1: If task_description_present is True.
-- 0/1: If task_description_present is False.
-
-**Component 2: Name the Normality Method (4 points):**
-- 4/4: Method name explicitly stated in a sentence (e.g., "I used the Shapiro-Wilk test")
-- 2/4: Method mentioned but statement incomplete or unclear
-- 0/4: Method name only in table header, or not mentioned at all
-- CRITICAL: Method can be stated in dedicated sentence OR in table introduction phrase, but NOT only in table header
-
-Acceptable methods: Shapiro-Wilk test, Q-Q plot
-
-**Component 3: Table in APA Style (5 points):**
-Evaluate each element (1 point each):
-- 1 point: Introduction phrase before table appears
-- 1 point: Reference to table by number in text (e.g., "Table 1")
-- 1 point: Table number in APA style (e.g., "Table 1")
-- 1 point: Table title in APA style (descriptive)
-- 1 point: No table present.
-
-APA table requirements:
-1. Introduction before table appears
-2. Reference to table in text (e.g., "as shown in Table 1")
-3. Table number (e.g., "Table 1")
-4. Descriptive title
-5. Proper formatting (horizontal lines, clear labels)
-
-**Component 4: Are Distributions Normal? (5 points):**
-- 5/5: Clear yes/no statement about distributions being normal at α = 0.001, correct conclusion
-- 0/5: No clear yes/no statement, or conclusion contradicts test results
-- CRITICAL: Must explicitly state "distributions are normal" or "distributions are not normal" at α = 0.001
-- Note: "distributions" is plural - student should address both groups
-
-**Component 5: Explain Your Logic (5 points):**
-- 1 point: Student attempts to explain
-- 1 point [VIBE]: Use your judgment to assess whether the final conclusion is correct given the test results provided
-- 3 points: Logic is correct (proper comparison of p-value with α = 0.001)
-- CRITICAL: Evaluate logic and conclusion INDEPENDENTLY
-- CRITICAL: If student correctly applies decision rule but final conclusion contradicts it, deduct 1 point for wrong conclusion only — logic (3 points) remains correct
-- CRITICAL: If student incorrectly applies decision rule (e.g. p > α → not normal), deduct 3 points for wrong logic regardless of conclusion
+Total: 20 points
 
 STUDENT ANSWER:
 {student_answer}
 
-Return grading in this exact JSON format:
+**IMPORTANT NOTES:**
+- Students submit text descriptions of their work since visual elements (actual diagrams, screenshots, formatted documents) cannot be captured in text
+- If student REFERENCES or DESCRIBES the required elements (e.g., "I used APA format to describe findings", "I inserted the frequency distribution diagram"), ASSUME they completed it in their actual document
+- DO NOT penalize for "missing" visual elements if they clearly describe what they did
+
+**IMPORTANT GRADING RULES:**
+1. Total score MUST be exactly 20 points
+2. Reasoning is required; calculations are mandatory
+3. Feedback should be SHORT, written as a teacher's comment
+4. Feedback CANNOT be an invitation for further discussion
+5. Award partial credit where reasoning is mostly correct but incomplete
+6. It is expected to see both student's logic and calculations, not only the final answer
+7. Explanations must be SPECIFIC and ACTIONABLE - avoid vague phrases like "lacks depth", "could be better", "needs improvement". Instead, point to what is actually missing or what was done well.
+
+**HYBRID GRADING APPROACH:**
+
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}
+
+**RUBRIC:**
+
+**Component 1: Formatting (2 points):**
+Use AUTOMATIC FORMATTING DETECTION RESULT above.
+- 1 point: Task description correctly formatted
+- 1 point: Proper autoformatting and structure
+
+**Component 2: Method Name (4 points):**
+- 4 points: Method name explicitly stated in a sentence (e.g., "I applied the Shapiro-Wilk test")
+- 0 points: Method name only in table header, or not mentioned at all
+- CRITICAL: Must explicitly state the method name in text, not just in a table
+
+**Component 3: Table 1 (5 points):**
+Use AUTOMATIC DETECTION above.
+- 1 point: Table itself with numerical data present
+- 1 point: Introductory phrase present before the table
+- 1 point: Reference to table number in introductory phrase
+- 1 point: Standalone table number present
+- 1 point: Descriptive table title present
+- CRITICAL: A label above the table such as "Test of Normality (Shapiro-Wilk)" counts as a title
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 4: Inference (4 points):**
+Use AUTOMATIC DETECTION above.
+- 1 point: Decision rule stated
+- 1 point: Obtained p-value reported
+- 1 point: Correct α = 0.001 used
+- 1 point: Clear normality statement (yes/no conclusion)
+
+**Component 5: Explanation (5 points):**
+- 5 points: Reasoning correct and complete (proper comparison of p-value with α = 0.001, correct conclusion)
+- 3 points: Reasoning mostly correct but incomplete
+- 1 point: Student attempts to explain but reasoning is incorrect
+- 0 points: No explanation provided
+- CRITICAL: Evaluate reasoning and conclusion INDEPENDENTLY
+- CRITICAL: If student correctly applies decision rule but final conclusion contradicts it, deduct 1 point for wrong conclusion only
+- CRITICAL: If student incorrectly applies decision rule (e.g. p > α → not normal), deduct points for wrong reasoning regardless of conclusion
+
+**CORRECT ANSWER REFERENCE:**
+The normality assumption was checked using the Shapiro–Wilk test.
+The Table 1 presents Shapiro-Wilk test in JASP for given variable
+
+Table 1
+Test of Normality (Shapiro-Wilk) for given variables
+Residuals	W	p
+drp	0.973	.396
+The decision rule is to reject the null hypothesis of normality only if p < α.
+Here, the significance level is α=0.001, and the obtained value is p=0.396. Since p > α, we fail to reject the null hypothesis of normality. Therefore, the distribution is considered normal at the α=0.001 significance level.
+
+**FEEDBACK RULES**
+- Identify which components were completed correctly
+- Point out missing or incomplete elements explicitly
+- Maintain supportive tone
+
+Return JSON only:
 {{
-  "component_1_score": <0-1>,
-  "component_1_explanation": "<brief explanation>",
+  "component_1_score": <0-2>,
+  "component_1_task_score": <0-1>,
+  "component_1_autoformat_score": <0-1>,
+  "component_1_explanation": "<brief>",
   "component_2_score": <0-4>,
-  "component_2_explanation": "<brief explanation>",
+  "component_2_explanation": "<brief>",
   "component_3_score": <0-5>,
-  "component_3_explanation": "<brief explanation>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<brief explanation>",
+  "component_3_explanation": "<brief>",
+  "component_4_score": <0-4>,
+  "component_4_explanation": "<brief>",
   "component_5_score": <0-5>,
-  "component_5_explanation": "<brief explanation>",
-  "total_points": <0-20>,
+  "component_5_explanation": "<brief>",
+  "total_points": <sum of above, 0-20>,
   "max_points": 20,
   "percentage": <percentage>,
-  "feedback": "<SHORT teacher's comment>",
+  "feedback": "<narrative feedback>",
   "vibe": "<one-sentence overall impression>"
 }}"""
-
-        element_check = self.check_required_elements(student_answer)
-        element_summary = element_check["elements_found"]
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
             additional_checks={
-                "element_check": element_check
+                "element_check": element_check,
+                "formatting_check": formatting_check
             }
         )
-
-        # Force the score to 0 if the pedagogical markers are missing
-        if "error" not in result:
-            if not element_check["elements_found"]["task_description"]:
-                result["component_1_score"] = 0
-                result["component_1_explanation"] = "Task description NOT found (instructional phrasing missing)"
 
         if "error" not in result:
             component_keys = [
@@ -250,70 +276,47 @@ Return grading in this exact JSON format:
         return result
 
     def print_grading_results(self, grading):
-        """Display grading results."""
-        import textwrap
-        print("=" * 60)
-        print("GRADING RESULTS - CLASSWORK 9.2")
-        print("Assumption Checking: Normality")
-        print("=" * 60)
+        """
+        Display grading results using OutputFormatter.
 
-        if 'component_1_score' in grading:
-            print("\nCOMPONENT BREAKDOWN:")
-            print(f"  Component 1 (Task Description): {grading.get('component_1_score', 'N/A')}/1")
-            if grading.get('component_1_explanation'):
-                print(f"    → {grading.get('component_1_explanation')}")
+        Args:
+            grading: Grading result dictionary
+        """
+        # Define component labels
+        component_labels = {
+            "component_1_score": "Formatting (Task desc / Autoformatting)",
+            "component_2_score": "Method Name",
+            "component_3_score": "Table 1",
+            "component_4_score": "Inference",
+            "component_5_score": "Explanation",
+        }
 
-            print(f"  Component 2 (Normality Method): {grading.get('component_2_score', 'N/A')}/4")
-            if grading.get('component_2_explanation'):
-                print(f"    → {grading.get('component_2_explanation')}")
+        # Define component types
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "HYBRID",
+            "component_3_score": "STRICT",
+            "component_4_score": "STRICT",
+            "component_5_score": "HYBRID",
+        }
 
-            print(f"  Component 3 (Table APA Style): {grading.get('component_3_score', 'N/A')}/5")
-            if grading.get('component_3_explanation'):
-                print(f"    → {grading.get('component_3_explanation')}")
+        max_scores = {
+            "component_1_score": 2,
+            "component_2_score": 4,
+            "component_3_score": 5,
+            "component_4_score": 4,
+            "component_5_score": 5,
+        }
 
-            print(f"  Component 4 (Normality Conclusion): {grading.get('component_4_score', 'N/A')}/5")
-            if grading.get('component_4_explanation'):
-                print(f"    → {grading.get('component_4_explanation')}")
-
-            print(f"  Component 5 (Logic/Reasoning): {grading.get('component_5_score', 'N/A')}/5")
-            if grading.get('component_5_explanation'):
-                print(f"    → {grading.get('component_5_explanation')}")
-
-            print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points', 'N/A')}/{grading.get('max_points', 20)}")
-        print(f"PERCENTAGE: {grading.get('percentage', 'N/A')}%")
-
-        print("\n" + "=" * 60)
-        print("FEEDBACK:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get('feedback', 'No feedback available'), width=60))
-
-        print("\n" + "=" * 60)
-        print("THE VIBE:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get('vibe', 'N/A'), width=60))
-
-        if 'error' in grading:
-            print("\n" + "=" * 60)
-            print("ERROR:")
-            print("=" * 60)
-            print(grading.get('error'))
-            if 'raw_response' in grading:
-                print("\nRaw Response:")
-                print(grading['raw_response'][:500])
-
-
-if __name__ == "__main__":
-    evaluator = CW9_2Evaluator()
-    from config import InputHandler
-
-    input_handler = InputHandler()
-    student_answer = input_handler.collect_and_validate_input(
-        question_name="CLASSWORK 9.2",
-        question_description="Assumption Checking: Normality",
-        min_length=10
-    )
-    if student_answer:
-        grading = evaluator.grade_question_cw9_2_answer(student_answer)
-        evaluator.print_grading_results(grading)
+        # Use formatter to display results
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="QUESTION 9_2",
+            question_description="Normality Check - Shapiro-Wilk / Table / Inference / Explanation",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="HYBRID"
+        )
