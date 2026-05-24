@@ -139,11 +139,11 @@ class CW9_2Evaluator(BaseEvaluator):
                 }
             )
         element_check = self.check_required_elements(student_answer)
-
         formatting_check = check_formatting_elements_type2(
             student_answer,
             pedagogical_markers=["do you apply", "how did you know"]
         )
+
 
         prompt = f"""You are grading a statistics assignment about normality checking using a **STRICT rubric-based approach.
 

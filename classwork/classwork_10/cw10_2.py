@@ -7,23 +7,19 @@ Evaluation method name: def grade_question_cw10_2_answer
 
 import re
 from config import BaseEvaluator
-
+from config.output_formatter import OutputFormatter
+from config.formatting_checks import check_formatting_elements_type2
 
 class CW10_2Evaluator(BaseEvaluator):
     """
     Evaluator for Classwork 10_2.
 
-    Task: Check normality assumption (5 points).
-    Which method did you apply to check normality? Include the graph, number and title it in APA style (5 points).
-    Check variance homogeneity and provide your conclusion about homogeneity (5 points).
-    Name the method you used. Include the table, number and name it (5 points).
-    Total (strictly) 20 points.
-
-    Evaluates student's ability to check normality, present graph in APA style,
-    check variance homogeneity, and present table in APA style.
+    Task 2. Name the visualization method used to check normality and include it to the introductory phrase with reference, number, and title it in APA style (5 points).
+    Produce and include the corresponding graph and interpret it in terms of normality checking (5 points).
+    Name the statistical test used to assess homogeneity of variances and include it to APA-style introductory phrase (5 points).
+    Present the results in a table. What can you say about the variance homogeneity based on the output? (5 points).
 
     Inherits common functionality from BaseEvaluator.
-    Contains only question-specific logic.
     """
 
     def __init__(self):
@@ -33,6 +29,8 @@ class CW10_2Evaluator(BaseEvaluator):
             temperature=0.3,
             max_tokens=1200
         )
+        # Initialize output formatter
+        self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:
         """
@@ -47,62 +45,44 @@ class CW10_2Evaluator(BaseEvaluator):
         text_lower = student_answer.lower()
 
         elements_found = {
-            "task_description": False,
             "normality_method": False,
-            "graph_present": False,
+            "figure_present": False,
             "homogeneity_method": False,
+            "table_present": False,
             "homogeneity_conclusion": False,
-            "table_present": False
         }
 
         evidence = []
 
-        # Checkpoint 1 — Task description (Pedagogical markers)
-        pedagogical_markers = [
-            "check normality",
-            "which method",
-            "include the graph",
-            "check variance homogeneity",
-            "name the method",
-            "include the table",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found (via pedagogical markers)")
-        else:
-            elements_found["task_description"] = False
-            evidence.append("Task description NOT found")
-
-        # Checkpoint 2 — Normality method
-        if re.search(r'shapiro[\s-]?wilk|s-w\s*test|q[\s-]?q\s*plot|qq\s*plot|normality\s*test', text_lower):
+        # Checkpoint 1 — Normality method (Q-Q Plot)
+        if re.search(r'q[\s-]?q\s*plot|qq\s*plot|quantile[\s-]?quantile', text_lower):
             elements_found["normality_method"] = True
-            evidence.append("Normality method found")
+            evidence.append("Normality method found (Q-Q Plot)")
         else:
             evidence.append("Normality method NOT found")
 
-        # Checkpoint 3 — Graph present
+        # Checkpoint 2 — Graph present
         if re.search(r'figure\s*\d|graph|plot|q[\s-]?q|histogram', text_lower):
             elements_found["graph_present"] = True
             evidence.append("Graph found")
         else:
             evidence.append("Graph NOT found")
 
-        # Checkpoint 4 — Homogeneity method
+        # Checkpoint 3 — Homogeneity method
         if re.search(r'levene|bartlett|variance\s*homogeneity|homogeneity\s*test|homoscedasticity', text_lower):
             elements_found["homogeneity_method"] = True
             evidence.append("Homogeneity method found")
         else:
             evidence.append("Homogeneity method NOT found")
 
-        # Checkpoint 5 — Homogeneity conclusion
+        # Checkpoint 4 — Homogeneity conclusion
         if re.search(r'variance\s*(is|are)\s*(not\s*)?homogeneous|homogeneity\s*(is|are)\s*(not\s*)?satisfied|equal\s*variance', text_lower):
             elements_found["homogeneity_conclusion"] = True
             evidence.append("Homogeneity conclusion found")
         else:
             evidence.append("Homogeneity conclusion NOT found")
 
-        # Checkpoint 6 — Table present
+        # Checkpoint 5 — Table present
         if re.search(r'table\s*\d|p[\s-]?value|statistic|levene|bartlett', text_lower):
             elements_found["table_present"] = True
             evidence.append("Table found")
@@ -127,10 +107,10 @@ class CW10_2Evaluator(BaseEvaluator):
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 1,
+                    "component_1_score": 2,
                     "component_2_score": 4,
                     "component_3_score": 5,
-                    "component_4_score": 5,
+                    "component_4_score": 4,
                     "component_5_score": 5,
                 },
                 max_points=20,
@@ -147,130 +127,140 @@ class CW10_2Evaluator(BaseEvaluator):
                             "table_present": True
                         },
                         "all_present": True,
-                        "evidence": ["Test mode - all elements present"]
+                        "evidence": ["Test mode - partial elements present"]
                     }
                 }
             )
 
+        element_check = self.check_required_elements(student_answer)
+
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["what can you say"]
+        )
+
         prompt = f"""You are grading a statistics assignment about normality and variance homogeneity checking using a **STRICT rubric-based approach.
 
 **TASK DESCRIPTION:**
-Students must complete 5 components for assumption checking (normality and variance homogeneity).
+Task 2. Name the visualization method used to check normality and include it to the introductory phrase with reference, number, and title it in APA style (5 points).  Produce and include the corresponding graph and interpret it in terms of normality checking (5 points). Name the statistical test used to assess homogeneity of variances and include it to APA-style introductory phrase (5 points). Present the results in a table. What can you say about the variance homogeneity based on the output? (5 points).
 
-**IMPORTANT GRADING RULES:**
-1. Total score MUST be exactly 20 points
-2. Focus on conceptual understanding over formatting
-3. Feedback should be SHORT, written as a teacher's comment
-4. Feedback CANNOT be an invitation for further discussion
-
-**RUBRIC:**
-
-**Component 1: Task Description (1 point):**
-- 1 point: Student includes pedagogical markers indicating they understand the task
-- 0 points: No task description present
-
-**Component 2: Check Normality & Name Method with Graph in APA (4 points):**
-This component combines:
-- Normality check performed
-- Method named
-- Graph included, numbered and titled in APA style
-
-Breaking down the 4 points:
-- 1 point: Normality assumption check attempted/mentioned
-- 1 point: Method explicitly named (e.g., "I used Q-Q plots" or "Shapiro-Wilk test")
-- 1 point: Graph/figure is present and referenced
-- 1 point: Figure number in APA style (e.g., "Figure 1")
-
-Acceptable normality methods: Shapiro-Wilk test, Q-Q plot, histogram with normal curve
-
-APA figure requirements:
-1. Reference to figure in text (e.g., "as shown in Figure 1")
-2. Figure number (e.g., "Figure 1")
-3. Descriptive title/caption
-4. Figure appears after being referenced
-
-**Component 3: Which Method for Normality (5 points):**
-- 5/5: Method name explicitly stated in a clear sentence (e.g., "I used Q-Q plots to check normality")
-- 3/5: Method mentioned but statement incomplete or unclear
-- 1/5: Method implied or only mentioned in figure caption
-- 0/5: Method not mentioned at all
-
-CRITICAL: Method can be stated in dedicated sentence OR in figure introduction phrase, but NOT only in figure caption
-
-**Component 4: Check Variance Homogeneity & Provide Conclusion (5 points):**
-This component combines:
-- Homogeneity check performed
-- Clear conclusion about whether variances are homogeneous
-
-Breaking down the 5 points:
-- 2 points: Homogeneity test performed/attempted
-- 3 points: Clear yes/no conclusion about variance homogeneity (e.g., "variances are homogeneous" or "variances are not equal")
-
-CRITICAL: Must explicitly state whether variances are homogeneous or not
-CRITICAL: Conclusion should be based on test results and appropriate significance level
-
-**Component 5: Name Homogeneity Method & Include Table in APA (5 points):**
-This component combines:
-- Method named
-- Table included, numbered and named in APA style
-
-Breaking down the 5 points:
-- 1 point: Homogeneity method explicitly named (e.g., "Levene's test")
-- 1 point: Table present and referenced in text
-- 1 point: Table number in APA style (e.g., "Table 1" or "Table 2")
-- 1 point: Descriptive table title in APA style
-- 1 point: Introduction phrase before table appears
-
-Acceptable homogeneity methods: Levene's test
-
-APA table requirements:
-1. Introduction before table appears
-2. Reference to table in text (e.g., "as shown in Table 1")
-3. Table number (e.g., "Table 1")
-4. Descriptive title
-5. Proper formatting (horizontal lines, clear labels)
+Total: 20 points
 
 STUDENT ANSWER:
 {student_answer}
 
-Return grading in this exact JSON format:
+**IMPORTANT NOTES:**
+- Students submit text descriptions of their work since visual elements (actual diagrams, screenshots, formatted documents) cannot be captured in text
+- If student REFERENCES or DESCRIBES the required elements (e.g., "I used APA format to describe findings", "I inserted the frequency distribution diagram"), ASSUME they completed it in their actual document
+- DO NOT penalize for "missing" visual elements if they clearly describe what they did
+
+**IMPORTANT GRADING RULES:**
+1. Total score MUST be exactly 20 points
+2. Reasoning is required; calculations are mandatory
+3. Feedback should be SHORT, written as a teacher's comment
+4. Feedback CANNOT be an invitation for further discussion
+5. Award partial credit where reasoning is mostly correct but incomplete
+6. It is expected to see both student's logic and calculations, not only the final answer
+7. Explanations must be SPECIFIC and ACTIONABLE - avoid vague phrases like "lacks depth", "could be better", "needs improvement". Instead, point to what is actually missing or what was done well.
+
+**HYBRID GRADING APPROACH:**
+
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}  
+
+**RUBRIC:**
+
+**Component 1: Formatting (2 points):**
+Use AUTOMATIC FORMATTING DETECTION RESULT above.
+- 1 point: Task description correctly formatted
+- 1 point: Proper autoformatting and structure
+
+**Component 2: Q-Q Plot Name (4 points):**
+- 4 points: Method name explicitly stated in a sentence (e.g., "I used a Q-Q Plot to check normality")
+- 0 points: Method name only in figure caption or table header, or not mentioned at all
+- CRITICAL: Must explicitly state the method name in text, not just in a figure or caption
+
+**Component 3: Figure 1 (5 points):**
+Use AUTOMATIC DETECTION above.
+- 1 point: Figure itself present and referenced
+- 1 point: Introductory phrase present before the figure
+- 1 point: Reference to figure number in introductory phrase
+- 1 point: Standalone figure number present (e.g., "Figure 1")
+- 1 point: Descriptive figure title present
+- CRITICAL: A label such as "Q-Q Plot of Residuals" counts as a title
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 4: Levene's Name & Table (4 points):**
+Use AUTOMATIC DETECTION above.
+- 1 point: Homogeneity method explicitly named (e.g., "Levene's test")
+- 1 point: Introductory phrase present before the table
+- 1 point: Reference to table number in introductory phrase
+- 1 point: Standalone table number present (e.g., "Table 1")
+- CRITICAL: Must explicitly state the method name in text, not just in a table header
+
+**Component 5: Conclusion on Homogeneity (5 points):**
+Use AUTOMATIC DETECTION above.
+- 2 points: Decision rule stated
+- 1 point: Numeric values of α and p reported
+- 1 point: Statistical inference stated (e.g., "since p > α, we fail to reject...")
+- 1 point: Clear conclusion on homogeneity (e.g., "variances are homogeneous" or "variances are not equal")
+- CRITICAL: Must explicitly state whether variances are homogeneous or not
+- CRITICAL: Conclusion must be based on comparison of p-value with α
+
+**CORRECT ANSWER REFERENCE:**
+Normality. We check normality using Q-Q Plot. According the plot (see Figure 1), our distribution looks normal.
+Figure 1
+Q-Q Plot for given variable 
+ 
+Variance homogeneity. We check variance homogeneity using Levene’s test. The Table 1 presents Levene’s test for given variable
+Table 1
+Test for Equality of Variances for given variable 
+F	df1	df2	p
+2.607	4.000	129.0	.039
+
+The decision rule is to reject the null hypothesis of variance homogeneity only if p < α.
+Here, the significance level is α=0.05, and the obtained value is p=0.039. Since p < α, we reject the null hypothesis of variance homogeneity. Therefore, the variance is considered not homogenous at the α=0.05 significancе level.
+
+**FEEDBACK RULES**
+- Identify which components were completed correctly
+- Point out missing or incomplete elements explicitly
+- Maintain supportive tone
+
+
+Return JSON only:
 {{
-  "component_1_score": <0-1>,
-  "component_1_explanation": "<brief explanation>",
+  "component_1_score": <0-2>,
+  "component_1_task_score": <0-1>,
+  "component_1_autoformat_score": <0-1>,
+  "component_1_explanation": "<brief>",
   "component_2_score": <0-4>,
-  "component_2_explanation": "<brief explanation>",
+  "component_2_explanation": "<brief>",
   "component_3_score": <0-5>,
-  "component_3_explanation": "<brief explanation>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<brief explanation>",
+  "component_3_explanation": "<brief>",
+  "component_4_score": <0-4>,
+  "component_4_explanation": "<brief>",
   "component_5_score": <0-5>,
-  "component_5_explanation": "<brief explanation>",
-  "total_points": <0-20>,
+  "component_5_explanation": "<brief>",
+  "total_points": <sum of above, 0-20>,
   "max_points": 20,
   "percentage": <percentage>,
-  "feedback": "<SHORT teacher's comment>",
+  "feedback": "<narrative feedback>",
   "vibe": "<one-sentence overall impression>"
 }}"""
-
-        element_check = self.check_required_elements(student_answer)
-        element_summary = element_check["elements_found"]
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
             additional_checks={
-                "element_check": element_check
+                "element_check": element_check,
+                "formatting_check": formatting_check
             }
         )
-
-        # Enforcement: Task description
-        if "error" not in result:
-            if not element_check["elements_found"]["task_description"]:
-                result["component_1_score"] = 0
-                result["component_1_explanation"] = "Task description NOT found (instructional phrasing missing)"
-            else:
-                result["component_1_score"] = 1
-                result["component_1_explanation"] = "Task description found"
 
         if "error" not in result:
             component_keys = [
@@ -285,70 +275,47 @@ Return grading in this exact JSON format:
         return result
 
     def print_grading_results(self, grading):
-        """Display grading results."""
-        import textwrap
-        print("=" * 60)
-        print("GRADING RESULTS - CLASSWORK 10.2")
-        print("Assumption Checking: Normality and Variance Homogeneity")
-        print("=" * 60)
+        """
+        Display grading results using OutputFormatter.
 
-        if 'component_1_score' in grading:
-            print("\nCOMPONENT BREAKDOWN:")
-            print(f"  Component 1 (Task Description): {grading.get('component_1_score', 'N/A')}/1")
-            if grading.get('component_1_explanation'):
-                print(f"    → {grading.get('component_1_explanation')}")
+        Args:
+            grading: Grading result dictionary
+        """
+        # Define component labels
+        component_labels = {
+            "component_1_score": "Formatting (Task desc / Autoformatting)",
+            "component_2_score": "Q-Q Plot Name",
+            "component_3_score": "Figure 1",
+            "component_4_score": "Levene's Name & Table",
+            "component_5_score": "Conclusion on Homogeneity",
+        }
 
-            print(f"  Component 2 (Normality Check & Graph APA): {grading.get('component_2_score', 'N/A')}/4")
-            if grading.get('component_2_explanation'):
-                print(f"    → {grading.get('component_2_explanation')}")
+        # Define component types
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "HYBRID",
+            "component_3_score": "STRICT",
+            "component_4_score": "HYBRID",
+            "component_5_score": "HYBRID",
+        }
 
-            print(f"  Component 3 (Which Method for Normality): {grading.get('component_3_score', 'N/A')}/5")
-            if grading.get('component_3_explanation'):
-                print(f"    → {grading.get('component_3_explanation')}")
+        max_scores = {
+            "component_1_score": 2,
+            "component_2_score": 4,
+            "component_3_score": 5,
+            "component_4_score": 4,
+            "component_5_score": 5,
+        }
 
-            print(f"  Component 4 (Homogeneity Check & Conclusion): {grading.get('component_4_score', 'N/A')}/5")
-            if grading.get('component_4_explanation'):
-                print(f"    → {grading.get('component_4_explanation')}")
-
-            print(f"  Component 5 (Homogeneity Method & Table APA): {grading.get('component_5_score', 'N/A')}/5")
-            if grading.get('component_5_explanation'):
-                print(f"    → {grading.get('component_5_explanation')}")
-
-            print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points', 'N/A')}/{grading.get('max_points', 20)}")
-        print(f"PERCENTAGE: {grading.get('percentage', 'N/A')}%")
-
-        print("\n" + "=" * 60)
-        print("FEEDBACK:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get('feedback', 'No feedback available'), width=60))
-
-        print("\n" + "=" * 60)
-        print("THE VIBE:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get('vibe', 'N/A'), width=60))
-
-        if 'error' in grading:
-            print("\n" + "=" * 60)
-            print("ERROR:")
-            print("=" * 60)
-            print(grading.get('error'))
-            if 'raw_response' in grading:
-                print("\nRaw Response:")
-                print(grading['raw_response'][:500])
-
-
-if __name__ == "__main__":
-    evaluator = CW10_2Evaluator()
-    from config import InputHandler
-
-    input_handler = InputHandler()
-    student_answer = input_handler.collect_and_validate_input(
-        question_name="CLASSWORK 10.2",
-        question_description="Assumption Checking: Normality and Variance Homogeneity",
-        min_length=10
-    )
-    if student_answer:
-        grading = evaluator.grade_question_cw10_2_answer(student_answer)
-        evaluator.print_grading_results(grading)
+        # Use formatter to display results
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="QUESTION 10_2",
+            question_description="Assumption Checking: Normality and Variance Homogeneity",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="HYBRID"
+        )
