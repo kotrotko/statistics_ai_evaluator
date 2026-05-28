@@ -37,7 +37,14 @@ class CW7_2Evaluator (BaseEvaluator):
             Dictionary with found elements and evidence
         """
         text_lower = student_answer.lower()
+        
+        # Regex-derived rubric checkpoints passed into AUTOMATIC DETECTION
+        # inside the grading prompt. Used by the LLM to support consistent
+        # hybrid rubric grading, especially for strict required elements.
 
+        # Regex-derived rubric checkpoints passed into AUTOMATIC DETECTION
+        # inside the grading prompt. Used by the LLM to support consistent
+        # hybrid rubric grading, especially for strict required elements.
         elements_found = {
             "normality_method": False,
             "table": False,
@@ -129,11 +136,9 @@ class CW7_2Evaluator (BaseEvaluator):
 **TASK DESCRIPTION:**
 Task 2. Which method would you like to apply to check the normality assumption? Provide three arguments which make it more appropriate than other methods for normality checking (5 points). Insert the table, introduce, number, and title it. (5 points). Provide a decision rule. Check the normality assumption with significance level  = 0.001. Make a conclusion: Is this distribution normal? (5 points) Explain your reasoning: why do you think so? (5 points).
 
-Total: 20 points
-        
 STUDENT ANSWER:
 {student_answer}
-        
+
 **IMPORTANT NOTES:**
 - Students submit text descriptions of their work since visual elements (actual diagrams, screenshots, formatted documents) cannot be captured in text
 - If student REFERENCES or DESCRIBES the required elements (e.g., "I used APA format to describe findings", "I inserted the frequency distribution diagram"), ASSUME they completed it in their actual document

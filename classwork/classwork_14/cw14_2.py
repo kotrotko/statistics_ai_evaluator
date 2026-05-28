@@ -7,23 +7,16 @@ Evaluation method name: def grade_question_cw14_2_answer
 
 import re
 from config import BaseEvaluator
-
+from config.output_formatter import OutputFormatter
+from config.formatting_checks import check_formatting_elements_type2
 
 class CW14_2Evaluator(BaseEvaluator):
     """
     Evaluator for Classwork 14_2.
 
-    Task: Following our Step system, on:
-    Step 1. Name the method you choose and justify it based on the data level (5 points).
-    Step 2. State the hypotheses in needed form (5 points).
-    Step 3. State the significance level α, calculate df, find the critical value. (5 points).
-    Step 4. Open the JASP > Frequencies > Contingency Tables tool. Make sure that you have Physical Activity on Rows and Fruit Consumption on Columns. Include the "Contingency Tables" table, number it, make sure that it is introduced, numbered, and named (5 points).
-    Total (strictly) 20 points.
-
-    Evaluates student's ability to follow the step system for Chi Square analysis.
+    Task 2. Name the method you choose and justify it based on the data level (5 points). State the hypotheses in needed form (5 points). State the significance level α, calculate df, find the critical value. (5 points). Open the JASP > Frequencies > Contingency Tables tool. Make sure that you have Physical Activity on Rows and Fruit Consumption on Columns. Include the “Contingency Tables” table, number it, make sure that it is introduced, numbered, and named (5 points).
 
     Inherits common functionality from BaseEvaluator.
-    Contains only question-specific logic.
     """
 
     def __init__(self):
@@ -33,6 +26,8 @@ class CW14_2Evaluator(BaseEvaluator):
             temperature=0.3,
             max_tokens=1200
         )
+        # Initialize output formatter
+        self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:
         """
@@ -45,12 +40,8 @@ class CW14_2Evaluator(BaseEvaluator):
             Dictionary with found elements and evidence
         """
         text_lower = student_answer.lower()
-        first_lines = student_answer[:200]
 
         elements_found = {
-            "paper_title": False,
-            "task_description": False,
-            "no_autoformatting": True,
             "method_justification": False,
             "hypotheses": False,
             "significance_setup": False,
@@ -59,86 +50,49 @@ class CW14_2Evaluator(BaseEvaluator):
 
         evidence = []
 
-        # Paper title
-        title_patterns = [
-            r'^\s*classwork\s*14',
-            r'^\s*cw\s*14\b',
-            r'^\s*class\s*work\s*(week\s*)?14',
-            r'^\s*in.?class\s*14'
-        ]
-
-        for pattern in title_patterns:
-            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
-                elements_found["paper_title"] = True
-                evidence.append("Title found")
-                break
-
-        # Task description (pedagogical markers, plain string matching)
-        pedagogical_markers = [
-            "name the method you choose and justify it based on the data level",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
-        else:
-            evidence.append("Task description NOT found")
-
-        # No autoformatting
-        autoformat_patterns = [
-            r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',
-            r'^\s*[-•*]\s+\S',
-        ]
-
-        for pattern in autoformat_patterns:
-            if re.search(pattern, student_answer, re.MULTILINE):
-                elements_found["no_autoformatting"] = False
-                evidence.append("Autoformatting detected")
-                break
-
-        # Method justification (Step 1)
+        # Checkpoint 1 — Method justification (Step 1)
         if re.search(
-            r'chi[\s-]?square|chi[\s-]?squared|χ²|categorical|nominal|'
-            r'independence|contingency|non[\s-]?parametric',
-            text_lower
+                r'chi[\s-]?square|chi[\s-]?squared|χ²|categorical|nominal|'
+                r'independence|contingency|non[\s-]?parametric',
+                text_lower
         ):
             elements_found["method_justification"] = True
             evidence.append("Method justification found")
         else:
             evidence.append("Method justification NOT found")
 
-        # Hypotheses (Step 2)
+        # Checkpoint 2 — Hypotheses (Step 2)
         if re.search(
-            r'h[0o]\s*:|h[1a]\s*:|null\s*hypothesis|alternative\s*hypothesis|'
-            r'independent|not\s*independent|associated|no\s*association',
-            text_lower
+                r'h[0o]\s*:|h[1a]\s*:|null\s*hypothesis|alternative\s*hypothesis|'
+                r'independent|not\s*independent|associated|no\s*association',
+                text_lower
         ):
             elements_found["hypotheses"] = True
             evidence.append("Hypotheses found")
         else:
             evidence.append("Hypotheses NOT found")
 
-        # Significance level, df, critical value (Step 3)
+        # Checkpoint 3 — Significance level, df, critical value (Step 3)
         if re.search(
-            r'α|alpha|significance\s*level|df\s*=|\bdf\b|degrees\s*of\s*freedom|'
-            r'critical\s*value|χ²\s*crit|chi[\s-]?square\s*critical',
-            text_lower
+                r'α|alpha|significance\s*level|df\s*=|\bdf\b|degrees\s*of\s*freedom|'
+                r'critical\s*value|χ²\s*crit|chi[\s-]?square\s*critical',
+                text_lower
         ):
             elements_found["significance_setup"] = True
             evidence.append("Significance setup found")
         else:
             evidence.append("Significance setup NOT found")
 
-        # Chi Square result and inference (Step 4)
+        # Checkpoint 4 — Contingency table (Step 4)
         if re.search(
-            r'χ²|chi[\s-]?square\s*=|p\s*[<>=]\s*[0\.]|reject|fail\s*to\s*reject|'
-            r'significant|conclude|inference',
-            text_lower
+                r'table\s*\d+|contingency\s*table|\bfrequency\b|'
+                r'physical\s*activity|fruit\s*consumption',
+                text_lower
         ):
-            elements_found["inference"] = True
-            evidence.append("Inference found")
+            elements_found["contingency_table"] = True
+            evidence.append("Contingency table found")
         else:
-            evidence.append("Inference NOT found")
+            evidence.append("Contingency table NOT found")
 
         return {
             "elements_found": elements_found,
@@ -169,126 +123,155 @@ class CW14_2Evaluator(BaseEvaluator):
                 vibe="Clear Chi Square step-system reasoning",
             )
 
+        element_check = self.check_required_elements(student_answer)
+
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["make sure that you have"],
+        )
+
         prompt = f"""You are grading a statistics assignment using a STRICT rubric.
 
-TASK:
-Students must complete 5 components following the Step system for Chi Square analysis.
+**TASK DESCRIPTION:**
+Task 2. Name the method you choose and justify it based on the data level (5 points). State the hypotheses in needed form (5 points). State the significance level α, calculate df, find the critical value. (5 points). Open the JASP > Frequencies > Contingency Tables tool. Make sure that you have Physical Activity on Rows and Fruit Consumption on Columns. Include the “Contingency Tables” table, number it, make sure that it is introduced, numbered, and named
 
-IMPORTANT GRADING RULES:
+Total: 20 points
+
+STUDENT ANSWER:
+{student_answer}
+
+**IMPORTANT NOTES:**
+- Students submit text descriptions of their work since visual elements (actual diagrams, screenshots, formatted documents) cannot be captured in text
+- If student REFERENCES or DESCRIBES the required elements (e.g., "I used APA format to describe findings", "I inserted the frequency distribution diagram"), ASSUME they completed it in their actual document
+- DO NOT penalize for "missing" visual elements if they clearly describe what they did
+        
+**IMPORTANT GRADING RULES:**
 1. Total score MUST be exactly 20 points
-2. Focus on conceptual understanding over formatting
+2. Reasoning is required; calculations are mandatory
 3. Feedback should be SHORT, written as a teacher's comment
 4. Feedback CANNOT be an invitation for further discussion
+5. Award partial credit where reasoning is mostly correct but incomplete
+6. It is expected to see both student's logic and calculations, not only the final answer
+7. Explanations must be SPECIFIC and ACTIONABLE - avoid vague phrases like "lacks depth", "could be better", "needs improvement". Instead, point to what is actually missing or what was done well.
 
-RUBRIC:
+**HYBRID GRADING APPROACH:**
 
-Component 1: Task Description (1 point)
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}    
+
+**RUBRIC:**
+
+Component 1: Formatting (2 points)
 DO NOT SCORE — handled externally. Leave component_1_score as 0.
+Use AUTOMATIC FORMATTING DETECTION RESULT above.
+- 1 point: Task description present
+- 1 point: No auto-formatting detected (no bullet points, numbered lists, etc.)
 
-Component 2: Step 1 — Method Choice and Justification (4 points)
+Component 2: Step 1 — Method Choice and Justification (5 points)
 Student must name Chi Square test of independence and justify why it is appropriate
 based on the level of measurement of the variables (both categorical/nominal).
 
-- 4 points: Method named correctly (Chi Square test of independence) and justification
-  explicitly references the categorical/nominal nature of both variables
-- 3 points: Method named correctly but justification vague or only partially connected
-  to data level
-- 2 points: Method named but justification is minimal or generic
-- 1 point: Method mentioned without any justification
+- 2 points: Method name explicitly stated in a sentence (e.g., "I will use the Chi Square test of independence")
+- 1 point: Data level argument provided (both variables are categorical/nominal)
+- 1 point: One variable argument provided (variable name referenced in justification)
+- 1 point: Independence/association argument provided (why Chi Square fits the research question)
 - 0 points: Completely absent
 
 CRITICAL: Justification must reference data level (categorical/nominal), not just say
 "Chi Square is appropriate."
 
-Component 3: Step 2 — State the Hypotheses (5 points)
+Component 3: Step 2 — State the Hypotheses (4 points)
 Student must state both H0 and H1 in correct form for Chi Square test of independence.
 
-- 5 points: Both hypotheses stated correctly in proper form
-  H0: The two variables are independent (no association)
-  H1: The two variables are not independent (there is an association)
-- 4 points: Both present but one is imprecise or uses informal language
-- 3 points: Both present but incorrectly formulated or missing variable names
-- 2 points: Only one hypothesis stated
-- 1 point: Hypotheses attempted but substantially wrong or incomplete
-- 0 points: Completely absent
+- 2 points: H0 correctly stated (the two variables are independent / no association)
+- 2 points: H1 correctly stated (the two variables are not independent / there is an association)
+- 1 point each: Hypothesis present but imprecise or missing variable reference
+- 0 points each: Absent or completely wrong
 
 Accept symbolic or verbal forms. Variables must be identifiable (physical activity,
 fruit consumption, or equivalent).
 
-Component 4: Step 3 — Significance Level, df, Critical Value (5 points)
+Component 4: Step 3 — Significance Level, df, Critical Value (4 points)
 Student must state α, calculate df correctly, and identify the critical value.
 
-- 5 points: All three elements present and correct
-  α = 0.05, df = (R-1)(C-1), critical value from Chi Square table
-- 4 points: All three present but one contains a minor error
-- 3 points: Two of the three elements present and correct
-- 2 points: Only one element present, or all three with significant errors
-- 1 point: Minimal attempt
-- 0 points: Completely absent
+- 1 point: Significance level α stated (e.g., α = 0.05)
+- 2 points: df calculated correctly using (R-1)(C-1); for a 3×3 table df = 4
+- 1 point: Critical value stated correctly corresponding to the df and α
 
 CRITICAL: df for Chi Square = (rows - 1)(columns - 1). For a 3×3 table: df = 4.
 Accept any correct critical value corresponding to the stated df and α.
-
+Task 2. Name the method you choose and justify it based on the data level (5 points). State the hypotheses in needed form (5 points). State the significance level α, calculate df, find the critical value. (5 points). Open the JASP > Frequencies > Contingency Tables tool. Make sure that you have Physical Activity on Rows and Fruit Consumption on Columns. Include the “Contingency Tables” table, number it, make sure that it is introduced, numbered, and named 
 Component 5: Step 4 — Contingency Table (5 points)
 Student must include the Contingency Tables output from JASP, properly introduced, numbered, and named,
 with Physical Activity on Rows and Fruit Consumption on Columns.
 
-- 5 points: Table present, introduced in text, numbered, and titled with both variable names;
-  Physical Activity on rows and Fruit Consumption on columns
-- 4 points: Table present and introduced but title missing one variable name, or row/column
-  assignment not explicitly stated
-- 3 points: Table present and numbered but not introduced or not named
-- 2 points: Table present but missing number, title, and introduction
-- 1 point: Minimal attempt — reference to contingency table without actual table
-- 0 points: Completely absent
+- 1 point: The actual contingency table with numerical data is present
+- 1 point: Introductory phrase present before the table
+- 1 point: Reference to table number in the introductory phrase
+- 1 point: Standalone table number present on the table itself
+- 1 point: Descriptive table title present (naming both variables)
+- CRITICAL: Do NOT accept a chi-square test table as a substitute for the contingency table.
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text.
 
-CRITICAL: Table must be introduced with a sentence before it appears.
-CRITICAL: Table must have a number label and a descriptive title naming both variables.
-CRITICAL: Do NOT accept a chi-square test table as a substitute for the contingency table.
----
+**CORRECT ANSWER REFERENCE:**
+The appropriate method is the χ² (Chi-square) test of independence because both variables—physical activity level (low, moderate, vigorous) and fruit consumption level (low, medium, high)—are categorical variables measured at the nominal/ordinal level. This test is used to examine whether there is a significant association between two categorical variables in one sample.
+H₀ (Null hypothesis): Physical activity level and fruit consumption level are independent among college students (there is no association between them).
+H₁ (Alternative hypothesis): Physical activity level and fruit consumption level are not independent among college students (there is an association between them).
+Significance level: α = 0.05
+df = (3−1)*(3-1) = 4
+ χ_critical^2(0.05,4) = 9.488
+Table 1 is the contingency table showing the distribution of physical activity levels by fruit consumption among college students.
+Table 1
+Contingency Table of Physical Activity and Fruit Consumption
+Contingency Tables 
+	Fruit Consumption	
+Physical Activity	Low	Medium	High	Total
+Low		69		25		14		108	
+Moderate		206		126		111		443	
+Vigorous		294		170		169		633	
+Total		569		321		294		1184	
 
-STUDENT ANSWER:
-{student_answer}
+Note.  Each cell displays the observed counts
 
-Return JSON in this exact format:
+**FEEDBACK RULES**
+- Identify which components were completed correctly
+- Point out missing or incomplete elements explicitly
+- Maintain supportive tone
+
+Return JSON only:
 {{
-  "component_1_score": 0,
-  "component_1_explanation": "Handled externally",
-  "component_2_score": <0-4>,
-  "component_2_explanation": "<brief explanation>",
-  "component_3_score": <0-5>,
-  "component_3_explanation": "<brief explanation>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<brief explanation>",
+  "component_1_score": <0-2>,
+  "component_1_task_score": <0-1>,
+  "component_1_autoformat_score": <0-1>,
+  "component_1_explanation": "<brief>",
+  "component_2_score": <0-5>,
+  "component_2_explanation": "<brief>",
+  "component_3_score": <0-4>,
+  "component_3_explanation": "<brief>",
+  "component_4_score": <0-4>,
+  "component_4_explanation": "<brief>",
   "component_5_score": <0-5>,
-  "component_5_explanation": "<brief explanation for contingency table>",
-  "total_points": <0-20>,
+  "component_5_explanation": "<brief>",
+  "total_points": <sum of above, 0-20>,
   "max_points": 20,
   "percentage": <percentage>,
-  "feedback": "<SHORT teacher's comment>",
+  "feedback": "<narrative feedback>",
   "vibe": "<one-sentence overall impression>"
 }}
-
-SCORING INSTRUCTIONS:
-total_points = component_1_score + component_2_score + component_3_score + component_4_score + component_5_score
 """
-
-        element_check = self.check_required_elements(student_answer)
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
-            additional_checks={"element_check": element_check}
+            additional_checks={"element_check": element_check,
+                               "formatting_check": formatting_check,
+                               }
         )
-
-        # Enforcement: task description (plain string matching, overrides LLM)
-        if "error" not in result:
-            if not element_check["elements_found"]["task_description"]:
-                result["component_1_score"] = 0
-                result["component_1_explanation"] = "Task description NOT found (instructional phrasing missing)"
-            else:
-                result["component_1_score"] = 1
-                result["component_1_explanation"] = "Task description found"
 
         if "error" not in result:
             result = self.validate_component_scores(
@@ -306,58 +289,47 @@ total_points = component_1_score + component_2_score + component_3_score + compo
         return result
 
     def print_grading_results(self, grading):
-        """Display grading results."""
-        import textwrap
+        """
+        Display grading results using OutputFormatter.
 
-        print("=" * 60)
-        print("GRADING RESULTS - CLASSWORK 14.2")
-        print("Chi Square — Step System")
-        print("=" * 60)
+        Args:
+            grading: Grading result dictionary
+        """
+        # Define component labels
+        component_labels = {
+            "component_1_score": "Formatting (Task desc / Autoformatting)",
+            "component_2_score": "Method Choice and Justification",
+            "component_3_score": "Hypotheses",
+            "component_4_score": "Significance Level, df, Critical Value",
+            "component_5_score": "Contingency Table",
+        }
 
-        if 'component_1_score' in grading:
-            print("\nCOMPONENT BREAKDOWN:")
+        # Define component types
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "HYBRID",
+            "component_3_score": "HYBRID",
+            "component_4_score": "HYBRID",
+            "component_5_score": "STRICT",
+        }
 
-            print(f"  Component 1 (Task Description): {grading.get('component_1_score')}/1")
-            if grading.get('component_1_explanation'):
-                print(f"    → {grading.get('component_1_explanation')}")
+        max_scores = {
+            "component_1_score": 2,
+            "component_2_score": 5,
+            "component_3_score": 4,
+            "component_4_score": 4,
+            "component_5_score": 5,
+        }
 
-            print(f"  Component 2 (Step 1: Method Choice & Justification): {grading.get('component_2_score')}/4")
-            if grading.get('component_2_explanation'):
-                print(f"    → {grading.get('component_2_explanation')}")
-
-            print(f"  Component 3 (Step 2: Hypotheses): {grading.get('component_3_score')}/5")
-            if grading.get('component_3_explanation'):
-                print(f"    → {grading.get('component_3_explanation')}")
-
-            print(f"  Component 4 (Step 3: α, df, Critical Value): {grading.get('component_4_score')}/5")
-            if grading.get('component_4_explanation'):
-                print(f"    → {grading.get('component_4_explanation')}")
-
-            print(f"  Component 5 (Step 4: Contingency Table): {grading.get('component_5_score')}/5")
-            if grading.get('component_5_explanation'):
-                print(f"    → {grading.get('component_5_explanation')}")
-
-            print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points')}/20")
-        print(f"PERCENTAGE: {grading.get('percentage')}%")
-
-        print("\nFEEDBACK:")
-        print(textwrap.fill(grading.get('feedback', ''), width=60))
-
-
-if __name__ == "__main__":
-    evaluator = CW14_2Evaluator()
-
-    from config import InputHandler
-    input_handler = InputHandler()
-
-    student_answer = input_handler.collect_and_validate_input(
-        question_name="CLASSWORK 14.2",
-        question_description="Chi Square — Step System",
-        min_length=10
-    )
-
-    if student_answer:
-        grading = evaluator.grade_question_cw14_2_answer(student_answer)
-        evaluator.print_grading_results(grading)
+        # Use formatter to display results
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="CLASSWORK 14_2",
+            question_description="Chi Square — Method / Hypotheses / α df CV / Contingency Table",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="HYBRID"
+        )

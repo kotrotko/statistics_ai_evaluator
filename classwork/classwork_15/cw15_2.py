@@ -1,25 +1,20 @@
 """
 cw15_2.py
 Classwork 15: Exploratory Factor Analysis
-Factor Creation and Rotation
+Factor Creation
 Evaluation method name: def grade_question_cw15_2_answer
 """
 
 import re
-import textwrap
 from config import BaseEvaluator
-
+from config.output_formatter import OutputFormatter
+from config.formatting_checks import check_formatting_elements_type2
 
 class CW15_2Evaluator(BaseEvaluator):
     """
     Evaluator for Classwork 15_2.
 
-    Task: Factor Creation and Rotation.
-    Factor Loadings table with promax rotation (3 points).
-    A. Number of Factors — changes with eigenvalue (5 points) + most reasonable (5 points).
-    B. Rotation — oblique vs orthogonal comparison (5 points).
-    Formatting: task description (1 point) + no autoformatting (1 point).
-    Total (strictly) 20 points.
+    Task 2. Factor Creation. Include Factor Loadings table, based on promax rotation (5 points). How many factors do you see? What is proportion of items shows strong factor loading ((≥ .40)? What does it mean in terms of clustering into latent factors? Which items showed weaker loading and higher uniqueness, indicating weaker representation within their factors?  (5 points). Number of Factors. Play with different values for Eigenvalues: try 1, 2, 3, 4 and 0 (some settings may show an error). What happens to the number of extracted factors (5 points)? Which number seems most reasonable and why (5 points)? Then, for further analysis, use 1 as default, since no theory predicts a specific number of eigenvalues.  Setting to 1 extracts all factors with eigenvalue > 1.
     """
 
     def __init__(self):
@@ -28,189 +23,223 @@ class CW15_2Evaluator(BaseEvaluator):
             temperature=0.3,
             max_tokens=1200
         )
+        # Initialize output formatter
+        self.formatter = OutputFormatter(default_width=60)
 
-    def check_formatting_elements(self, student_answer: str) -> dict:
+    def check_required_elements(self, student_answer: str) -> dict:
+        """
+        Check if required elements are present.
+
+        Args:
+            student_answer: The student's response text
+
+        Returns:
+            Dictionary with found elements and evidence
+        """
         text_lower = student_answer.lower()
 
+        # Regex-derived rubric checkpoints passed into AUTOMATIC DETECTION
+        # inside the grading prompt. Used by the LLM to support consistent
+        # hybrid rubric grading, especially for strict required elements.
         elements_found = {
-            "task_description": False,
-            "no_autoformatting": True,
+            "factor_loadings_table": False,
+            "three_factor_structure": False,
+            "eigenvalue_behavior": False,
         }
 
         evidence = []
 
-        pedagogical_markers = [
-            "what is proportion of items",
-            "how many factors do you see",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
+        # Checkpoint 1 — Factor loadings table (promax)
+        if re.search(r'promax|factor\s*loading|table\s*4', text_lower):
+            elements_found["factor_loadings_table"] = True
+            evidence.append("Factor loadings table found")
         else:
-            evidence.append("Task description NOT found")
+            evidence.append("Factor loadings table NOT found")
 
-        autoformat_patterns = [
-            r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',
-            r'^\s*[-•*]\s+\S',
-        ]
+        # Checkpoint 2 — Three-factor structure identification
+        if re.search(r'three[\s-]?factor|3[\s-]?factor|three\s*factor', text_lower):
+            elements_found["three_factor_structure"] = True
+            evidence.append("Three-factor structure found")
+        else:
+            evidence.append("Three-factor structure NOT found")
 
-        for pattern in autoformat_patterns:
-            if re.search(pattern, student_answer, re.MULTILINE):
-                elements_found["no_autoformatting"] = False
-                evidence.append("Autoformatting detected")
-                break
+        # Checkpoint 3 — Eigenvalue behavior
+        if re.search(r'eigenvalue', text_lower) and \
+                re.search(r'fewer|more|number\s*of\s*factor', text_lower):
+            elements_found["eigenvalue_behavior"] = True
+            evidence.append("Eigenvalue behavior found")
+        else:
+            evidence.append("Eigenvalue behavior NOT found")
 
-        if elements_found["no_autoformatting"]:
-            evidence.append("No autoformatting found")
+        # Checkpoint 4 — Rotation comparison (oblique vs orthogonal)
+        if re.search(r'oblique|oblimin|varimax|orthogonal', text_lower) and \
+                re.search(r'if you have factors|correlated|independent|interpretable', text_lower):
+            elements_found["rotation_comparison"] = True
+            evidence.append("Rotation comparison found")
+        else:
+            evidence.append("Rotation comparison NOT found")
 
         return {
             "elements_found": elements_found,
-            "evidence": evidence
+            "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
-    def grade_question_cw15_2_answer(self, student_answer: str):
+    def grade_question_cw15_2_answer(self, student_answer: str, test_mode: bool = False):
+        """
+        Grade Question 15.2: Factor Creation and Rotation
+        Returns detailed grading breakdown.
 
-        formatting_check = self.check_formatting_elements(student_answer)
-        fs = formatting_check["elements_found"]
+        Args:
+            student_answer: The student's response text
+            test_mode: If True, returns mock data without calling API
+        """
+        if test_mode:
+            return self.create_mock_result(
+                component_scores={
+                    "component_1_score": 2,
+                    "component_2_score": 3,
+                    "component_3_score": 5,
+                    "component_4_score": 5,
+                    "component_5_score": 5,
+                },
+                max_points=20,
+                feedback="[TEST MODE] Factor structure identified. Eigenvalue behavior described. Oblique rotation justified.",
+                vibe="Student demonstrates solid understanding of EFA factor extraction and rotation.",
+                additional_data={
+                    # Mock mirrors what check_required_elements and
+                    # check_formatting_elements_type2 return in actual grading
+                    "element_check": {
+                        # Simulates check_required_elements() output in test mode.
+                        # Keys must match elements_found in check_required_elements exactly.
+                        "elements_found": {
+                            "factor_loadings_table": True,
+                            "three_factor_structure": True,
+                            "eigenvalue_behavior": True,
+                        },
+                        "all_present": True,
+                        "evidence": ["Test mode - all elements present"]
+                    },
+                    "formatting_check": {
+                        "elements_found": {
+                            "task_description": True,
+                            "autoformatting": True,
+                        },
+                        "evidence": ["Test mode - all elements present"]
+                    }
+                }
+            )
 
-        formatting_block = f"""
-HEADER DETECTION RESULTS (USE AS FACTS):
+        element_check = self.check_required_elements(student_answer)
 
-task_description_present = {fs["task_description"]}
-no_autoformatting_present = {fs["no_autoformatting"]}
-"""
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["if you have factors", "how many factors do you see"]
+        )
 
-        prompt = f"""{formatting_block}
+        prompt = f"""You are grading a statistics classwork assignment on Exploratory Factor Analysis.
 
-You are grading a statistics classwork assignment on Exploratory Factor Analysis.
+**TASK DESCRIPTION:**
+Include Factor Loadings table, based on promax rotation (5 points). 
+How many factors do you see? What is proportion of items shows strong factor loading ((≥ .40)? What does it mean in terms of clustering into latent factors? Which items showed weaker loading and higher uniqueness, indicating weaker representation within their factors?  (5 points). 
+Number of Factors. Play with different values for Eigenvalues: try 1, 2, 3, 4 and 0 (some settings may show an error). What happens to the number of extracted factors (5 points)? Which number seems most reasonable and why (5 points)? 
+Then, for further analysis, use 1 as default, since no theory predicts a specific number of eigenvalues.  Setting to 1 extracts all factors with eigenvalue > 1.
 
-TASK: Factor Creation and Rotation.
-
-Use STRICT rubric-based grading. Total score MUST be exactly 20 points.
-
-RUBRIC
-
-Component 1: Formatting (2 points)
-Start with 2 points.
-
-Step 1 Task description (1 point)
-Use task_description_present
-
-Step 2 No autoformatting (1 point)
-Use no_autoformatting_present
-
-Component 2: Factor Loadings Table (3 points)
-Student must include the Factor Loadings table based on promax rotation and interpret it.
-
-Sub-component 2a: Three-factor structure identification (1 point)
-- 1 point: Student correctly identifies that the promax rotation produced a three-factor structure
-- 0 points: Number of factors not identified or incorrectly stated
-
-Sub-component 2b: Factor composition interpretation (1 point)
-- 1 point: Student accurately describes which items load on each factor
-  (Factor 1: x4, x5, x6; Factor 2: x7, x8, x9; Factor 3: x1, x2, x3)
-  and links them to underlying constructs
-- 0 points: Factor composition missing, incomplete, or incorrect
-
-Sub-component 2c: Loading quality evaluation (1 point)
-- 1 point: Student correctly evaluates loading quality (≥ .40 = acceptable/strong)
-  AND appropriately identifies weaker items (x2, x9) with higher uniqueness
-  as less representative of their factors
-- 0 points: Loading quality not evaluated or weaker items not identified
-
-Component 3: Changes in Number of Extracted Factors (5 points)
-Student must describe what happens to the number of extracted factors
-as eigenvalue cut-off changes (trying values 1, 2, 3, 4, and 0).
-
-- 5 points: Clear explanation that higher eigenvalue cut-off = fewer factors retained,
-  lower cut-off = more factors; mentions behavior at specific values tried
-- 4 points: General direction correct but missing specific eigenvalue values or behavior at 0
-- 3 points: Partial explanation — mentions change in number of factors but vague
-- 2 points: Mentions eigenvalue and factors but relationship unclear
-- 1 point: Only states that the number changes without any explanation
-- 0 points: Completely absent
-
-Component 4: Most Reasonable Number of Factors (5 points)
-Student must identify the most reasonable eigenvalue setting and justify why.
-
-- 5 points: Identifies eigenvalue > 1 as most reasonable AND provides clear justification
-  (e.g., meaningful loadings, interpretable structure, stable factors)
-- 4 points: Correct choice with partial justification
-- 3 points: Reasonable choice but justification vague or missing
-- 2 points: Incorrect choice but justification shows some understanding
-- 1 point: States a preference without any reasoning
-- 0 points: Completely absent
-
-Component 5: Oblique Rotation Comparison (5 points)
-Student must compare orthogonal (Varimax) and oblique rotation results and
-justify which is more appropriate for their data.
-
-Sub-component 5a: What changes (2 points)
-- 2 points: Student describes specific changes in factor loadings or structure
-  when switching from orthogonal to oblique rotation
-- 1 point: Vague mention that something changes without specific description
-- 0 points: No comparison made
-
-Sub-component 5b: Better solution (3 points)
-- 3 points: Student argues oblique is more appropriate AND provides clear reasoning
-  (factors are likely correlated; more realistic interpretation; shares variance)
-- 2 points: Correct choice with partial reasoning
-- 1 point: States preference without reasoning
-- 0 points: Completely absent or incorrect conclusion
-
----
-
-EXAMPLE OF A COMPLETE ANSWER
-
-Factor Loadings:
-Table 4. Factor Loadings.
-The promax rotation identified a three-factor structure. Factor 1 was mainly defined
-by x5, x4, and x6; Factor 2 by x7, x8, and x9; Factor 3 by x3, x1, and x2.
-Most items showed strong factor loadings (≥ .40), indicating meaningful clustering
-into latent factors. However, x2 and x9 showed relatively weaker loadings and higher
-uniqueness, indicating weaker representation within their factors.
-
-A. Number of Factors:
-As the eigenvalue cut-off increased from 1 to 2, 3, and 4, fewer factors were extracted
-because only stronger factors were retained. Setting it to 0 allowed more factors or
-produced an error. The eigenvalue criterion directly determines the number of extracted factors.
-The most reasonable solution is eigenvalue > 1 because it retained three factors with
-meaningful loadings and interpretable structure.
-
-B. Rotation:
-Under oblique rotation, some factor loadings changed in size and variables loaded more
-clearly on specific factors. The oblique solution was more interpretable and realistic
-because the latent factors were likely related rather than completely independent.
-
----
-
-ORIGINALITY CHECK:
-
-IMPORTANT:
-Students are required to copy the following task description into their answer.
-This exact text is NEVER an originality concern and must be fully excluded before evaluation:
-
---- TASK DESCRIPTION START ---
-Include Factor Loadings table, based on promax rotation. How many factors do you see?
-What is proportion of items (just high or low) shows strong factor loading (≥ .40)?
-What does it mean in terms of clustering into latent factors?
-Which items showed weaker loading and higher uniqueness?
-A. Number of Factors. Play with different values for Eigenvalues: try 1, 2, 3, 4 and 0.
-B. Rotation. Play with Rotation using Eigenvalues = 1. Apply orthogonal, then oblique rotation.
---- TASK DESCRIPTION END ---
-
-STEP 1: Remove any text matching or paraphrasing the block above.
-STEP 2: Evaluate ONLY what remains.
-STEP 3: Set originality_concern = true ONLY if the remaining text is AI-generated, generic,
-and contains no personal reasoning connected to the specific EFA output values.
-
-Otherwise set originality_concern = false.
-
-DO NOT modify or override component scores based on originality_concern.
-
+Total: 20 points
+        
 STUDENT ANSWER:
 {student_answer}
+        
+**IMPORTANT NOTES:**
+- Students submit text descriptions of their work since visual elements (actual diagrams, screenshots, formatted documents) cannot be captured in text
+- If student REFERENCES or DESCRIBES the required elements (e.g., "I used APA format to describe findings", "I inserted the frequency distribution diagram"), ASSUME they completed it in their actual document
+- DO NOT penalize for "missing" visual elements if they clearly describe what they did
+        
+**IMPORTANT GRADING RULES:**
+1. Total score MUST be exactly 20 points
+2. Reasoning is required; calculations are mandatory
+3. Feedback should be SHORT, written as a teacher's comment
+4. Feedback CANNOT be an invitation for further discussion
+5. Award partial credit where reasoning is mostly correct but incomplete
+6. It is expected to see both student's logic and calculations, not only the final answer
+7. Explanations must be SPECIFIC and ACTIONABLE - avoid vague phrases like "lacks depth", "could be better", "needs improvement". Instead, point to what is actually missing or what was done well.
+
+**HYBRID GRADING APPROACH:**
+
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}
+
+**RUBRIC**
+
+**Component 1: Formatting (2 points):**
+Use AUTOMATIC FORMATTING DETECTION RESULT above.
+- 1 point: Task description correctly formatted
+- 1 point: Proper autoformatting and structure
+
+**Component 2: Factor Loadings Table (5 points):**
+Use AUTOMATIC DETECTION above.
+- 1 point: Introductory phrase present before the table
+- 1 point: Reference to table number in introductory phrase
+- 1 point: Standalone table number present
+- 1 point: Descriptive table title present
+- 1 point: Table itself with numerical data present
+- CRITICAL: A label above the table such as "Table 4. Factor Loadings" counts as a title
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 3: Factor Structure Interpretation (5 points):**
+- 1 point: Number of factors correctly identified as 3
+- 1 point: Factor composition described (Factor 1: x4, x5, x6; Factor 2: x7, x8, x9; Factor 3: x1, x2, x3)
+- 1 point: Proportion of items with strong factor loading (≥ .40) stated
+- 1 point: Meaning of clustering into latent factors explained
+- 1 point: Items with weaker loading and higher uniqueness identified (x2 and x9)
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 4: Eigenvalues and Number of Factors (4 points):**
+- 1 point: Describes what happens when eigenvalue is set to 1
+- 1 point: Describes what happens when eigenvalue is set to 2, 3, and 4
+- 1 point: Describes what happens when eigenvalue is set to 0 (error or more factors)
+- 1 point: Correctly explains the relationship (higher cut-off → fewer factors retained)
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 5: Most Reasonable Eigenvalue (4 points):**
+- 1 point: Identifies eigenvalue > 1 as the most reasonable setting
+- 1 point: Justifies using meaningful factor loadings as criterion
+- 1 point: Justifies using interpretable factor structure as criterion
+- 1 point: Explains why higher or lower cut-offs are less appropriate
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**CORRECT ANSWER REFERENCE:**
+
+On the Table 4, we see the rotated Exploratory Factor Analysis solution using promax rotation identified a three-factor structure, with most items showing acceptable to strong factor loadings (≥ .40), indicating that the variables clustered meaningfully into three latent factors. 
+Interpretation: Factor 1 was mainly defined by x5, x4, and x6; Factor 2 by x7, x8, and x9; and Factor 3 by x3, x1, and x2, suggesting that the questionnaire measures three underlying constructs, although x2 and x9 showed relatively weaker loadings and higher uniqueness, indicating weaker representation by their factors.
+Table 4. Factor Loadings 
+ 	Factor 1	Factor 2	Factor 3	Uniqueness
+x5		0.895		 		 		0.246	
+x4		0.849		 		 		0.272	
+x6		0.804		 		 		0.309	
+x7		 		0.759		 		0.481	
+x8		 		0.710		 		0.480	
+x9		 		0.476		 		0.540	
+x3		 		 		0.699		0.547	
+x1		 		 		0.598		0.523	
+x2		 		 		0.531		0.745	
+
+Note.  Applied rotation method is promax.
+
+Number of Factors. 
+As the eigenvalue cut-off increased from 1 to 2, 3, and 4, fewer factors were extracted because only stronger factors were retained, while setting it to 0 allowed more factors (or produced an error), showing that the eigenvalue criterion directly determines the number of extracted factors.
+
+Reasonable eigenvalue. 
+The most reasonable solution is eigenvalue = 1 because it retained three factors with meaningful factor loadings and interpretable structure, while higher cut-offs removed potentially important factors and lower values included weak or statistically unstable factors.
+
+**FEEDBACK RULES**
+- Identify which components were completed correctly
+- Point out missing or incomplete elements explicitly
+- Maintain supportive tone
 
 Return JSON only:
 {{
@@ -219,43 +248,29 @@ Return JSON only:
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
   "component_1_explanation": "<brief explanation for formatting>",
-  "component_2_score": <0-3>,
-  "component_2a_score": <0-1>,
-  "component_2b_score": <0-1>,
-  "component_2c_score": <0-1>,
-  "component_2_explanation": "<brief explanation for factor loadings table>",
+  "component_2_score": <0-5>,
+  "component_2_explanation": "<brief>",
   "component_3_score": <0-5>,
-  "component_3_explanation": "<brief explanation for changes in number of factors>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<brief explanation for most reasonable number of factors>",
-  "component_5_score": <0-5>,
-  "component_5a_score": <0-2>,
-  "component_5b_score": <0-3>,
-  "component_5_explanation": "<brief explanation for oblique rotation comparison>",
+  "component_3_explanation": "<brief>",
+  "component_4_score": <0-4>,
+  "component_4_explanation": "<brief>",
+  "component_5_score": <0-4>,
+  "component_5_explanation": "<brief>",
   "total_points": <0-20>,
   "max_points": 20,
   "percentage": <percentage>,
   "feedback": "<SHORT teacher's comment, not an invitation for discussion>",
   "vibe": "<one-sentence overall impression>"
 }}
-
-SCORING INSTRUCTIONS:
-
-component_1_task_score = 1 if task_description_present else 0
-component_1_autoformat_score = 1 if no_autoformatting_present else 0
-component_1_score = component_1_task_score + component_1_autoformat_score
-
-component_2_score = component_2a_score + component_2b_score + component_2c_score
-
-component_5_score = component_5a_score + component_5b_score
-
-total_points = component_1_score + component_2_score + component_3_score + component_4_score + component_5_score
 """
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
-            additional_checks={"formatting_check": formatting_check}
+            additional_checks={
+                "element_check": element_check,
+                "formatting_check": formatting_check
+            }
         )
 
         if "error" not in result:
@@ -271,85 +286,42 @@ total_points = component_1_score + component_2_score + component_3_score + compo
         return result
 
     def print_grading_results(self, grading):
-        """Display grading results."""
-        print("=" * 60)
-        print("GRADING RESULTS - CW15_2")
-        print("EFA - Factor Creation and Rotation")
-        print("=" * 60)
+        """Display grading results using OutputFormatter."""
+        # Define component labels
+        component_labels = {
+            "component_1_score": "Formatting (Task desc / Autoformatting)",
+            "component_2_score": "Factor Loadings Table",
+            "component_3_score": "Factor Structure Interpretation",
+            "component_4_score": "Eigenvalues and Number of Factors",
+            "component_5_score": "Most Reasonable Eigenvalue",
+        }
 
-        if "component_1_score" in grading:
-            if grading.get("originality_concern"):
-                print("\n⚠️  ORIGINALITY CONCERN DETECTED")
-                print("   All points frozen. See feedback below.")
+        # Define component types
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "HYBRID",
+            "component_3_score": "HYBRID",
+            "component_4_score": "HYBRID",
+            "component_5_score": "HYBRID",
+        }
 
-            print("\nCOMPONENT BREAKDOWN:")
-            print(f"\nFormatting: {grading.get('component_1_score')}/2")
-            print(f"  • Task description:  {grading.get('component_1_task_score')}/1 (string match)")
-            print(f"  • No autoformatting: {grading.get('component_1_autoformat_score')}/1 (regex)")
-            if grading.get('component_1_explanation'):
-                print(f"   → {grading.get('component_1_explanation')}")
+        max_scores = {
+            "component_1_score": 2,
+            "component_2_score": 5,
+            "component_3_score": 5,
+            "component_4_score": 4,
+            "component_5_score": 4,
+        }
 
-            print(f"\nFactor Loadings Table: {grading.get('component_2_score')}/3")
-            print(f"  • Three-factor structure:       {grading.get('component_2a_score')}/1")
-            print(f"  • Factor composition:           {grading.get('component_2b_score')}/1")
-            print(f"  • Loading quality evaluation:   {grading.get('component_2c_score')}/1")
-            if grading.get('component_2_explanation'):
-                print(f"  → {grading.get('component_2_explanation')}")
-
-            print(f"\nChanges in Number of Factors: {grading.get('component_3_score')}/5")
-            if grading.get('component_3_explanation'):
-                print(f"  → {grading.get('component_3_explanation')}")
-
-            print(f"\nMost Reasonable Number of Factors: {grading.get('component_4_score')}/5")
-            if grading.get('component_4_explanation'):
-                print(f"  → {grading.get('component_4_explanation')}")
-
-            print(f"\nOblique Rotation Comparison: {grading.get('component_5_score')}/5")
-            print(f"  • What changes:    {grading.get('component_5a_score')}/2")
-            print(f"  • Better solution: {grading.get('component_5b_score')}/3")
-            if grading.get('component_5_explanation'):
-                print(f"  → {grading.get('component_5_explanation')}")
-
-            print(f"\n  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points', 'N/A')}/{grading.get('max_points', 20)}")
-        print(f"PERCENTAGE: {grading.get('percentage', 'N/A')}%")
-
-        print("\n" + "=" * 60)
-        print("FEEDBACK:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get('feedback', 'No feedback available'), width=60))
-
-        print("\n" + "=" * 60)
-        print("THE VIBE:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get('vibe', 'N/A'), width=60))
-
-        if 'error' in grading:
-            print("\n" + "=" * 60)
-            print("ERROR:")
-            print("=" * 60)
-            print(grading.get('error'))
-
-
-if __name__ == "__main__":
-
-    evaluator = CW15_2Evaluator()
-
-    print("CLASSWORK 15.2 EVALUATOR")
-    print("=" * 60)
-
-    print("Enter student's answer (type END to finish):")
-
-    lines = []
-    while True:
-        line = input()
-        if line.strip().upper() == "END":
-            break
-        lines.append(line)
-
-    student_answer = "\n".join(lines)
-
-    grading = evaluator.grade_question_cw15_2_answer(student_answer)
-
-    evaluator.print_grading_results(grading)
+        # Use formatter to display results
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="CW15_2",
+            question_description="EFA - Factor Creation",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="HYBRID"
+        )
