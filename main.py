@@ -7,7 +7,7 @@ from config.input_handler import InputHandler
 from classwork.classwork_1 import (
     CW1_1Evaluator,
     CW1_2Evaluator,
-    # CW1_3Evaluator,
+    CW1_3Evaluator,
     # CW1_4Evaluator,
     # CW1_5Evaluator
 )
@@ -206,6 +206,9 @@ def main():
         "cw1_2": (CW1_2Evaluator, "CLASSWORK 1.2",
                 "Mean Calculation with JASP",
                 "grade_question_cw1_2_answer", {}),
+        "cw1_3": (CW1_3Evaluator, "CLASSWORK 1.3",
+                  "Data Editing in Excel",
+                  "grade_question_cw1_3_answer", {}),
 
         "cw2_1": (CW2_1Evaluator, "CLASSWORK 2.1",
                 "Frequencies + Cumulative Frequencies + Percentiles",

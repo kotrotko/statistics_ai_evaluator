@@ -140,9 +140,15 @@ class CW15_2Evaluator(BaseEvaluator):
 
 **TASK DESCRIPTION:**
 Include Factor Loadings table, based on promax rotation (5 points). 
-How many factors do you see? What is proportion of items shows strong factor loading ((≥ .40)? What does it mean in terms of clustering into latent factors? Which items showed weaker loading and higher uniqueness, indicating weaker representation within their factors?  (5 points). 
-Number of Factors. Play with different values for Eigenvalues: try 1, 2, 3, 4 and 0 (some settings may show an error). What happens to the number of extracted factors (5 points)? Which number seems most reasonable and why (5 points)? 
-Then, for further analysis, use 1 as default, since no theory predicts a specific number of eigenvalues.  Setting to 1 extracts all factors with eigenvalue > 1.
+How many factors do you see? What is proportion of items shows strong factor
+loading ((≥ .40)? What does it mean in terms of clustering into latent factors?
+Which items showed weaker loading and higher uniqueness, indicating weaker
+representation within their factors?  (5 points). 
+Number of Factors. Play with different values for Eigenvalues: try 1, 2, 3, 4 and
+(some settings may show an error). What happens to the number of extracted factors
+(5 points)? Which number seems most reasonable and why (5 points)? 
+Then, for further analysis, use 1 as default, since no theory predicts a specific
+number of eigenvalues.  Setting to 1 extracts all factors with eigenvalue > 1.
 
 Total: 20 points
         

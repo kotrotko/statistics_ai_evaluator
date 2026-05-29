@@ -41,10 +41,6 @@ class CW7_2Evaluator (BaseEvaluator):
         # Regex-derived rubric checkpoints passed into AUTOMATIC DETECTION
         # inside the grading prompt. Used by the LLM to support consistent
         # hybrid rubric grading, especially for strict required elements.
-
-        # Regex-derived rubric checkpoints passed into AUTOMATIC DETECTION
-        # inside the grading prompt. Used by the LLM to support consistent
-        # hybrid rubric grading, especially for strict required elements.
         elements_found = {
             "normality_method": False,
             "table": False,
@@ -111,7 +107,11 @@ class CW7_2Evaluator (BaseEvaluator):
                 feedback="[TEST MODE] Method not stated explicitly. Table present. No clear yes/no conclusion. Reasoning partially correct.",
                 vibe="Student shows partial understanding; normality method and conclusion need improvement",
                 additional_data={
+                    # Mock mirrors what check_required_elements and
+                    # check_formatting_elements_type2 return in actual grading
                     "element_check": {
+                        # Simulates check_required_elements() output in test mode.
+                        # Keys must match elements_found in check_required_elements exactly.
                         "elements_found": {
                             "normality_method": False,
                             "table": True,
