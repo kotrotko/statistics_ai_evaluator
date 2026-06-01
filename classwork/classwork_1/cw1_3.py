@@ -16,7 +16,9 @@ class CW1_3Evaluator(BaseEvaluator):
     Evaluator for Classwork 1_3.
 
     Task 3. Editing data in Excel.
-        Save the same LikeLike file in Excel as LikeLike_modified.xlsx. In position Adults11 change value 11 to value 5 and in position Teens3 change value 15 to value 23. Open the file `LikeLike_modified` in JASP and calculate mean again. Introduce, refer, number and title the second Descriptive Statistics table (10 points).
+        Save the same LikeLike file in Excel as LikeLike_modified.xlsx. In position Adults11 change value 11 to value 5 
+        and in position Teens3 change value 15 to value 23. Open the file `LikeLike_modified` in JASP and calculate mean 
+        again. Introduce, refer, number and title the second Descriptive Statistics table (10 points).
         Now you can to compare Table 1 with Table 2: what changed? Describe changes in one sentence (10 points).
     """
 
@@ -147,7 +149,9 @@ class CW1_3Evaluator(BaseEvaluator):
 
 **TASK DESCRIPTION:**
 Editing data in Excel.
-Save the same LikeLike file in Excel as LikeLike_modified.xlsx. In position Adults11 change value 11 to value 5 and in position Teens3 change value 15 to value 23. Open the file `LikeLike_modified` in JASP and calculate mean again. Introduce, refer, number and title the second Descriptive Statistics table (10 points). 
+Save the same LikeLike file in Excel as LikeLike_modified.xlsx. In position Adults11 change value 11 to value 5 
+and in position Teens3 change value 15 to value 23. Open the file `LikeLike_modified` in JASP and calculate mean 
+again. Introduce, refer, number and title the second Descriptive Statistics table (10 points). 
 Now you can to compare Table 1 with Table 2: what changed? Describe changes in one sentence (10 points). 	
 
 Total: 20 points
@@ -183,14 +187,18 @@ Use AUTOMATIC DETECTION above.
 - 1 point: Standalone table number present
 - 1 point: Descriptive table title present
 - 5 points: Table itself with numerical data present
-- CRITICAL: A label above the table such as "Table 2. Descriptive Statistics" counts as a title
-- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+- CRITICAL: A label above the table such as "Table 2. Descriptive Statistics" counts as 
+a title
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the 
+student's text
 
 **Component 3: Comparison (9 points):**
-- 9 points: One clear sentence comparing Table 1 and Table 2, describing what changed after data modification
+- 9 points: One clear sentence comparing Table 1 and Table 2, describing what changed after 
+data modification
 - Partial credit for incomplete or vague descriptions
 - CRITICAL: Must reference both tables and describe the direction of change
-- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the 
+student's text
 
 **CORRECT ANSWER REFERENCE:**
 The second Descriptive Statistics table (Table 2) presents the mean values after data modification in Excel.

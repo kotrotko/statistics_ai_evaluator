@@ -15,7 +15,7 @@ from classwork.classwork_1 import (
 from classwork.classwork_2 import (
     CW2_1Evaluator,
     CW2_2Evaluator,
-    # CW2_3Evaluator,
+    CW2_3Evaluator,
     # CW2_4Evaluator,
     # CW2_5Evaluator
 )
@@ -216,9 +216,9 @@ def main():
         "cw2_2": (CW2_2Evaluator, "CLASSWORK 2.2",
                 "APA Format + Diagram + Numbering + JASP",
                 "grade_question_cw2_2_answer", {}),
-        # "2_3": (Question2_3Evaluator, "QUESTION 2.3",
-        #         "Excel Histogram + Figure Formatting + Chart Comparison",
-        #         "grade_question2_3_answer", {}),
+        "cw2_3": (CW2_3Evaluator, "QUESTION 2.3",
+                "Excel Histogram + X-axis Labels + Bar Chart vs Histogram",
+                "grade_question_cw2_3_answer", {}),
         "2_4": (Question2_4Evaluator, "QUESTION 2.4",
                 "Radar Chart + Dataset Description + Circular Transformation",
                 "grade_radar_chart", {}),
