@@ -24,7 +24,7 @@ from classwork.classwork_2.graders.question2_4_evaluator import Question2_4Evalu
 from classwork.classwork_3 import (
     CW3_1Evaluator,
     CW3_2Evaluator,
-    # CW3_3Evaluator,
+    CW3_3Evaluator,
     # CW3_4Evaluator,
     # CW3_5Evaluator
 )
@@ -154,8 +154,6 @@ from homework.homework_14 import (
     HW14_5Evaluator
 )
 
-from classwork.classwork_3.graders.question3_3_evaluator import Question3_3Evaluator
-
 from exams.midterm_v1.question_mid_v1_1 import QuestionMidV1_1Evaluator
 from exams.midterm_v1.mid_v1_2 import MidV1_2Evaluator
 from exams.fin_v1 import FIN_V1_1Evaluator
@@ -226,16 +224,12 @@ def main():
         "cw3_1": (CW3_1Evaluator, "CLASSWORK 3.1",
                   "Mean, Median, Mode by Gender (GPA & IQ)",
                   "grade_question_cw3_1_answer", {}),
-
-        # "3_1": (Question3_1Evaluator, "QUESTION 3.1",
-        #         "Central Tendency by Gender",
-        #         "grade_question3_1_answer", {}),
         "cw3_2": (CW3_2Evaluator, "CLASSWORK 3.2",
                 "Range, Variance, Standard Deviation (GPA & IQ)",
                 "grade_question_cw3_2_answer", {}),
-        "3_3": (Question3_3Evaluator, "QUESTION 3.3",
+        "cw3_3": (CW3_3Evaluator, "CLASSWORK 3.3",
                 "Distribution Plots with Density Curves by Gender",
-                "grade_distribution_plots", {}),
+                "grade_question_cw3_3_answer", {}),
 
         "cw4_1": (CW4_1Evaluator, "CLASSWORK 4.1",
                   "Mean, SD Table + Normal Distribution Figures for IQ and GPA",
