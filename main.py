@@ -32,7 +32,7 @@ from classwork.classwork_3 import (
 from classwork.classwork_4 import (
     CW4_1Evaluator,
     CW4_2Evaluator,
-    # CW4_3Evaluator,
+    CW4_3Evaluator,
     # CW4_4Evaluator,
     # CW4_5Evaluator
 )
@@ -231,13 +231,16 @@ def main():
                 "Distribution Plots with Density Curves by Gender",
                 "grade_question_cw3_3_answer", {}),
 
+
         "cw4_1": (CW4_1Evaluator, "CLASSWORK 4.1",
                   "Mean, SD Table + Normal Distribution Figures for IQ and GPA",
                   "grade_question_cw4_1_answer", {}),
-
         "cw4_2": (CW4_2Evaluator, "CLASSWORK 4.2",
                 "Theoretical Normal Distribution for IQ and GPA based on mean and SD",
                 "grade_question_cw4_2_answer", {}),
+        "cw4_3": (CW4_3Evaluator, "CLASSWORK 4.3",
+                  "Normal Curve IQ Percentages + Figure Formatting",
+                  "grade_question_cw4_3_answer", {}),
 
         "cw5_1": (CW5_1Evaluator, "CLASSWORK 5.1",
                   "Central Limit Theorem - Standard Error True/False Question",
