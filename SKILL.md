@@ -1,6 +1,6 @@
 # Code Edit Format Skill
 
-## Rules
+# Rules
 - STRICT: Do not refer to "frustration" or other psychological bugs in conversation.
 - Suggest corrections in code only
 - Include only relevant lines
@@ -14,6 +14,26 @@
   - Line 1: file name (e.g. `cw2_3.py`)
   - Line 2: Classwork number and title (e.g. `Classwork 2: Distributions and graphs`)
   - Line 3: task content summary (e.g. `Excel Histogram + X-axis Labels + Bar Chart vs Histogram`)
-  - Line 4: evaluation method name, following the pattern `def grade_question_cw<N>_<M>_answer`a pattern
+  - Line 4: evaluation method name, following the pattern `def grade_question_cw<cw number>_<task number>_answer`
 - Before suggesting edits, identify any content-specific inputs required by the pattern file (e.g. task description, model answer, rubric, scoring breakdown, classwork title) that are absent from the target file, and ask the user for them before producing any BEFORE/AFTER edits
-- Line 4 of the module docstring (task summary) must exactly match the question_description string in print_grading_results and the registry entry description field.
+- When writing a main.py registry entry, follow the Main Registry Skill
+- When writing a new cw*.py file, follow the Evaluator File Skill
+
+# Main Registry Skill
+
+## Rules
+- Ask for classwork number, task number, and task display description (docstring line 3 of the corresponding cw*.py)
+- Produce:
+  "cw[cw_number]_[task_number]": (CW[cw_number]_[task_number]Evaluator, "CLASSWORK [cw_number].[task_number]",
+                                  "[task display description]",
+                                  "grade_question_cw[cw_number]_[task_number]_answer", {}),
+
+# Evaluator File Skill
+
+## Rules
+- Follow the cw2_3.py pattern
+- Ask for classwork number, task number, classwork title, and task content summary before producing any edits
+- File name: cw[cw_number]_[task_number].py
+- Class name: CW[cw_number]_[task_number]Evaluator
+- Method name: grade_question_cw[cw_number]_[task_number]_answer
+- Docstring line 4: Evaluation method name: def grade_question_cw[cw_number]_[task_number]_answer

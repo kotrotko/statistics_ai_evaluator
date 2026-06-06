@@ -40,7 +40,7 @@ from classwork.classwork_4 import (
 from classwork.classwork_5 import (
     CW5_1Evaluator,
     CW5_2Evaluator,
-    # CW5_3Evaluator,
+    CW5_3Evaluator,
     # CW5_4Evaluator,
     # CW5_5Evaluator
 )
@@ -248,6 +248,9 @@ def main():
         "cw5_2": (CW5_2Evaluator, "CLASSWORK 5.2",
                   "Standard Error Calculation Improving Task",
                   "grade_question_cw5_2_answer", {}),
+        "cw5_3": (CW5_3Evaluator, "CLASSWORK 5.3",
+                  "Z-Score Definition + Formula + Given + Solution + Answer",
+                  "grade_question_cw5_3_answer", {}),
 
         "cw7_1": (CW7_1Evaluator, "QUESTION 7.1",
                 "One Group T Test - Problem Statement / RQ / Hypotheses / α df CV",
