@@ -127,7 +127,7 @@ class CW1_1Evaluator(BaseEvaluator):
        - Use "Fraction" for division (5 points)
        - Use "Script" for subscript and superscript (Σ, n, i) (5 points)
        - Use "Radical" for square root (√) (5 points)
-       - Expected formula: x̄ = (Σxᵢ)/√n
+       - Expected formula: x̄ = √((Σxᵢ)/n)
 
     Total: 20 points
 
@@ -159,10 +159,8 @@ class CW1_1Evaluator(BaseEvaluator):
     - 2-3 points: Partial use (only subscript OR only superscript)
     - 0 points: Did not use Script tool
 
-    **Component 4: Radical (√) - STRICT (0-5 points)**
-    - 5 points: Student correctly used the Radical tool for √n
-    - 4 points: Used Radical with minor issues
-    - 2-3 points: Partial or unclear usage
+    **Component 4: Radical (√) - STRICT (0-3 points)**
+    - 3 points: Student correctly used the Radical tool, e.g. √((Σxᵢ)/n)
     - 0 points: Did not use Radical tool
 
     **CRITICAL RULES:**

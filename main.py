@@ -48,7 +48,7 @@ from classwork.classwork_5 import (
 from classwork.classwork_7 import (
     CW7_1Evaluator,
     CW7_2Evaluator,
-    # CW7_3Evaluator,
+    CW7_3Evaluator,
     # CW7_4Evaluator,
     # CW7_5Evaluator
 )
@@ -258,9 +258,9 @@ def main():
         "cw7_2": (CW7_2Evaluator, "QUESTION 7.2",
                 "Normality Checking - Shapiro-Wilk / Table / Normality inference / Reasoning",
                 "grade_question_cw7_2_answer", {}),
-        # "7_3": (Question7_3Evaluator, "QUESTION 7.3",
-        #         "Wilcoxon Signed Rank Test - Test Value / Approach / Table / Mean & Median",
-        #         "grade_question7_3_answer", {}),
+        "cw7_3": (CW7_3Evaluator, "CLASSWORK 7.3",
+                "Wilcoxon Signed Rank + Approach Justification + Table 2 + Inference",
+                "grade_question_cw7_3_answer", {}),
         # "7_4": (Question7_4Evaluator, "QUESTION 7.4",
         #         "Wilcoxon Table / APA Formatting / Interpretation / Descriptive Plot",
         #         "grade_question7_4_answer", {}),
