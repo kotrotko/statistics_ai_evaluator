@@ -58,7 +58,7 @@ class CW7_2Evaluator (BaseEvaluator):
             evidence.append("Normality method NOT found")
 
         # Checkpoint 2 — Table
-        if re.search(r'table|statistic|p[\s-]?value|w\s*=', text_lower):
+        if re.search(r'table|statistic|p[\s-]?value|w\s*=|w\s+0\.\d+', text_lower):
             elements_found["table"] = True
             evidence.append("Table found")
         else:
@@ -134,7 +134,7 @@ class CW7_2Evaluator (BaseEvaluator):
         prompt = f"""You are grading a statistics assignment about normality checking using a **STRICT rubric-based approach.
 
 **TASK DESCRIPTION:**
-Task 2. Which method would you like to apply to check the normality assumption? Provide three arguments which make it more appropriate than other methods for normality checking (5 points). Insert the table, introduce, number, and title it. (5 points). Provide a decision rule. Check the normality assumption with significance level  = 0.001. Make a conclusion: Is this distribution normal? (5 points) Explain your reasoning: why do you think so? (5 points).
+Task 2. Which method would you like to apply to check the normality assumption? Provide three arguments which make it more appropriate than other methods for normality checking (5 points). Insert the table, introduce, number, and title it. (5 points). Provide a decision rule. Check the normality assumption with significance level  = 0.001. Make a conclusion: Is this distribution normal? (5 points). Provide your reasoning: why do you think so? (5 points).
 
 STUDENT ANSWER:
 {student_answer}
@@ -203,7 +203,7 @@ Use AUTOMATIC DETECTION above.
 - CRITICAL: If student incorrectly applies decision rule (e.g. p > α → not normal), deduct points for wrong reasoning regardless of conclusion
 
 **CORRECT ANSWER REFERENCE:**
-The normality assumption was checked using the Shapiro–Wilk test. It is designed for small to medium sample sizes (n < 50, some say up to n = 2000) — it has the highest statistical power in this range. Also, it is designed specifically for univariate normality, and we have only one variable. It is also one of the most powerful normality tests, which means it is better at detecting non-normality when it truly exists. Table 1 Test of Normality (Shapiro–Wilk) Group W p Men 0.800 .002 The decision rule is to reject the null hypothesis of normality only if p < α. Here, the significance level is α=0.001, and the obtained value is p=0.002. Since p > α, we fail to reject the null hypothesis of normality. Therefore, the distribution is considered normal at the α=0.001 significance level because there is no sufficient statistical evidence to conclude that the distribution significantly deviates from normality.
+The normality assumption was checked using the Shapiro–Wilk test. It is designed for small to medium sample sizes (n < 50) — it has the highest statistical power in this range. Also, it is designed specifically for univariate normality, and we have only one variable. It is also one of the most powerful normality tests, which means it is better at detecting non-normality when it truly exists. The Table 1 presents Shapiro-Wilk test in JASP for given variable. Table 1 Test of Normality (Shapiro-Wilk) W p V42 0.764 <0.001 Note. Significant results suggest a deviation from normality. The decision rule is to reject the null hypothesis of normality only if p < α. Here, the significance level is α=0.001, and the obtained value is p<0.001. Since p < α, we reject the null hypothesis of normality. Therefore, the distribution is considered not normal at the α=0.001 significance level.
 
 **FEEDBACK RULES**
 - Identify which components were completed correctly
