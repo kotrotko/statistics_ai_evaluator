@@ -56,7 +56,7 @@ from classwork.classwork_7 import (
 from classwork.classwork_8 import (
     CW8_1Evaluator,
     CW8_2Evaluator,
-    # CW8_3Evaluator,
+    CW8_3Evaluator,
     # CW8_4Evaluator,
     # CW8_5Evaluator
 )
@@ -274,9 +274,9 @@ def main():
         "cw8_2": (CW8_2Evaluator, "CLASSWORK 8.2",
                   "Normality Checking / Shapiro-Wilk / Table / Normality inference / Reasoning",
                   "grade_cw8_2_answer", {}),
-        # "cw8_3": (CW8_3Evaluator, "CLASSWORK 8.3",
-        #           "Hypothesis Testing Setup - Hypotheses / α / df / CV",
-        #           "grade_question_cw8_3_answer", {}),
+        "cw8_3": (CW8_3Evaluator, "CLASSWORK 8.3",
+                  "Hypothesis Testing Setup: Hypotheses, α, df, CV",
+                  "grade_question_cw8_3_answer", {}),
         # "cw8_4": (CW8_4Evaluator, "CLASSWORK 8.4",
         #           "Means Comparison - Justification / Table / Inference / Effect Size / Plot",
         #           "grade_cw8_4_answer", {}),
