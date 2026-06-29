@@ -109,10 +109,12 @@ class CW2_3Evaluator(BaseEvaluator):
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 5,
-                    "component_2_score": 4,
-                    "component_3_score": 5,
+                    "component_1_score": 2,
+                    "component_2_score": 5,
+                    "component_3_score": 4,
                     "component_4_score": 4,
+                    "component_5_score": 5,
+
                 },
                 max_points=20,
                 feedback="[TEST MODE] Good histogram creation and x-axis labeling. Minor improvements needed in figure numbering and comparison explanation.",

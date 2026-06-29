@@ -64,9 +64,9 @@ from classwork.classwork_8 import (
 from classwork.classwork_9 import (
     CW9_1Evaluator,
     CW9_2Evaluator,
-    # CW9_3Evaluator,
-    # CW9_4Evaluator,
-    # CW9_5Evaluator
+    CW9_3Evaluator,
+    CW9_4Evaluator,
+    CW9_5Evaluator
 )
 from classwork.classwork_10 import (
     CW10_1Evaluator,
@@ -290,15 +290,15 @@ def main():
         "cw9_2": (CW9_2Evaluator, "CLASSWORK 9.2",
                   "Normality Check - Method / Normal Distribution / Reasoning",
                   "grade_question_cw9_2_answer", {}),
-        # "cw9_3": (CW9_3Evaluator, "CLASSWORK 9.3",
-        #           "Variance Homogeneity Check - Method / Homogenous Variance / Method Form Selection",
-        #           "grade_question_cw9_3_answer", {}),
-        # "cw9_4": (CW9_4Evaluator, "CLASSWORK 9.4",
-        #           "Hypothesis Testing Setup - Hypotheses / α / df / CV",
-        #           "grade_cw9_4_answer", {}),
-        # "cw9_5": (CW9_5Evaluator, "CLASSWORK 9.5",
-        #           "Statistical Analysis and Interpretation",
-        #           "grade_cw9_5_answer", {}),
+        "cw9_3": (CW9_3Evaluator, "CLASSWORK 9.3",
+                  "Assumption checking: homogeneity of variance",
+                  "grade_question_cw9_3_answer", {}),
+        "cw9_4": (CW9_4Evaluator, "CLASSWORK 9.4",
+                  "Hypothesis Testing Setup - Hypotheses / α / df / CV",
+                  "grade_cw9_4_answer", {}),
+        "cw9_5": (CW9_5Evaluator, "CLASSWORK 9.5",
+                  "Statistical Analysis and Interpretation",
+                  "grade_cw9_5_answer", {}),
 
         "cw10_1": (CW10_1Evaluator, "CLASSWORK 10.1",
                    "ANOVA Method Selection and Justification",
