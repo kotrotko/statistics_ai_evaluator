@@ -8,7 +8,7 @@ IMPORTANT_GRADING_RULES = """**IMPORTANT GRADING RULES:**
 2. Reasoning is required; calculations are mandatory
 3. Feedback should be SHORT, written as a teacher's comment
 4. Feedback CANNOT be an invitation for further discussion
-5. Award partial credit where reasoning is mostly correct but incomplete
+5. Score ONLY against the points explicitly listed under each component. Any criterion not present in the component's list does not exist and must not affect the score.
 6. It is expected to see both student's logic and calculations, not only the final answer
 7. Explanations must be SPECIFIC and ACTIONABLE - avoid vague phrases like "lacks depth", "could be better", "needs improvement". Instead, point to what is actually missing or what was done well."""
 

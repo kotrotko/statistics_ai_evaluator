@@ -53,7 +53,7 @@ class CW9_1Evaluator(BaseEvaluator):
         # Regex-based checks only — elements verifiable by rules, not AI
         elements_found = {
             "name": False,
-            "title": False,
+            "paper_title": False,
             "task_description": False,
             "autoformatting": False,
         }
