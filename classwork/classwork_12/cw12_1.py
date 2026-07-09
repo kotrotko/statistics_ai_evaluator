@@ -18,11 +18,7 @@ class CW12_1Evaluator(BaseEvaluator):
     """
 
     def __init__(self):
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1200
-        )
+        super().__init__()
         self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:
@@ -31,7 +27,7 @@ class CW12_1Evaluator(BaseEvaluator):
 
         elements_found = {
             "name": False,
-            "paper_title": False,
+            "title": False,
             "task_description": False,
             "no_autoformatting": True,
         }
@@ -61,7 +57,7 @@ class CW12_1Evaluator(BaseEvaluator):
             r'^\s*in.?class\s*12'
         ]
         for pattern in title_patterns:
-            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
+            if re.search(pattern, first_lines, re.IGNORECASE):
                 elements_found["title"] = True
                 evidence.append("Title found")
                 break
@@ -119,7 +115,7 @@ class CW12_1Evaluator(BaseEvaluator):
                     "formatting_check": {
                         "elements_found": {
                             "name": False,
-                            "paper_title": False,
+                            "title": False,
                             "task_description": False,
                             "no_autoformatting": True,
                         },

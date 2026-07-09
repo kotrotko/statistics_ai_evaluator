@@ -22,11 +22,7 @@ class CW13_4Evaluator(BaseEvaluator):
     """
 
     def __init__(self):
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1200
-        )
+        super().__init__()
 
     def check_required_elements(self, student_answer: str) -> dict:
         text_lower = student_answer.lower()

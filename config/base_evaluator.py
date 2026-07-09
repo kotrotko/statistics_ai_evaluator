@@ -30,9 +30,10 @@ class BaseEvaluator:
         max_tokens (int): Maximum tokens for responses
     """
 
-    def __init__(self, model: str = "llama-3.3-70b-versatile",
+    def __init__(self, model: str = "openai/gpt-oss-120b",
                  temperature: float = 0.3,
-                 max_tokens: int = 1200):
+                 max_tokens: int = 2000,
+                 reasoning_effort: str = "low"):
         """
         Initialize the base evaluator.
 
@@ -40,6 +41,7 @@ class BaseEvaluator:
             model: Groq model name to use
             temperature: Temperature for API calls (0.0-1.0)
             max_tokens: Maximum tokens for response
+            reasoning_effort: Reasoning depth for gpt-oss models ('low', 'medium', 'high')
 
         Raises:
             ValueError: If GROQ_API_KEY environment variable is not set
@@ -48,13 +50,15 @@ class BaseEvaluator:
         self.api_handler = GroqAPIHandler(
             model=model,
             temperature=temperature,
-            max_tokens=max_tokens
+            max_tokens=max_tokens,
+            reasoning_effort=reasoning_effort
         )
 
         # Store settings for reference
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
+        reasoning_effort = reasoning_effort
 
     def call_groq_api(self, prompt: str) -> str:
         """
@@ -172,6 +176,8 @@ class BaseEvaluator:
         try:
             # Call API
             response_text = self.call_groq_api(prompt)
+
+            print(f"RAW_LEN={len(response_text)} RAW_HEAD={response_text[:80]!r} RAW_TAIL={response_text[-80:]!r}")
 
             # Parse JSON
             result = self.parse_json_response(response_text)

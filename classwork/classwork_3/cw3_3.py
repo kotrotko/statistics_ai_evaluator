@@ -34,7 +34,7 @@ class CW3_3Evaluator(BaseEvaluator):
 
     def check_required_elements(self, student_answer: str) -> dict:
         """
-        Check if required elements (figures, density curves, gender split,
+        Check if required elements (figures, gender split,
         distribution descriptions, area under curve) are present.
 
         Args:
@@ -47,7 +47,6 @@ class CW3_3Evaluator(BaseEvaluator):
 
         elements_found = {
             "figure_introduced": False,
-            "density_curve": False,
             "gender_split": False,
             "distribution_description": False,
             "area_under_curve": False,
@@ -63,21 +62,14 @@ class CW3_3Evaluator(BaseEvaluator):
         else:
             evidence.append("Figure introduction NOT found")
 
-        # Checkpoint 2 — Density curve present
-        if re.search(r'\bdensity\b|\bcurve\b', text_lower):
-            elements_found["density_curve"] = True
-            evidence.append("Density curve found")
-        else:
-            evidence.append("Density curve NOT found")
-
-        # Checkpoint 3 — Gender split
+        # Checkpoint 2 — Gender split
         if re.search(r'\bgender\b|\bmale\b|\bfemale\b|\bsplit\b', text_lower):
             elements_found["gender_split"] = True
             evidence.append("Gender split found")
         else:
             evidence.append("Gender split NOT found")
 
-        # Checkpoint 4 — Distribution description (shape, skew, modality)
+        # Checkpoint 3 — Distribution description (shape, skew, modality)
         desc_patterns = [r'\bsymmetric\b', r'\bskew', r'\bunimodal\b', r'\bbimodal\b',
                          r'\bmodal\b', r'\brange\b', r'\bpeak\b']
         desc_count = sum(1 for p in desc_patterns if re.search(p, text_lower))
@@ -87,7 +79,7 @@ class CW3_3Evaluator(BaseEvaluator):
         else:
             evidence.append("Distribution description NOT found")
 
-        # Checkpoint 5 — Area under density curve
+        # Checkpoint 4 — Area under density curve
         if re.search(r'\barea\b', text_lower) and re.search(r'\b1\b|100\s*%|one\b', text_lower):
             elements_found["area_under_curve"] = True
             evidence.append("Area under curve found")
@@ -127,7 +119,6 @@ class CW3_3Evaluator(BaseEvaluator):
                     "element_check": {
                         "elements_found": {
                             "figure_introduced": True,
-                            "density_curve": True,
                             "gender_split": True,
                             "distribution_description": True,
                             "area_under_curve": True,
@@ -183,17 +174,20 @@ Use AUTOMATIC FORMATTING DETECTION RESULT above.
 - 1 point: Reference to figure numbers in the introductory phrase
 - 1 point: Figure numbers present (Figure 1 and Figure 2)
 - 1 point: Figure titles present
-- 1 point: Density curve visible and distribution split by gender in both figures
+- 1 point: Distribution split by gender in both figures
 - CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
 
 **Component 3: Description of distributions (8 points):**
-- 2 points: Male IQ — symmetry/skew assessment AND modality assessment
-- 2 points: Female IQ — symmetry/skew assessment AND modality assessment
-- 1 point: Male GPA — symmetry/skew assessment AND modality assessment
-- 1 point: Female GPA — symmetry/skew assessment AND modality assessment
-- 1 point: Range reported for at least one distribution
-- 1 point: Range reported for all four distributions
+- 1 point: Male IQ — symmetry/skew assessment
+- 1 point: Male IQ — modality assessment
+- 1 point: Female IQ — symmetry/skew assessment
+- 1 point: Female IQ — modality assessment
+- 1 point: Male GPA — symmetry/skew assessment
+- 1 point: Male GPA — modality assessment
+- 1 point: Female GPA — symmetry/skew assessment
+- 1 point: Female GPA — modality assessment
 - CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+- CRITICAL: "Modality assessment" is satisfied by any explicit statement of unimodal, bimodal, multimodal, or number of peaks (e.g. "slightly bimodal", "one clear peak")
 
 **Component 4: Area under the density curve (5 points):**
 - 2 points: Correct value stated (equals 1)
@@ -205,8 +199,14 @@ Use AUTOMATIC FORMATTING DETECTION RESULT above.
 Figures 1 and 2 present the distribution of IQ and GPA scores, respectively, for male and female students. Each plot shows patterns such as shape, spread (a general impression of how dispersed the distribution is), central tendency, and skewness. By comparing the male and female distributions for both IQ and GPA, the plots allow for an initial visual comparison of similarities and differences between genders before conducting further statistical analyses.
 Figure 1 Distribution of IQ Scores by Gender
 Figure 2 Distribution of GPA Scores by Gender
-Figure 1 – Distribution of IQ Scores by Gender: Male IQ: Roughly symmetric, bimodal (two visible peaks around 80 and 110), range approximately 40–140. Female IQ: Slightly right-skewed, unimodal (single peak around 90–95), range approximately 60–140.
-Figure 2 – Distribution of GPA Scores by Gender: Male GPA: Slightly left-skewed, unimodal (single peak around 2.5), range approximately 0.5–4. Female GPA: Roughly symmetric, unimodal (single peak around 2.5–2.8), range approximately 1–4.
+Description of distributions
+Figure 1 – Distribution of IQ Scores by Gender
+Male IQ: Roughly symmetric, bimodal (two visible peaks around 80 and 110), range approximately 40–140
+Female IQ: Slightly right-skewed, unimodal (single peak around 90–95), range approximately 60–140
+Figure 2 – Distribution of GPA Scores by Gender
+Male GPA: Slightly left-skewed, unimodal (single peak around 2.5), range approximately 0.5–4
+Female GPA: Roughly symmetric, unimodal (single peak around 2.5–2.8), range approximately 1–4
+Area under the density curve
 The area under each density curve always equals 1. This is a fundamental property of probability density functions: regardless of the shape, spread, or variable being plotted, the total area equals 1, representing 100% of the probability.
 
 {FEEDBACK_RULES}

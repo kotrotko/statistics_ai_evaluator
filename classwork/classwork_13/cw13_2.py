@@ -21,11 +21,7 @@ class CW13_2Evaluator(BaseEvaluator):
 
     def __init__(self):
         """Initialize the evaluator with API handler."""
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1200
-        )
+        super().__init__()
         # Initialize output formatter
         self.formatter = OutputFormatter(default_width=60)
 

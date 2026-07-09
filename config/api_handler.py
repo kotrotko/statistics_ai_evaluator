@@ -70,9 +70,10 @@ class GroqAPIHandler:
     """
 
     def __init__(self,
-                 model: str = "llama-3.3-70b-versatile",
+                 model: str = "openai/gpt-oss-120b",
                  temperature: float = 0.3,
-                 max_tokens: int = 1200):
+                 max_tokens: int = 1200,
+                 reasoning_effort: str = "low"):
         """
         Initialize the Groq API handler.
 
@@ -80,6 +81,7 @@ class GroqAPIHandler:
             model: Model name to use for completions
             temperature: Temperature for API calls (0.0-1.0)
             max_tokens: Maximum tokens for responses
+            reasoning_effort: Reasoning depth for gpt-oss models ('low', 'medium', 'high')
 
         Raises:
             ValueError: If GROQ_API_KEY is not set
@@ -87,6 +89,7 @@ class GroqAPIHandler:
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
+        self.reasoning_effort = reasoning_effort
         self._client = None  # Lazy initialization
 
     def _get_client(self) -> Groq:
@@ -124,6 +127,8 @@ class GroqAPIHandler:
         try:
             client = self._get_client()
 
+            print(f"DEBUG: model={self.model!r} reasoning_effort={self.reasoning_effort!r}")
+
             chat_completion = client.chat.completions.create(
                 messages=[
                     {
@@ -134,6 +139,8 @@ class GroqAPIHandler:
                 model=self.model,
                 temperature=self.temperature,
                 max_tokens=self.max_tokens,
+                reasoning_effort=self.reasoning_effort,
+                max_completion_tokens=self.max_tokens,
             )
 
             # Extract and return the response text

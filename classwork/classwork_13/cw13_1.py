@@ -20,11 +20,7 @@ class CW13_1Evaluator(BaseEvaluator):
         """
 
     def __init__(self):
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1200
-        )
+        super().__init__()
         self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:
@@ -166,13 +162,10 @@ class CW13_1Evaluator(BaseEvaluator):
 - No autoformatting: 1 point
 
 **Component 2: Problem Statement (4 points)**
-Should describe the research problem in their own words, connected to the context of linear regression.
-
-- 4 points: Clear, specific, well-articulated problem in own words
-- 3 points: Problem present but vague or lacks context
-- 2 points: Problem poorly articulated but shows some understanding
-- 1 point: Attempted but unclear or off-topic
-- 0 points: Completely blank
+Scored only if formulated in terms of a research gap.
+- 4 points: Clear, specific problem based on a stated research gap
+- 2 points: Problem stated but no identifiable research gap (e.g., aim, purpose, goal instead)
+- 0 points: Problem statement missing entirely
 
 **Component 3: Research Question (4 points)**
 Student must formulate a clear, testable Research Question appropriate for linear regression analysis.
