@@ -1,6 +1,7 @@
 """
 cw13_1.py
 Classwork 13: Linear Regression
+Hypotheses, significance level, coefficients, and statistical inference
 Evaluation method name: def grade_question_cw13_1_answer
 """
 

@@ -85,6 +85,7 @@ from classwork.classwork_12 import (
 from classwork.classwork_13 import (
     CW13_1Evaluator,
     CW13_2Evaluator,
+    CW13_3Evaluator,
     CW13_4Evaluator,
     CW13_5Evaluator
 )
@@ -338,9 +339,9 @@ def main():
         "cw13_2": (CW13_2Evaluator, "CLASSWORK 13.2",
                    "Linear Regression - Assumption Checks",
                    "grade_question_cw13_2_answer", {}),
-        # "cw13_3": (CW13_3Evaluator, "CLASSWORK 13.3",
-        #            "Linear Regression - Step System",
-        #            "grade_question_cw13_3_answer", {}),
+        "cw13_3": (CW13_3Evaluator, "CLASSWORK 13.3",
+                   "Linear Regression - Step System",
+                   "grade_cw13_3_answer", {}),
         "cw13_4": (CW13_4Evaluator, "CLASSWORK 13.4",
                    "Linear Regression - Equation and R²",
                    "grade_question_cw13_4_answer", {}),
