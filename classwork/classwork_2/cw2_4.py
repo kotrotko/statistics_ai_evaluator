@@ -234,6 +234,13 @@ Return JSON only:
             }
         )
 
+        # Force Component 1 (Formatting) deterministically from the regex-based
+        # check instead of trusting the LLM's own component_1_score
+        if "error" not in result:
+            result["component_1_task_score"] = 1 if formatting_check["elements_found"]["task_description"] else 0
+            result["component_1_autoformat_score"] = 1 if formatting_check["elements_found"]["autoformatting"] else 0
+            result["component_1_score"] = result["component_1_task_score"] + result["component_1_autoformat_score"]
+
         # If grading succeeded, validate component scores
         if "error" not in result:
             component_keys = [
