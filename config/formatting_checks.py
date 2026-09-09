@@ -5,7 +5,6 @@ Reusable formatting check functions for all evaluators.
 
 import re
 
-
 def check_formatting_elements_type2(student_answer: str, pedagogical_markers: list) -> dict:
     """
     Check formatting elements in the student's answer.

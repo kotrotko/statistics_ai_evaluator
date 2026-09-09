@@ -2,7 +2,7 @@
 cw13_2.py
 Classwork 13: Linear Regression
 Assumption checking: residuals normality, outliers, homoscedasticity/linearity, method justification
-Evaluation method name: def grade_question_cw13_2_answer
+Evaluation method name: def grade_cw13_2_answer
 """
 
 import re
@@ -14,7 +14,17 @@ class CW13_2Evaluator(BaseEvaluator):
     """
     Evaluator for Linear Regression Assumptions Checking.
 
-    Task 2. Check the residuals normality (Plots > Q-Q plot standardized residuals, 09:30). Include the plot, number and title it. (5 points). Check outliers (Statistics > Residuals > Statistics, 07:45). Include the table, number and title it. (5 points).  Visually check both the homoscedasticity and linearity (Plots > Residuals vs. predicted, 10:05). Include plot, number and title it. (5 points).  Name the method you choose based on the data level and justify it (i.e. explain why this method is suitable for our problem solving, based on the assumption checking) (5 points).
+    Task 2. Check the residuals normality (Plots > Q-Q plot standardized
+    residuals, 09:30). Include the plot, number and title it. Include the
+    visual check result (5 points).
+    Check outliers (Statistics > Residuals > Statistics, 07:45). Include
+    the table, number and title it. (5 points).
+    Visually check both the homoscedasticity and linearity (Plots >
+    Residuals vs. predicted, 10:05). Include plot, number and title it.
+    (5 points).
+    Name the method you choose based on the data level and justify it
+    (i.e. explain why this method is suitable for our problem solving,
+    based on the assumption checking) (5 points).
 
     Inherits common functionality from BaseEvaluator.
     """
@@ -79,7 +89,7 @@ class CW13_2Evaluator(BaseEvaluator):
             "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
-    def grade_question_cw13_2_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_cw13_2_answer(self, student_answer: str, test_mode: bool = False):
         """
         Grade Classwork 13.2: Regression assumption checking and method justification.
         Returns detailed grading breakdown.
@@ -124,7 +134,17 @@ class CW13_2Evaluator(BaseEvaluator):
         prompt = f"""You are grading a statistics assignment about checking linear regression assumptions in JASP using a **STRICT rubric-based approach**.
 
 **TASK DESCRIPTION:**
-Task 2. Check the residuals normality (Plots > Q-Q plot standardized residuals, 09:30). Include the plot, number and title it. (5 points). Check outliers (Statistics > Residuals > Statistics, 07:45). Include the table, number and title it. (5 points).  Visually check both the homoscedasticity and linearity (Plots > Residuals vs. predicted, 10:05). Include plot, number and title it. (5 points).  Name the method you choose based on the data level and justify it (i.e. explain why this method is suitable for our problem solving, based on the assumption checking) (5 points).
+Task 2. Check the residuals normality (Plots > Q-Q plot standardized
+residuals, 09:30). Include the plot, number and title it. Include the
+visual check result (5 points).
+Check outliers (Statistics > Residuals > Statistics, 07:45). Include
+the table, number and title it. (5 points).
+Visually check both the homoscedasticity and linearity (Plots >
+Residuals vs. predicted, 10:05). Include plot, number and title it.
+(5 points).
+Name the method you choose based on the data level and justify it
+(i.e. explain why this method is suitable for our problem solving,
+based on the assumption checking) (5 points).
 
 Total: 20 points
 
@@ -168,8 +188,7 @@ Use AUTOMATIC DETECTION above.
 - 1 point: Introductory phrase references the figure number (e.g., "...using Q-Q Plot (Figure 1)")
 - 1 point: Standalone figure number present in APA style (e.g., "Figure 1")
 - 1 point: Descriptive figure title present in APA style (e.g., "Figure 1. Q-Q Plot Standardized Residuals.")
-- 1 point: Figure (Q-Q plot image) itself is included
-- CRITICAL: Do NOT award figure formatting points if no figure is present
+- 1 point: Visual check result is stated (e.g., points follow the diagonal line, residuals appear normally distributed)
 - CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
 
 **Component 3: Outliers Table (4 points):**
@@ -187,7 +206,7 @@ Use AUTOMATIC DETECTION above.
 - 1 point: Introductory phrase references the figure number (e.g., "...see Figure 2")
 - 1 point: Standalone figure number present in APA style (e.g., "Figure 2")
 - 1 point: Descriptive figure title present in APA style (e.g., "Figure 2. Residuals vs. Predicted Value Plot")
-- CRITICAL: Do NOT award figure formatting points if no figure is present
+- CRITICAL: Score ONLY the four sub-points listed above. Do not reference or penalize for the presence/absence of the plot image itself — it cannot be verified from text.
 - CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
 
 **Component 5: Method Choice and Justification (5 points):**

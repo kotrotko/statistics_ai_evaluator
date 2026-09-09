@@ -1,12 +1,14 @@
 """
 hw13_1.py
-Linear Regression - Residual
+Homework 13: Linear Regression
+Residuals: name, definition, formula, interpretation
 Evaluation method name: def grade_hw13_1_answer
 """
-import re
-import textwrap
 
+import re
 from config import BaseEvaluator
+from config.output_formatter import OutputFormatter
+from config.formatting_checks import check_formatting_elements_type2
 
 
 class HW13_1Evaluator(BaseEvaluator):
@@ -15,76 +17,94 @@ class HW13_1Evaluator(BaseEvaluator):
 
     Task: What is a residual?
 
-    Rubric:
-    Formatting (4 points: name, title, task description, no autoformatting)
-    Definition (6 points)
-    Formula (5 points)
-    Interpretation (5 points)
-    Total (strictly) 20 points.
+    Formatting (4 points: name, paper title, task description, no
+    autoformatting).
+    Definition (6 points: residual as the difference between observed and
+    predicted value).
+    Formula (5 points: Residual = Y − Ŷ).
+    Interpretation (5 points: positive residual, negative residual,
+    residual = 0).
+
+    Inherits common functionality from BaseEvaluator.
     """
 
     def __init__(self):
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1200
-        )
+        """Initialize the evaluator with API handler."""
+        super().__init__()
+        self.formatter = OutputFormatter(default_width=60)
 
-    def check_formatting_elements(self, student_answer: str) -> dict:
+    def check_required_elements(self, student_answer: str) -> dict:
+        """
+        Check if required content elements are present.
+
+        Args:
+            student_answer: The student's response text
+
+        Returns:
+            Dictionary with found elements and evidence
+        """
         text_lower = student_answer.lower()
-        first_lines = student_answer[:200]
 
         elements_found = {
-            "paper_title": False,
-            "task_description": False,
-            "no_autoformatting": True,
+            "definition": False,
+            "formula": False,
+            "positive_residual": False,
+            "negative_residual": False,
+            "zero_residual": False,
         }
 
         evidence = []
 
-        # Title
-        title_patterns = [
-            r'^\s*homework\s*13',
-            r'^\s*hw\s*13\b',
-            r'^\s*home\s*work\s*(week\s*)?13',
-        ]
-        for pattern in title_patterns:
-            if re.search(pattern, first_lines, re.IGNORECASE | re.MULTILINE):
-                elements_found["paper_title"] = True
-                evidence.append("Title found")
-                break
-
-        # Task description (pedagogical marker — student cannot ask "what is a residual?" about themselves)
-        pedagogical_markers = [
-            "what is a residual?",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
+        # Checkpoint 1 — Definition
+        if re.search(r'difference\s*between.*observed.*predicted|difference\s*between.*actual.*predicted|observed\s*value.*predicted\s*value', text_lower):
+            elements_found["definition"] = True
+            evidence.append("Definition found")
         else:
-            evidence.append("Task description NOT found")
+            evidence.append("Definition NOT found")
 
-        # Autoformatting
-        autoformat_patterns = [
-            r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',
-            r'^\s*[-•*]\s+\S',
-        ]
-        for pattern in autoformat_patterns:
-            if re.search(pattern, student_answer, re.MULTILINE):
-                elements_found["no_autoformatting"] = False
-                evidence.append("Autoformatting detected")
-                break
+        # Checkpoint 2 — Formula
+        if re.search(r'residual\s*=\s*y|y\s*-\s*ŷ|y\s*−\s*ŷ|y\s*minus\s*ŷ', text_lower):
+            elements_found["formula"] = True
+            evidence.append("Formula found")
+        else:
+            evidence.append("Formula NOT found")
 
-        if elements_found["no_autoformatting"]:
-            evidence.append("No autoformatting found")
+        # Checkpoint 3 — Positive residual
+        if re.search(r'positive\s*residual', text_lower):
+            elements_found["positive_residual"] = True
+            evidence.append("Positive residual interpretation found")
+        else:
+            evidence.append("Positive residual interpretation NOT found")
+
+        # Checkpoint 4 — Negative residual
+        if re.search(r'negative\s*residual', text_lower):
+            elements_found["negative_residual"] = True
+            evidence.append("Negative residual interpretation found")
+        else:
+            evidence.append("Negative residual interpretation NOT found")
+
+        # Checkpoint 5 — Residual = 0
+        if re.search(r'residual\s*=\s*0|residual.{0,15}zero|exact\s*prediction|prediction\s*is\s*exact', text_lower):
+            elements_found["zero_residual"] = True
+            evidence.append("Residual = 0 interpretation found")
+        else:
+            evidence.append("Residual = 0 interpretation NOT found")
 
         return {
             "elements_found": elements_found,
-            "evidence": evidence
+            "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
     def grade_hw13_1_answer(self, student_answer: str, test_mode: bool = False):
+        """
+        Grade Homework 13.1: Residual definition, formula, and interpretation.
+        Returns detailed grading breakdown.
+
+        Args:
+            student_answer: The student's response text
+            test_mode: If True, returns mock data without calling API
+        """
+
         if test_mode:
             return self.create_mock_result(
                 component_scores={
@@ -99,104 +119,118 @@ class HW13_1Evaluator(BaseEvaluator):
                 },
                 max_points=20,
                 feedback="[TEST MODE] Complete and accurate answer.",
-                vibe="Student understands residuals correctly."
+                vibe="Student correctly defines residuals, states the formula, and interprets all three cases.",
+                additional_data={
+                    "element_check": {
+                        "elements_found": {
+                            "definition": True,
+                            "formula": True,
+                            "positive_residual": True,
+                            "negative_residual": True,
+                            "zero_residual": True,
+                        },
+                        "all_present": True,
+                        "evidence": ["Test mode - all elements present"]
+                    }
+                }
             )
 
-        formatting_check = self.check_formatting_elements(student_answer)
-        fs = formatting_check["elements_found"]
+        element_check = self.check_required_elements(student_answer)
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=[]
+        )
 
-        formatting_block = f"""
-HEADER DETECTION RESULTS (USE AS FACTS):
+        prompt = f"""You are grading a statistics assignment about residuals in linear regression using a **STRICT rubric-based approach**.
 
-paper_title_present = {fs["paper_title"]}
-task_description_present = {fs["task_description"]}
-no_autoformatting_present = {fs["no_autoformatting"]}
-"""
+**TASK DESCRIPTION:**
+What is a residual?
 
-        prompt = f"""{formatting_block}
-
-You are grading a statistics assignment.
-
-TASK:
-"What is a residual?"
-
-Use STRICT rubric-based grading. Total score MUST be exactly 20 points.
-
-RUBRIC
-
-Component 1: Formatting (4 points)
-Start with 4 points.
-
-Step 1 Name (1 point)
-- Valid name = two capitalized words like John Doe
-- Must appear in first two lines before content
-
-Step 2 Title (1 point)
-Use paper_title_present
-
-Step 3 Task description (1 point)
-Use task_description_present
-
-Step 4 No autoformatting (1 point)
-Use no_autoformatting_present
-
-Component 2: Definition (6 points)
-Expected idea:
-Residual = difference between observed value of dependent variable and predicted value from regression line.
-
-Full credit requires:
-- mentions observed/actual value
-- mentions predicted value
-- states difference/error
-- links to regression
-
-Component 3: Formula (5 points)
-Expected:
-Residual = Y - Ŷ
-Accept:
-Y - Yhat
-observed - predicted
-
-Component 4: Interpretation (5 points)
-Expected ideas:
-- prediction error for each case
-- positive residual = actual > predicted
-- negative residual = actual < predicted
-- zero residual = exact prediction
-
-ORIGINALITY CHECK:
-If copied/AI-generated with suspiciously generic style, set all scores to 0 and set feedback to EXACTLY:
-"Due to originality concern, your points are frozen. You can get them back if you provide oral explanation for this paper."
+Total: 20 points
 
 STUDENT ANSWER:
 {student_answer}
 
+**IMPORTANT GRADING RULES:**
+1. Total score MUST be exactly 20 points
+2. Feedback should be SHORT, written as a teacher's comment
+3. Feedback CANNOT be an invitation for further discussion
+4. Explanations must be SPECIFIC and ACTIONABLE - avoid vague phrases like "lacks depth", "could be better", "needs improvement". Instead, point to what is actually missing or what was done well.
+
+**HYBRID GRADING APPROACH:**
+
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}
+
+**RUBRIC:**
+
+**Component 1: Formatting (4 points):**
+- 1 point: Name present
+- 1 point: Paper title present
+- 1 point: Task description correctly formatted (use AUTOMATIC FORMATTING DETECTION RESULT, task_description)
+- 1 point: Proper autoformatting and structure (use AUTOMATIC FORMATTING DETECTION RESULT, autoformatting)
+- CRITICAL: Name and paper title cannot be verified by automatic detection; judge directly from the submitted text
+
+**Component 2: Definition (6 points, all-or-nothing):**
+Use AUTOMATIC DETECTION above (definition).
+- 6 points: Residual correctly defined as the difference between the observed value of the dependent variable and the predicted value from the regression line
+- 0 points: Definition absent or incorrect
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 3: Formula (5 points, all-or-nothing):**
+Use AUTOMATIC DETECTION above (formula).
+- 5 points: Formula Residual = Y − Ŷ correctly stated
+- 0 points: Formula absent or incorrect
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 4: Interpretation (5 points):**
+Use AUTOMATIC DETECTION above.
+- 2 points: Positive residual explained — actual value is higher than predicted (use positive_residual)
+- 2 points: Negative residual explained — actual value is lower than predicted (use negative_residual)
+- 1 point: Residual = 0 explained — the prediction is exact (use zero_residual)
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**FEEDBACK RULES**
+- Identify which components were completed correctly
+- Point out missing or incomplete elements explicitly
+- Maintain supportive tone
+
+---
+
 Return JSON only:
 {{
-  "originality_concern": <true/false>,
   "component_1_score": <0-4>,
   "component_1_name_score": <0-1>,
   "component_1_title_score": <0-1>,
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
   "component_1_explanation": "<brief>",
-  "component_2_score": <0-6>,
+  "component_2_score": <0 or 6>,
   "component_2_explanation": "<brief>",
-  "component_3_score": <0-5>,
+  "component_3_score": <0 or 5>,
   "component_3_explanation": "<brief>",
   "component_4_score": <0-5>,
   "component_4_explanation": "<brief>",
-  "total_points": <0-20>,
+  "total_points": <sum of above, 0-20>,
   "max_points": 20,
-  "percentage": <number>,
-  "feedback": "<short teacher comment>",
-  "vibe": "<one sentence overall impression>"
-}}"""
+  "percentage": <percentage>,
+  "feedback": "<narrative feedback>",
+  "vibe": "<one-sentence overall impression>"
+}}
+"""
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
-            additional_checks={"formatting_check": formatting_check}
+            additional_checks={
+                "element_check": element_check,
+                "formatting_check": formatting_check
+            }
         )
 
         if "error" not in result:
@@ -211,91 +245,41 @@ Return JSON only:
         return result
 
     def print_grading_results(self, grading):
-        print("=" * 60)
-        print("GRADING RESULTS - HW13_1")
-        print("Residual")
-        print("=" * 60)
+        """
+        Display grading results using OutputFormatter.
 
-        if "component_1_score" in grading:
-            if grading.get("originality_concern"):
-                print("\n⚠️  ORIGINALITY CONCERN DETECTED")
-                print("   All points frozen. See feedback below.")
+        Args:
+            grading: Grading result dictionary
+        """
+        component_labels = {
+            "component_1_score": "Formatting (Name / Title / Task desc / Autoformatting)",
+            "component_2_score": "Definition",
+            "component_3_score": "Formula",
+            "component_4_score": "Interpretation",
+        }
 
-            print(f"\nFormatting: {grading.get('component_1_score')}/4")
-            print(f"  • Student name:      {grading.get('component_1_name_score')}/1 (LLM)")
-            print(f"  • Paper title:       {grading.get('component_1_title_score')}/1 (regex)")
-            print(f"  • Task description:  {grading.get('component_1_task_score')}/1 (string match)")
-            print(f"  • No autoformatting: {grading.get('component_1_autoformat_score')}/1 (regex)")
-            if grading.get('component_1_explanation'):
-                print(f"   → {grading.get('component_1_explanation')}")
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "STRICT",
+            "component_3_score": "STRICT",
+            "component_4_score": "STRICT",
+        }
 
-            print(f"\nDefinition: {grading.get('component_2_score')}/6")
-            if grading.get('component_2_explanation'):
-                print(f"  → {grading.get('component_2_explanation')}")
+        max_scores = {
+            "component_1_score": 4,
+            "component_2_score": 6,
+            "component_3_score": 5,
+            "component_4_score": 5,
+        }
 
-            print(f"Formula: {grading.get('component_3_score')}/5")
-            if grading.get('component_3_explanation'):
-                print(f"  → {grading.get('component_3_explanation')}")
-
-            print(f"Interpretation: {grading.get('component_4_score')}/5")
-            if grading.get('component_4_explanation'):
-                print(f"  → {grading.get('component_4_explanation')}")
-
-            print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points')}/{grading.get('max_points', 20)}")
-        print(f"PERCENTAGE: {grading.get('percentage')}%")
-
-        print("\n" + "=" * 60)
-        print("FEEDBACK:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get("feedback", ""), width=60))
-
-        print("\n" + "=" * 60)
-        print("THE VIBE:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get("vibe", ""), width=60))
-
-        if 'error' in grading:
-            print("\n" + "=" * 60)
-            print("ERROR:")
-            print("=" * 60)
-            print(grading.get('error'))
-
-
-if __name__ == "__main__":
-    print("Welcome to the Homework AI Evaluator System!")
-    print("=" * 60)
-
-    evaluator = HW13_1Evaluator()
-
-    print("=" * 60)
-    print("HOMEWORK 13.1 EVALUATOR")
-    print("Residual")
-    print("=" * 60)
-    print("\nPlease enter the student's answer to HOMEWORK 13_1.")
-    print("(Press Enter twice when finished, or type 'END' on a new line)\n")
-
-    lines = []
-    while True:
-        line = input()
-        if line.strip().upper() == 'END':
-            break
-        lines.append(line)
-        if len(lines) >= 2 and lines[-1] == '' and lines[-2] == '':
-            lines = lines[:-2]
-            break
-
-    student_answer = '\n'.join(lines)
-
-    if not student_answer.strip():
-        print("\n❌ Error: No answer provided. Exiting.")
-        exit(1)
-
-    print("\n" + "=" * 60)
-    print("EVALUATING...")
-    print("=" * 60)
-
-    grading = evaluator.grade_hw13_1_answer(student_answer)
-
-    evaluator.print_grading_results(grading)
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="HOMEWORK 13_1",
+            question_description="Residual: Definition, Formula, and Interpretation",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="STRICT"
+        )

@@ -8,18 +8,17 @@ from classwork.classwork_1 import (
     CW1_1Evaluator,
     CW1_2Evaluator,
     CW1_3Evaluator,
-    # CW1_4Evaluator,
-    # CW1_5Evaluator
+    CW1_4Evaluator,
+    CW1_5Evaluator
 )
 
 from classwork.classwork_2 import (
     CW2_1Evaluator,
     CW2_2Evaluator,
     CW2_3Evaluator,
-    # CW2_4Evaluator,
+    CW2_4Evaluator,
     # CW2_5Evaluator
 )
-from classwork.classwork_2.graders.question2_4_evaluator import Question2_4Evaluator
 
 from classwork.classwork_3 import (
     CW3_1Evaluator,
@@ -208,6 +207,12 @@ def main():
         "cw1_3": (CW1_3Evaluator, "CLASSWORK 1.3",
                   "Data Editing in Excel",
                   "grade_question_cw1_3_answer", {}),
+        "cw1_4": (CW1_4Evaluator, "CLASSWORK 1.4",
+                  "Editing data in JASP",
+                  "grade_cw1_4_answer", {}),
+        "cw1_5": (CW1_5Evaluator, "CLASSWORK 1.5",
+                  "Data analysis with JASP descriptive statistics: Anxiety level",
+                  "grade_cw1_5_answer", {}),
 
         "cw2_1": (CW2_1Evaluator, "CLASSWORK 2.1",
                 "Frequencies + Cumulative Frequencies + Percentiles",
@@ -218,9 +223,9 @@ def main():
         "cw2_3": (CW2_3Evaluator, "QUESTION 2.3",
                 "Excel Histogram + X-axis Labels + Bar Chart vs Histogram",
                 "grade_question_cw2_3_answer", {}),
-        "2_4": (Question2_4Evaluator, "QUESTION 2.4",
-                "Radar Chart + Dataset Description + Circular Transformation",
-                "grade_radar_chart", {}),
+        "cw2_4": (CW2_4Evaluator, "QUESTION 2.4",
+                "Excel Histogram from Frequency Table",
+                "grade_cw2_4_answer", {}),
 
         "cw3_1": (CW3_1Evaluator, "CLASSWORK 3.1",
                   "Mean, Median, Mode by Gender (GPA & IQ)",
@@ -338,31 +343,32 @@ def main():
                    "grade_question_cw13_1_answer", {}),
         "cw13_2": (CW13_2Evaluator, "CLASSWORK 13.2",
                    "Linear Regression - Assumption Checks",
-                   "grade_question_cw13_2_answer", {}),
+                   "grade_cw13_2_answer", {}),
         "cw13_3": (CW13_3Evaluator, "CLASSWORK 13.3",
                    "Linear Regression - Step System",
                    "grade_cw13_3_answer", {}),
         "cw13_4": (CW13_4Evaluator, "CLASSWORK 13.4",
-                   "Linear Regression - Equation and R²",
-                   "grade_question_cw13_4_answer", {}),
+                   "Explanatory relation, coefficient of determination, and R² interpretations",
+                   "grade_cw13_4_answer", {}),
         "cw13_5": (CW13_5Evaluator, "CLASSWORK 13.5",
-                   "Linear Regression - Results and Answer to Research Question",
-                   "grade_question_cw13_5_answer", {}),
+                   "Results description, research question answer",
+                   "grade_cw13_5_answer", {}),
+
         "cw14_1": (CW14_1Evaluator, "CLASSWORK 14.1",
                    "Chi Square - Problem Statement and Research Question",
-                   "grade_question_cw14_1_answer", {}),
+                   "grade_cw14_1_answer", {}),
         "cw14_2": (CW14_2Evaluator, "CLASSWORK 14.2",
                    "Chi Square - Step System",
-                   "grade_question_cw14_2_answer", {}),
+                   "grade_cw14_2_answer", {}),
         "cw14_3": (CW14_3Evaluator, "CLASSWORK 14.3",
                    "Chi Square - Test for Independence",
-                   "grade_question_cw14_3_answer", {}),
+                   "grade_cw14_3_answer", {}),
         "cw14_4": (CW14_4Evaluator, "CLASSWORK 14.4",
                    "Chi Square - Cramer's V Effect Size",
-                   "grade_question_cw14_4_answer", {}),
+                   "grade_cw14_4_answer", {}),
         "cw14_5": (CW14_5Evaluator, "CLASSWORK 14.5",
                    "Chi Square - Results and Answer to Research Question",
-                   "grade_question_cw14_5_answer", {}),
+                   "grade_cw14_5_answer", {}),
 
         "cw15_1": (CW15_1Evaluator, "CLASSWORK 15.1",
                    "EFA - Initial Setup, Assumption Checks, and Model Fit",
@@ -469,6 +475,7 @@ def main():
         "hw12_5": (HW12_5Evaluator, "HOMEWORK 12.5",
                    "Correlation Hypothesis Testing",
                    "grade_hw12_5_answer", {}),
+
         "hw13_1": (HW13_1Evaluator, "HOMEWORK 13.1",
                    "What is a Residual?",
                    "grade_hw13_1_answer", {}),

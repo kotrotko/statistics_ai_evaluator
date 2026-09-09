@@ -14,11 +14,11 @@ Usage:
 
     Run specific test module:
         python -m tests.test_core
-        python tests/test_core.py
+        python tests/test_formatting_regression.py
 
     Run with coverage:
         python -m pytest tests/ --cov=config --cov=evaluators
 """
 
 __version__ = '1.0.0'
-__all__ = ['test_core']
+__all__ = ['test_formatting_regression.py']

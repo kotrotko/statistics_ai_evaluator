@@ -1,302 +1,283 @@
 """
 cw14_4.py
 Classwork 14: Chi-Square Test of Independence
-Effect Size (Phi / Cramér's V): decision, calculation, and interpretation
-Evaluation method name: def grade_question_cw14_4_answer
+Effect size (Cramer's V): decision, calculation, and interpretation
+Evaluation method name: def grade_cw14_4_answer
 """
 
 import re
 from config import BaseEvaluator
-
+from config.output_formatter import OutputFormatter
+from config.constants import (
+    IMPORTANT_NOTES,
+    IMPORTANT_GRADING_RULES,
+    FEEDBACK_RULES,
+)
+from config.formatting_checks import check_formatting_elements_type2
 
 class CW14_4Evaluator(BaseEvaluator):
     """
-    Evaluator for Classwork 14_4.
+    Evaluator for Chi-Square Effect Size (Cramer's V).
 
-    Task: Do you need to calculate the Effect Size? Explain why do you think so (5 points).
-    If no, skip this step. If yes, calculate the Effect Size.
-    Find the needed option in Statistics > Nominal > Phi and Cramer's V.
-    Include the table "Nominal", make sure that you numbered and titled it (10 points).
-    Interpret it (5 points).
-    Total (strictly) 20 points.
+    Task 4. Do you need to calculate the Effect Size? Explain why do
+    you think so (5 points). If no, skip this step. If yes, calculate
+    the Effect Size. Find the needed option in Statistics > Nominal >
+    Phi and Cramer's V. Include the table "Nominal", make sure that
+    you numbered and titled it (10 points). Interpret it (5 points).
+
+    Inherits common functionality from BaseEvaluator.
     """
 
     def __init__(self):
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1200
-        )
+        """Initialize the evaluator with API handler."""
+        super().__init__()
+        self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:
+        """
+        Check if required elements are present.
+
+        Args:
+            student_answer: The student's response text
+
+        Returns:
+            Dictionary with found elements and evidence
+        """
         text_lower = student_answer.lower()
 
         elements_found = {
-            "task_description": False,
-            "effect_size_decision": False,
-            "nominal_table": False,
-            "cramer_v_value": False,
-            "effect_size_interpretation": False,
+            "need_conclusion_stated": False,
+            "cramers_v_or_phi_named": False,
+            "table_reference": False,
+            "interpretation_stated": False,
         }
 
         evidence = []
 
-        # Task description (pedagogical anchors matching the task wording)
-        pedagogical_markers = [
-            "explain why do you think so",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
+        # Checkpoint 1 — Explicit need conclusion with justification
+        has_yes_no = bool(re.search(r'\byes\b|\bno\b', text_lower))
+        has_justification = bool(re.search(
+            r'sample\s*size|practical|statistical\s*significance|large\s*sample|strength',
+            text_lower
+        ))
+        if has_yes_no and has_justification:
+            elements_found["need_conclusion_stated"] = True
+            evidence.append("Need conclusion with justification found")
         else:
-            evidence.append("Task description NOT found")
+            evidence.append(
+                f"Need conclusion incomplete (yes/no={has_yes_no}, "
+                f"justification={has_justification})"
+            )
 
-        # Decision on whether to calculate effect size
+        # Checkpoint 2 — Cramer's V or Phi named
+        if re.search(r"cram[ée]r|phi\s*coefficient|\bphi\b", text_lower):
+            elements_found["cramers_v_or_phi_named"] = True
+            evidence.append("Cramer's V / Phi named")
+        else:
+            evidence.append("Cramer's V / Phi NOT named")
+
+        # Checkpoint 3 — Table reference
+        if re.search(r'table\s*3|nominal', text_lower):
+            elements_found["table_reference"] = True
+            evidence.append("Table 3 / Nominal table reference found")
+        else:
+            evidence.append("Table 3 / Nominal table reference NOT found")
+
+        # Checkpoint 4 — Interpretation of the effect size
         if re.search(
-            r'yes|no|need|necessary|should|must|better|important|'
-            r'practical|significance|sample\s*size|large\s*n|'
-            r'statistically\s*significant|strength',
+            r'weak\s*association|moderate\s*association|strong\s*association|'
+            r'small\s*effect|large\s*effect|weak\s*effect|moderate\s*effect|strong\s*effect',
             text_lower
         ):
-            elements_found["effect_size_decision"] = True
-            evidence.append("Effect size decision found")
-        else:
-            evidence.append("Effect size decision NOT found")
-
-        # Nominal table (Table X with title)
-        if re.search(
-            r'table\s*\d|nominal|phi|cramer|cramér',
-            text_lower
-        ):
-            elements_found["nominal_table"] = True
-            evidence.append("Nominal table found")
-        else:
-            evidence.append("Nominal table NOT found")
-
-        # Cramér's V (or Phi) value reported
-        if re.search(
-            r"cramer|cramér|phi|v\s*=|φ\s*=|\.\d{2,}",
-            text_lower
-        ):
-            elements_found["cramer_v_value"] = True
-            evidence.append("Cramér's V / Phi value found")
-        else:
-            evidence.append("Cramér's V / Phi value NOT found")
-
-        # Interpretation of effect size
-        if re.search(
-            r'weak|small|moderate|strong|large|negligible|trivial|'
-            r'practical|association|strength|interpret|effect',
-            text_lower
-        ):
-            elements_found["effect_size_interpretation"] = True
+            elements_found["interpretation_stated"] = True
             evidence.append("Effect size interpretation found")
         else:
             evidence.append("Effect size interpretation NOT found")
 
         return {
             "elements_found": elements_found,
-            "evidence": evidence
+            "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
-    def grade_question_cw14_4_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_cw14_4_answer(self, student_answer: str, test_mode: bool = False):
+        """
+        Grade Classwork 14.4: Need for effect size, Cramer's V table,
+        and interpretation.
+        Returns detailed grading breakdown.
+
+        Args:
+            student_answer: The student's response text
+            test_mode: If True, returns mock data without calling API
+        """
 
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 1,
-                    "component_2_score": 1,
-                    "component_3_score": 3,
-                    "component_4_score": 10,
-                    "component_5_score": 5,
+                    "component_1_score": 2,
+                    "component_2_score": 3,
+                    "component_3_score": 10,
+                    "component_4_score": 5,
                 },
                 max_points=20,
-                feedback="[TEST MODE] Effect size decision present. Nominal table included and titled. Cramér's V found and interpreted.",
-                vibe="Clear effect size reasoning with properly formatted table",
+                feedback="[TEST MODE] Need for effect size justified. Cramer's V table numbered and titled. Interpretation correctly stated.",
+                vibe="Student demonstrates solid understanding of effect size and its interpretation",
+                additional_data={
+                    "element_check": {
+                        "elements_found": {
+                            "need_conclusion_stated": True,
+                            "cramers_v_or_phi_named": True,
+                            "table_reference": True,
+                            "interpretation_stated": True,
+                        },
+                        "evidence": ["Test mode - all elements present"]
+                    }
+                }
             )
 
-        prompt = f"""You are grading a statistics assignment using a STRICT rubric.
+        element_check = self.check_required_elements(student_answer)
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["do you need", "why do you think"]
+        )
 
-TASK:
-Students must complete 4 components related to effect size in a chi-square test of independence.
+        prompt = f"""You are grading a statistics assignment about the effect size (Cramer's V) for a chi-square test of independence in JASP using a **STRICT rubric-based approach**.
 
-IMPORTANT GRADING RULES:
-1. Total score MUST be exactly 20 points
-2. Focus on conceptual understanding over formatting
-3. Feedback should be SHORT, written as a teacher's comment
-4. Feedback CANNOT be an invitation for further discussion
+**TASK DESCRIPTION:**
+Task 4. Do you need to calculate the Effect Size? Explain why do
+you think so (5 points). If no, skip this step. If yes, calculate
+the Effect Size. Find the needed option in Statistics > Nominal >
+Phi and Cramer's V. Include the table "Nominal", make sure that you
+numbered and titled it (10 points). Interpret it (5 points).
 
-RUBRIC:
-
-Component 1: Task Description (1 point)
-DO NOT SCORE — handled externally. Leave component_1_score as 0.
-
-Component 2: Autoformatting (1 point)
-Student must demonstrate correct academic document formatting.
-
-- 1 point: Response is formatted as a coherent academic answer (complete sentences, structured paragraphs, no raw JASP output dumped without context)
-- 0 points: Unstructured, bullet-point only, or raw output without any written framing
-
-Component 3: Conclusion on the Need for Effect Size (3 points)
-Student must decide YES or NO — whether effect size should be calculated — and justify that decision.
-
-- 3 points: Correct YES/NO decision with a full justification that references at least TWO of the following:
-  (a) chi-square only tells us whether an association exists, not its strength;
-  (b) large sample size can make even trivial effects statistically significant;
-  (c) effect size reports practical importance of the result
-- 2 points: Correct decision with only one reason provided, or correct decision with vague reasoning
-- 1 point: Correct decision stated without any reasoning
-- 0 points: Completely absent or clearly wrong decision
-
-CRITICAL: Student must go beyond restating "effect size is useful" — reasoning must be specific and grounded.
-
-Component 4: Table 3 — Nominal Effect Size (10 points)
-Student must include the Nominal table from JASP (Phi and/or Cramér's V), properly numbered and titled.
-
-Sub-scoring (10 points total):
-- Introductory phrase (1 point): Student writes a sentence introducing the table before presenting it
-- Reference to table number in introductory phrase (1 point): The introductory phrase explicitly mentions the table by number (e.g., "Table 3 shows...")
-- Table number (1 point): The table has a number label (e.g., "Table 3")
-- Table title (1 point): The table has a descriptive title that names the variables and the measure
-- Table content (6 points):
-    - 6 points: Table includes Cramér's V (or Phi where appropriate) with a correct numeric value; footnote about Phi limitation (2×2 only) is present
-    - 5 points: Table includes Cramér's V with a correct numeric value but footnote is missing
-    - 4 points: Table includes the value but labeling or structure has minor errors
-    - 3 points: Table is present but value is absent or clearly wrong
-    - 2 points: Table structure is present but mostly empty or misidentified
-    - 1 point: Minimal attempt — only the word "Nominal" or a column header without data
-    - 0 points: No table at all
-
-CRITICAL: Accept Cramér's V OR Phi as the reported effect size statistic.
-CRITICAL: The table title must reference the two variables being studied (not generic).
-
-Component 5: Interpretation of Effect Size (5 points)
-Student must interpret the numeric effect size in plain language.
-
-- 5 points: Interpretation states the specific value (e.g., V = 0.077), labels its magnitude (weak/small/moderate/strong),
-  explicitly names both variables, and explains what the result means for the practical significance of the chi-square finding
-- 4 points: Correct interpretation with the value and magnitude label but one variable name missing, or practical significance implication not stated
-- 3 points: Value mentioned and labeled (e.g., "weak"), but interpretation is generic and not connected to the specific variables
-- 2 points: Magnitude label given without any numeric value, or value given without any label or explanation
-- 1 point: Minimal attempt — only restates the number without any interpretation
-- 0 points: Completely absent
-
-CRITICAL: Interpretation must explicitly connect the effect size magnitude to whether the chi-square result has practical importance.
-CRITICAL: Student must name the variables (not just say "the variables").
-
----
+Total: 20 points
 
 STUDENT ANSWER:
 {student_answer}
 
-Return JSON in this exact format:
+{IMPORTANT_NOTES}
+
+{IMPORTANT_GRADING_RULES}
+
+**HYBRID GRADING APPROACH:**
+
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}
+
+**RUBRIC:**
+
+**Component 1: Formatting (2 points total):**
+Use AUTOMATIC FORMATTING DETECTION RESULT above.
+- 1 point: Task description present
+- 1 point: Lack of auto-formatting
+
+**Component 2: Need for Effect Size (3 points total):**
+Unbroken block, no sub-points. Award full credit only if the
+student states whether the effect size is needed AND explains why,
+grounded in a correct statistical reason (e.g., statistical
+significance alone does not indicate the strength/practical
+importance of an association, especially with a large sample size).
+
+**Component 3: Table for Effect Size (10 points total):**
+Use AUTOMATIC DETECTION above.
+- 1 point: Introductory phrase for the effect size table is present
+- 1 point: Introductory phrase references the table number (e.g., "...see Table 3")
+- 1 point: Standalone table number present in APA style (e.g., "Table 3")
+- 1 point: Descriptive table title present in APA style
+- 6 points: The table itself is present and reports Cramer's V (or Phi, only if applicable to a 2x2 table)
+- CRITICAL: Do NOT award table points if no table is present
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 4: Table Interpretation (5 points total):**
+Unbroken block, no sub-points. Award full credit only if the
+student correctly interprets the effect size value using accepted
+strength categories (e.g., weak/small, moderate, strong/large) and
+connects this to the practical importance of the association.
+
+{FEEDBACK_RULES}
+
+---
+
+Return JSON only:
 {{
-  "component_1_score": 0,
-  "component_1_explanation": "Handled externally",
-  "component_2_score": <0-1>,
-  "component_2_explanation": "<brief explanation>",
-  "component_3_score": <0-3>,
-  "component_3_explanation": "<brief explanation>",
-  "component_4_score": <0-10>,
-  "component_4_explanation": "<brief explanation>",
-  "component_5_score": <0-5>,
-  "component_5_explanation": "<brief explanation>",
-  "total_points": <0-20>,
+  "component_1_score": <0-2>,
+  "component_1_task_score": <0-1>,
+  "component_1_autoformat_score": <0-1>,
+  "component_1_explanation": "<brief>",
+  "component_2_score": <0-3>,
+  "component_2_explanation": "<brief>",
+  "component_3_score": <0-10>,
+  "component_3_explanation": "<brief>",
+  "component_4_score": <0-5>,
+  "component_4_explanation": "<brief>",
+  "total_points": <sum of above, 0-20>,
   "max_points": 20,
   "percentage": <percentage>,
-  "feedback": "<SHORT teacher's comment>",
+  "feedback": "<narrative feedback>",
   "vibe": "<one-sentence overall impression>"
 }}
-
-SCORING INSTRUCTIONS:
-total_points = component_1_score + component_2_score + component_3_score + component_4_score + component_5_score
 """
-
-        element_check = self.check_required_elements(student_answer)
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
-            additional_checks={"element_check": element_check}
+            additional_checks={
+                "element_check": element_check,
+                "formatting_check": formatting_check
+            }
         )
 
-        # Enforcement: task description check (plain string matching, overrides LLM)
         if "error" not in result:
-            if not element_check["elements_found"]["task_description"]:
-                result["component_1_score"] = 0
-                result["component_1_explanation"] = "Task description NOT found (instructional phrasing missing)"
-            else:
-                result["component_1_score"] = 1
-                result["component_1_explanation"] = "Task description found"
-
-        if "error" not in result:
-            result = self.validate_component_scores(
-                result,
-                [
-                    "component_1_score",
-                    "component_2_score",
-                    "component_3_score",
-                    "component_4_score",
-                    "component_5_score",
-                ],
-                20
-            )
+            component_keys = [
+                "component_1_score",
+                "component_2_score",
+                "component_3_score",
+                "component_4_score",
+            ]
+            result = self.validate_component_scores(result, component_keys, 20)
 
         return result
 
     def print_grading_results(self, grading):
-        import textwrap
+        """
+        Display grading results using OutputFormatter.
 
-        print("=" * 60)
-        print("GRADING RESULTS - CLASSWORK 14.4")
-        print("Effect Size: Phi and Cramér's V")
-        print("=" * 60)
+        Args:
+            grading: Grading result dictionary
+        """
+        component_labels = {
+            "component_1_score": "Formatting (Task desc / Autoformatting)",
+            "component_2_score": "Need for Effect Size",
+            "component_3_score": "Table for Effect Size",
+            "component_4_score": "Table Interpretation",
+        }
 
-        if 'component_1_score' in grading:
-            print("\nCOMPONENT BREAKDOWN:")
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "HYBRID",
+            "component_3_score": "STRICT",
+            "component_4_score": "HYBRID",
+        }
 
-            print(f"  Component 1 (Task Description): {grading.get('component_1_score')}/1")
-            if grading.get('component_1_explanation'):
-                print(f"    → {grading.get('component_1_explanation')}")
+        max_scores = {
+            "component_1_score": 2,
+            "component_2_score": 3,
+            "component_3_score": 10,
+            "component_4_score": 5,
+        }
 
-            print(f"  Component 2 (Autoformatting): {grading.get('component_2_score')}/1")
-            if grading.get('component_2_explanation'):
-                print(f"    → {grading.get('component_2_explanation')}")
-
-            print(f"  Component 3 (Conclusion on Need for Effect Size): {grading.get('component_3_score')}/3")
-            if grading.get('component_3_explanation'):
-                print(f"    → {grading.get('component_3_explanation')}")
-
-            print(f"  Component 4 (Table 3 — Nominal Effect Size): {grading.get('component_4_score')}/10")
-            if grading.get('component_4_explanation'):
-                print(f"    → {grading.get('component_4_explanation')}")
-
-            print(f"  Component 5 (Interpretation of Effect Size): {grading.get('component_5_score')}/5")
-            if grading.get('component_5_explanation'):
-                print(f"    → {grading.get('component_5_explanation')}")
-
-            print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points')}/20")
-        print(f"PERCENTAGE: {grading.get('percentage')}%")
-
-        print("\nFEEDBACK:")
-        print(textwrap.fill(grading.get('feedback', ''), width=60))
-
-
-if __name__ == "__main__":
-    evaluator = CW14_4Evaluator()
-
-    from config import InputHandler
-    input_handler = InputHandler()
-
-    student_answer = input_handler.collect_and_validate_input(
-        question_name="CLASSWORK 14.4",
-        question_description="Effect Size: Phi and Cramér's V",
-        min_length=10
-    )
-
-    if student_answer:
-        grading = evaluator.grade_question_cw14_4_answer(student_answer)
-        evaluator.print_grading_results(grading)
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="CLASSWORK 14_4",
+            question_description="Chi-Square Effect Size (Cramer's V)",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="HYBRID"
+        )

@@ -1,172 +1,262 @@
 """
 hw14_3.py
-Chi-Square - Test Significance and Find Effect Sizes
+Homework 14: Chi-Square
+Chi-square significance testing and effect sizes across three problems
 Evaluation method name: def grade_hw14_3_answer
 """
+
 import re
-import textwrap
-
 from config import BaseEvaluator
-
+from config.output_formatter import OutputFormatter
+from config.constants import (
+    IMPORTANT_NOTES,
+    IMPORTANT_GRADING_RULES,
+    FEEDBACK_RULES,
+)
+from config.formatting_checks import check_formatting_elements_type2
 
 class HW14_3Evaluator(BaseEvaluator):
     """
-    Evaluator for Homework 14 Task 3.
+    Evaluator for Chi-Square Significance Testing and Effect Sizes.
 
-    Task: Test significance and find effect sizes (if significant) for the following tests:
+    Task 3. Test significance and find effect sizes (if significant) for
+    the following tests:
     a. N = 19, R = 3, C = 2, χ2 (2) = 7.89, α = .05
     b. N = 12, R = 2, C = 2, χ2 (1) = 3.12, α = .05
     c. N = 74, R = 3, C = 3, χ2 (4) = 28.41, α = .01
 
-    Rubric:
-    Formatting (2 points: task description, no autoformatting)
-    Problem a (6 points)
-    Problem b (6 points)
-    Problem c (6 points)
-    Total (strictly) 20 points.
+    Inherits common functionality from BaseEvaluator.
     """
 
     def __init__(self):
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1200
-        )
+        """Initialize the evaluator with API handler."""
+        super().__init__()
+        self.formatter = OutputFormatter(default_width=60)
 
-    def check_formatting_elements(self, student_answer: str) -> dict:
+    def check_required_elements(self, student_answer: str) -> dict:
+        """
+        Check if required elements are present.
+
+        Args:
+            student_answer: The student's response text
+
+        Returns:
+            Dictionary with found elements and evidence
+        """
         text_lower = student_answer.lower()
 
         elements_found = {
-            "task_description": False,
-            "no_autoformatting": True,
+            "problem_a_significance_stated": False,
+            "problem_a_threshold_justified": False,
+            "problem_a_effect_size_stated": False,
+            "problem_b_significance_stated": False,
+            "problem_b_critical_value_stated": False,
+            "problem_b_effect_not_reported": False,
+            "problem_c_significance_stated": False,
+            "problem_c_threshold_justified": False,
+            "problem_c_effect_size_stated": False,
         }
 
         evidence = []
 
-        # Task description
-        pedagogical_markers = [
-            "find effect sizes (if significant)",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
+        # Problem A — significance decision (χ² = 7.89, df 2, N 19, significant)
+        if re.search(r'7\.89', text_lower) and re.search(
+            r'significant(?!\s*ly\s*not)|statistically\s*significant', text_lower
+        ):
+            elements_found["problem_a_significance_stated"] = True
+            evidence.append("Problem A significance decision found")
         else:
-            evidence.append("Task description NOT found")
+            evidence.append("Problem A significance decision NOT found")
 
-        # Autoformatting
-        autoformat_patterns = [
-            r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',
-            r'^\s*[-•*]\s+\S',
-        ]
-        for pattern in autoformat_patterns:
-            if re.search(pattern, student_answer, re.MULTILINE):
-                elements_found["no_autoformatting"] = False
-                evidence.append("Autoformatting detected")
-                break
+        # Problem A — threshold justification (p < .05)
+        if re.search(r'p\s*<\s*\.?0?5', text_lower):
+            elements_found["problem_a_threshold_justified"] = True
+            evidence.append("Problem A p-value threshold found")
+        else:
+            evidence.append("Problem A p-value threshold NOT found")
 
-        if elements_found["no_autoformatting"]:
-            evidence.append("No autoformatting found")
+        # Problem A — effect size (Cramer's V ≈ .644, large)
+        if re.search(r'\.644|cramer', text_lower):
+            elements_found["problem_a_effect_size_stated"] = True
+            evidence.append("Problem A effect size found")
+        else:
+            evidence.append("Problem A effect size NOT found")
+
+        # Problem B — significance decision (χ² = 3.12, not significant)
+        if re.search(r'3\.12', text_lower) and re.search(r'not\s*(statistically\s*)?significant', text_lower):
+            elements_found["problem_b_significance_stated"] = True
+            evidence.append("Problem B significance decision found")
+        else:
+            evidence.append("Problem B significance decision NOT found")
+
+        # Problem B — critical value (3.841)
+        if re.search(r'3\.84', text_lower):
+            elements_found["problem_b_critical_value_stated"] = True
+            evidence.append("Problem B critical value found")
+        else:
+            evidence.append("Problem B critical value NOT found")
+
+        # Problem B — effect size not reported
+        if re.search(r'not\s*report|no\s*effect\s*size', text_lower):
+            elements_found["problem_b_effect_not_reported"] = True
+            evidence.append("Problem B effect size correctly omitted")
+        else:
+            evidence.append("Problem B effect size omission NOT found")
+
+        # Problem C — significance decision (χ² = 28.41, significant)
+        if re.search(r'28\.41', text_lower) and re.search(
+            r'significant(?!\s*ly\s*not)|statistically\s*significant', text_lower
+        ):
+            elements_found["problem_c_significance_stated"] = True
+            evidence.append("Problem C significance decision found")
+        else:
+            evidence.append("Problem C significance decision NOT found")
+
+        # Problem C — threshold justification (p < .01)
+        if re.search(r'p\s*<\s*\.?0?1', text_lower):
+            elements_found["problem_c_threshold_justified"] = True
+            evidence.append("Problem C p-value threshold found")
+        else:
+            evidence.append("Problem C p-value threshold NOT found")
+
+        # Problem C — effect size (Cramer's V ≈ .438, medium to large)
+        if re.search(r'\.438|cramer', text_lower):
+            elements_found["problem_c_effect_size_stated"] = True
+            evidence.append("Problem C effect size found")
+        else:
+            evidence.append("Problem C effect size NOT found")
 
         return {
             "elements_found": elements_found,
-            "evidence": evidence
+            "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
     def grade_hw14_3_answer(self, student_answer: str, test_mode: bool = False):
+        """
+        Grade Homework 14.3: Chi-Square Significance Testing and Effect
+        Sizes across three problems.
+        Returns detailed grading breakdown.
+
+        Args:
+            student_answer: The student's response text
+            test_mode: If True, returns mock data without calling API
+        """
+
         if test_mode:
             return self.create_mock_result(
                 component_scores={
                     "component_1_score": 2,
-                    "component_1_task_score": 1,
-                    "component_1_autoformat_score": 1,
                     "component_2_score": 6,
                     "component_3_score": 6,
                     "component_4_score": 6,
                 },
                 max_points=20,
-                feedback="[TEST MODE] All three problems solved correctly.",
-                vibe="Student demonstrates solid understanding of chi-square significance testing and effect sizes."
+                feedback="[TEST MODE] All three problems correctly tested for significance, with critical values/thresholds justified and effect sizes correctly calculated or correctly identified as not reported.",
+                vibe="Student demonstrates solid understanding of chi-square significance testing and effect sizes",
+                additional_data={
+                    "element_check": {
+                        "elements_found": {
+                            "problem_a_significance_stated": True,
+                            "problem_a_threshold_justified": True,
+                            "problem_a_effect_size_stated": True,
+                            "problem_b_significance_stated": True,
+                            "problem_b_critical_value_stated": True,
+                            "problem_b_effect_not_reported": True,
+                            "problem_c_significance_stated": True,
+                            "problem_c_threshold_justified": True,
+                            "problem_c_effect_size_stated": True,
+                        },
+                        "evidence": ["Test mode - all elements present"]
+                    }
+                }
             )
 
-        formatting_check = self.check_formatting_elements(student_answer)
-        fs = formatting_check["elements_found"]
+        element_check = self.check_required_elements(student_answer)
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=[
+                "Test significance and find effect sizes (if significant) "
+                "for the following tests: a. N = 19, R = 3, C = 2, "
+                "χ2 (2) = 7.89, α = .05 b. N = 12, R = 2, C = 2, "
+                "χ2 (1) = 3.12, α = .05 c. N = 74, R = 3, C = 3, "
+                "χ2 (4) = 28.41, α = .01"
+            ]
+        )
 
-        formatting_block = f"""
-HEADER DETECTION RESULTS (USE AS FACTS):
+        prompt = f"""You are grading a statistics assignment about chi-square significance testing and effect sizes using a **STRICT rubric-based approach**.
 
-task_description_present = {fs["task_description"]}
-no_autoformatting_present = {fs["no_autoformatting"]}
-"""
-
-        prompt = f"""{formatting_block}
-
-You are grading a statistics assignment.
-
-TASK:
-"Test significance and find effect sizes (if significant) for the following tests:
+**TASK DESCRIPTION:**
+Task 3. Test significance and find effect sizes (if significant) for the
+following tests:
 a. N = 19, R = 3, C = 2, χ2 (2) = 7.89, α = .05
 b. N = 12, R = 2, C = 2, χ2 (1) = 3.12, α = .05
-c. N = 74, R = 3, C = 3, χ2 (4) = 28.41, α = .01"
+c. N = 74, R = 3, C = 3, χ2 (4) = 28.41, α = .01
 
-Use STRICT rubric-based grading. Total score MUST be exactly 20 points.
-
-CORRECT ANSWERS:
-
-Problem a: N = 19, df = 2, χ2 = 7.89, α = .05
-- Critical value at df = 2, α = .05 is 5.991
-- χ²(2, N = 19) = 7.89, p < .05. Result is statistically significant.
-- min(R-1, C-1) = min(2, 1) = 1
-- Cramer's V = √(7.89 / (19 × 1)) = √(.4153) = .644
-- Effect size is large (V ≥ .50 for df* = 1)
-
-Problem b: N = 12, df = 1, χ2 = 3.12, α = .05
-- Critical value at df = 1, α = .05 is 3.841
-- χ²(1, N = 12) = 3.12, p > .05. Result is NOT statistically significant.
-- Effect size is not reported (only report when significant)
-
-Problem c: N = 74, df = 4, χ2 = 28.41, α = .01
-- Critical value at df = 4, α = .01 is 13.277
-- χ²(4, N = 74) = 28.41, p < .01. Result is statistically significant.
-- min(R-1, C-1) = min(2, 2) = 2
-- Cramer's V = √(28.41 / (74 × 2)) = √(.1920) = .438
-- Effect size is medium to large (accept either "medium", "large", or "medium to large" for df* = 2)
-
-RUBRIC:
-
-Component 1: Formatting (2 points)
-Start with 2 points.
-
-Step 1 Task description (1 point)
-Use task_description_present. If False: deduct 1 point.
-
-Step 2 No autoformatting (1 point)
-Use no_autoformatting_present. If False: deduct 1 point.
-
-Component 2: Problem a (6 points)
-- Correctly states result is significant: 2 points
-- Correct Cramer's V calculation (accept .64–.65): 2 points
-- Correct effect size interpretation (large): 2 points
-
-Component 3: Problem b (6 points)
-- Correctly states result is NOT significant: 3 points
-- Correctly states effect size is not reported: 3 points
-
-Component 4: Problem c (6 points)
-- Correctly states result is significant: 2 points
-- Correct Cramer's V calculation (accept .43–.44): 2 points
-- Correct effect size interpretation (medium, large, or medium to large): 2 points
-
-ORIGINALITY CHECK:
-If copied/AI-generated with suspiciously generic style, set all scores to 0 and set feedback to EXACTLY:
-"Due to originality concern, your points are frozen. You can get them back if you provide oral explanation for this paper."
+Total: 20 points
 
 STUDENT ANSWER:
 {student_answer}
 
+{IMPORTANT_NOTES}
+
+{IMPORTANT_GRADING_RULES}
+
+**HYBRID GRADING APPROACH:**
+
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}
+
+**RUBRIC:**
+
+**Component 1: Formatting (2 points total):**
+Use AUTOMATIC FORMATTING DETECTION RESULT above.
+- 1 point: Task description present
+- 1 point: Lack of auto-formatting
+
+**Component 2: Problem A (6 points total):**
+Use AUTOMATIC DETECTION above for supporting evidence.
+- 2 points: Significance decision correctly stated — χ² value (7.89),
+  df, and N reported and compared to α, concluding statistically
+  significant
+- 2 points: Critical value or p-value threshold correctly justifying
+  the decision (p < .05)
+- 2 points: Effect size (Cramer's V) correctly calculated (≈ .644) and
+  its magnitude correctly interpreted as large
+
+**Component 3: Problem B (6 points total):**
+Use AUTOMATIC DETECTION above for supporting evidence.
+- 2 points: Significance decision correctly stated — χ² value (3.12),
+  df, and N reported and compared to α, concluding not statistically
+  significant
+- 2 points: Critical value correctly stated (3.841) as justification
+  for the decision
+- 2 points: Effect size correctly identified as not reported, since
+  the result is not significant
+- CRITICAL: Do NOT award effect size points if the student calculates
+  and reports a Cramer's V value here, since the result is not
+  significant and an effect size should not be reported
+
+**Component 4: Problem C (6 points total):**
+Use AUTOMATIC DETECTION above for supporting evidence.
+- 2 points: Significance decision correctly stated — χ² value
+  (28.41), df, and N reported and compared to α, concluding
+  statistically significant
+- 2 points: Critical value or p-value threshold correctly justifying
+  the decision (p < .01)
+- 2 points: Effect size (Cramer's V) correctly calculated (≈ .438)
+  and its magnitude correctly interpreted as medium to large
+
+{FEEDBACK_RULES}
+
+---
+
 Return JSON only:
 {{
-  "originality_concern": <true/false>,
   "component_1_score": <0-2>,
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
@@ -177,17 +267,21 @@ Return JSON only:
   "component_3_explanation": "<brief>",
   "component_4_score": <0-6>,
   "component_4_explanation": "<brief>",
-  "total_points": <0-20>,
+  "total_points": <sum of above, 0-20>,
   "max_points": 20,
-  "percentage": <number>,
-  "feedback": "<short teacher comment>",
-  "vibe": "<one sentence overall impression>"
-}}"""
+  "percentage": <percentage>,
+  "feedback": "<narrative feedback>",
+  "vibe": "<one-sentence overall impression>"
+}}
+"""
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
-            additional_checks={"formatting_check": formatting_check}
+            additional_checks={
+                "element_check": element_check,
+                "formatting_check": formatting_check
+            }
         )
 
         if "error" not in result:
@@ -202,89 +296,41 @@ Return JSON only:
         return result
 
     def print_grading_results(self, grading):
-        print("=" * 60)
-        print("GRADING RESULTS - HW14_3")
-        print("Chi-Square: Test Significance and Effect Sizes")
-        print("=" * 60)
+        """
+        Display grading results using OutputFormatter.
 
-        if "component_1_score" in grading:
-            if grading.get("originality_concern"):
-                print("\n⚠️  ORIGINALITY CONCERN DETECTED")
-                print("   All points frozen. See feedback below.")
+        Args:
+            grading: Grading result dictionary
+        """
+        component_labels = {
+            "component_1_score": "Formatting (Task desc / Autoformatting)",
+            "component_2_score": "Problem A",
+            "component_3_score": "Problem B",
+            "component_4_score": "Problem C",
+        }
 
-            print(f"\nFormatting: {grading.get('component_1_score')}/2")
-            print(f"  • Task description:  {grading.get('component_1_task_score')}/1 (string match)")
-            print(f"  • No autoformatting: {grading.get('component_1_autoformat_score')}/1 (regex)")
-            if grading.get('component_1_explanation'):
-                print(f"   → {grading.get('component_1_explanation')}")
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "HYBRID",
+            "component_3_score": "HYBRID",
+            "component_4_score": "HYBRID",
+        }
 
-            print(f"\nProblem a: {grading.get('component_2_score')}/6")
-            if grading.get('component_2_explanation'):
-                print(f"  → {grading.get('component_2_explanation')}")
+        max_scores = {
+            "component_1_score": 2,
+            "component_2_score": 6,
+            "component_3_score": 6,
+            "component_4_score": 6,
+        }
 
-            print(f"\nProblem b: {grading.get('component_3_score')}/6")
-            if grading.get('component_3_explanation'):
-                print(f"  → {grading.get('component_3_explanation')}")
-
-            print(f"\nProblem c: {grading.get('component_4_score')}/6")
-            if grading.get('component_4_explanation'):
-                print(f"  → {grading.get('component_4_explanation')}")
-
-            print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points')}/{grading.get('max_points', 20)}")
-        print(f"PERCENTAGE: {grading.get('percentage')}%")
-
-        print("\n" + "=" * 60)
-        print("FEEDBACK:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get("feedback", ""), width=60))
-
-        print("\n" + "=" * 60)
-        print("THE VIBE:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get("vibe", ""), width=60))
-
-        if 'error' in grading:
-            print("\n" + "=" * 60)
-            print("ERROR:")
-            print("=" * 60)
-            print(grading.get('error'))
-
-
-if __name__ == "__main__":
-    print("Welcome to the Homework AI Evaluator System!")
-    print("=" * 60)
-
-    evaluator = HW14_3Evaluator()
-
-    print("=" * 60)
-    print("HOMEWORK 14.3 EVALUATOR")
-    print("Chi-Square: Test Significance and Effect Sizes")
-    print("=" * 60)
-    print("\nPlease enter the student's answer to HOMEWORK 14_3.")
-    print("(Press Enter twice when finished, or type 'END' on a new line)\n")
-
-    lines = []
-    while True:
-        line = input()
-        if line.strip().upper() == 'END':
-            break
-        lines.append(line)
-        if len(lines) >= 2 and lines[-1] == '' and lines[-2] == '':
-            lines = lines[:-2]
-            break
-
-    student_answer = '\n'.join(lines)
-
-    if not student_answer.strip():
-        print("\n❌ Error: No answer provided. Exiting.")
-        exit(1)
-
-    print("\n" + "=" * 60)
-    print("EVALUATING...")
-    print("=" * 60)
-
-    grading = evaluator.grade_hw14_3_answer(student_answer)
-
-    evaluator.print_grading_results(grading)
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="HOMEWORK 14_3",
+            question_description="Chi-Square Significance Testing and Effect Sizes",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="HYBRID"
+        )

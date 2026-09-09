@@ -1,41 +1,40 @@
 """
 hw13_3.py
-Linear Regression - Fill out ANOVA tables for simple linear regressions
+Homework 13: Linear Regression
+Fill out ANOVA tables
 Evaluation method name: def grade_hw13_3_answer
 """
-import re
-import textwrap
 
+import re
 from config import BaseEvaluator
+from config.output_formatter import OutputFormatter
+from config.formatting_checks import check_formatting_elements_type2
 
 
 class HW13_3Evaluator(BaseEvaluator):
     """
-    Evaluator for ANOVA Tables for Simple Linear Regression (HW13_3).
+    Evaluator for Homework 13 Task 3.
 
-    Task: Fill out the rest of the ANOVA tables below for simple linear regressions:
-    a. SS Model = 34.21, SS Total = 66.12, df Total = 54
-    b. MS Model = 6.03, df Error = 16, SS Total = 19.98
-    Is the model significant at α = 0.05? How do you know?
+    Task: Fill out the rest of the ANOVA tables below for simple linear
+    regressions.
 
-    Evaluates student's ability to correctly complete ANOVA tables for simple
-    linear regression and interpret model significance.
+    Formatting (2 points: task description, no autoformatting).
+    Table 1 (9 points: table number, table title, calculation details,
+    formulas provided, table itself).
+    Table 2 (9 points: table number, table title, calculation details,
+    formulas provided, table itself).
 
     Inherits common functionality from BaseEvaluator.
-    Contains only question-specific logic.
     """
 
     def __init__(self):
         """Initialize the evaluator with API handler."""
-        super().__init__(
-            model="llama-3.3-70b-versatile",
-            temperature=0.3,
-            max_tokens=1500
-        )
+        super().__init__()
+        self.formatter = OutputFormatter(default_width=60)
 
-    def check_formatting_elements(self, student_answer: str) -> dict:
+    def check_required_elements(self, student_answer: str) -> dict:
         """
-        Check if required structural and content elements are present.
+        Check if required content elements are present.
 
         Args:
             student_answer: The student's response text
@@ -46,53 +45,106 @@ class HW13_3Evaluator(BaseEvaluator):
         text_lower = student_answer.lower()
 
         elements_found = {
-            "task_description": False,
-            "no_autoformatting": True,
+            "table1_number": False,
+            "table1_title": False,
+            "table1_calculations": False,
+            "table1_formulas": False,
+            "table1_table": False,
+            "table2_number": False,
+            "table2_title": False,
+            "table2_calculations": False,
+            "table2_formulas": False,
+            "table2_table": False,
         }
 
         evidence = []
 
-        # Task description (pedagogical markers)
-        pedagogical_markers = [
-            "fill out the rest of the anova tables",
-            "simple linear regressions",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
+        # Checkpoint 1 — Table 1 number
+        if re.search(r'table\s*1\b|table\s*a\b', text_lower):
+            elements_found["table1_number"] = True
+            evidence.append("Table 1 number found")
         else:
-            evidence.append("Task description NOT found")
+            evidence.append("Table 1 number NOT found")
 
-        # No autoformatting (strict)
-        autoformat_patterns = [
-            r'(?m)(?:^\s*\d+[\.\)]\s+\S.*\n){2,}',
-            r'^\s*[-•*]\s+\S',
-        ]
-        for pattern in autoformat_patterns:
-            if re.search(pattern, student_answer, re.MULTILINE):
-                elements_found["no_autoformatting"] = False
-                evidence.append("Autoformatting detected")
-                break
-        if elements_found["no_autoformatting"]:
-            evidence.append("No autoformatting found")
+        # Checkpoint 2 — Table 1 title
+        if re.search(r'table\s*1[\.:]\s*\S|table\s*a[\.:]\s*\S', text_lower):
+            elements_found["table1_title"] = True
+            evidence.append("Table 1 title found")
+        else:
+            evidence.append("Table 1 title NOT found")
+
+        # Checkpoint 3 — Table 1 calculation details
+        if re.search(r'df\s*model|ms\s*model|ss\s*error|df\s*error|ms\s*error', text_lower):
+            elements_found["table1_calculations"] = True
+            evidence.append("Table 1 calculation details found")
+        else:
+            evidence.append("Table 1 calculation details NOT found")
+
+        # Checkpoint 4 — Table 1 formulas
+        if re.search(r'ms\s*=|ss\s*=|f\s*=|=\s*.+/.+', text_lower):
+            elements_found["table1_formulas"] = True
+            evidence.append("Table 1 formulas found")
+        else:
+            evidence.append("Table 1 formulas NOT found")
+
+        # Checkpoint 5 — Table 1 table structure
+        if re.search(r'source.*ss.*df.*ms.*f|model.*error.*total', text_lower):
+            elements_found["table1_table"] = True
+            evidence.append("Table 1 structure found")
+        else:
+            evidence.append("Table 1 structure NOT found")
+
+        # Checkpoint 6 — Table 2 number
+        if re.search(r'table\s*2\b|table\s*b\b', text_lower):
+            elements_found["table2_number"] = True
+            evidence.append("Table 2 number found")
+        else:
+            evidence.append("Table 2 number NOT found")
+
+        # Checkpoint 7 — Table 2 title
+        if re.search(r'table\s*2[\.:]\s*\S|table\s*b[\.:]\s*\S', text_lower):
+            elements_found["table2_title"] = True
+            evidence.append("Table 2 title found")
+        else:
+            evidence.append("Table 2 title NOT found")
+
+        # Checkpoint 8 — Table 2 calculation details
+        matches = list(re.finditer(r'df\s*model|ms\s*model|ss\s*error|df\s*error|ms\s*error', text_lower))
+        if len(matches) >= 2:
+            elements_found["table2_calculations"] = True
+            evidence.append("Table 2 calculation details found")
+        else:
+            evidence.append("Table 2 calculation details NOT found")
+
+        # Checkpoint 9 — Table 2 formulas
+        matches = list(re.finditer(r'ms\s*=|ss\s*=|f\s*=|=\s*.+/.+', text_lower))
+        if len(matches) >= 2:
+            elements_found["table2_formulas"] = True
+            evidence.append("Table 2 formulas found")
+        else:
+            evidence.append("Table 2 formulas NOT found")
+
+        # Checkpoint 10 — Table 2 table structure
+        matches = list(re.finditer(r'source.*ss.*df.*ms.*f|model.*error.*total', text_lower))
+        if len(matches) >= 2:
+            elements_found["table2_table"] = True
+            evidence.append("Table 2 structure found")
+        else:
+            evidence.append("Table 2 structure NOT found")
 
         return {
             "elements_found": elements_found,
-            "evidence": evidence if evidence else ["No clear formatting indicators found"]
+            "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
     def grade_hw13_3_answer(self, student_answer: str, test_mode: bool = False):
         """
-        Grade Homework 13.3: ANOVA tables for simple linear regression.
+        Grade Homework 13.3: ANOVA table completion for simple linear regressions.
         Returns detailed grading breakdown.
 
         Args:
             student_answer: The student's response text
             test_mode: If True, returns mock data without calling API
-
-        Returns:
-            Detailed grading breakdown dictionary
         """
 
         if test_mode:
@@ -101,186 +153,129 @@ class HW13_3Evaluator(BaseEvaluator):
                     "component_1_score": 2,
                     "component_1_task_score": 1,
                     "component_1_autoformat_score": 1,
-                    "component_2_score": 8,
-                    "component_3_score": 8,
-                    "component_4_score": 2,
+                    "component_2_score": 9,
+                    "component_3_score": 9,
                 },
                 max_points=20,
-                feedback="[TEST MODE] Both ANOVA tables completed correctly. Model significance correctly interpreted.",
-                vibe="Student demonstrates solid understanding of ANOVA table structure for simple linear regression.",
+                feedback="[TEST MODE] Both ANOVA tables complete with correct calculations and formulas.",
+                vibe="Student demonstrates solid understanding of ANOVA table completion for simple linear regression.",
                 additional_data={
-                    "formatting_check": {
+                    "element_check": {
                         "elements_found": {
-                            "task_description": True,
-                            "no_autoformatting": True,
+                            "table1_number": True,
+                            "table1_title": True,
+                            "table1_calculations": True,
+                            "table1_formulas": True,
+                            "table1_table": True,
+                            "table2_number": True,
+                            "table2_title": True,
+                            "table2_calculations": True,
+                            "table2_formulas": True,
+                            "table2_table": True,
                         },
+                        "all_present": True,
                         "evidence": ["Test mode - all elements present"]
                     }
                 }
             )
 
-        formatting_check = self.check_formatting_elements(student_answer)
-        formatting_summary = formatting_check["elements_found"]
+        element_check = self.check_required_elements(student_answer)
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["fill out the rest of the anova tables below for simple linear regressions"]
+        )
 
-        formatting_block = f"""
-        HEADER DETECTION RESULTS (DO NOT RE-EVALUATE — USE AS FACTS):
+        prompt = f"""You are grading a statistics assignment about completing ANOVA tables for simple linear regression using a **STRICT rubric-based approach**.
 
-        task_description_present = {formatting_summary["task_description"]}
-        no_autoformatting_present = {formatting_summary["no_autoformatting"]}
+**TASK DESCRIPTION:**
+Fill out the rest of the ANOVA tables below for simple linear regressions.
 
-        You MUST deduct points in Component 1 strictly according to these values.
-        If task_description_present = False, you MUST deduct 1 point.
-        If no_autoformatting_present = False, you MUST deduct 1 point.
-        """
+Total: 20 points
 
-        prompt = f"""{formatting_block}
-        You are grading a statistics assignment where a student must complete two ANOVA tables
-        for simple linear regressions and interpret model significance.
+STUDENT ANSWER:
+{student_answer}
 
-Use a **STRICT rubric-based approach**. Total score MUST be exactly 20 points.
+**IMPORTANT NOTES:**
+- Students submit text descriptions of their work since visual elements (actual diagrams, screenshots, formatted documents) cannot be captured in text
+- If student REFERENCES or DESCRIBES the required elements, ASSUME they completed it in their actual document
+- DO NOT penalize for "missing" visual elements if they clearly describe what they did
 
 **IMPORTANT GRADING RULES:**
 1. Total score MUST be exactly 20 points
-2. 0 only if completely blank
+2. Reasoning is required; calculations are mandatory
 3. Feedback should be SHORT, written as a teacher's comment
 4. Feedback CANNOT be an invitation for further discussion
-5. For low-scoring answers, use encouraging language: "Credit for trying, but..."
+5. Award partial credit where reasoning is mostly correct but incomplete
+6. It is expected to see both student's logic and calculations, not only the final answer
+7. Explanations must be SPECIFIC and ACTIONABLE - avoid vague phrases like "lacks depth", "could be better", "needs improvement". Instead, point to what is actually missing or what was done well.
 
----
+**HYBRID GRADING APPROACH:**
 
-**CORRECT ANSWERS:**
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
 
-**Table a:** Given: SS Model = 34.21, SS Total = 66.12, df Total = 54
-- df Model = 1 (simple linear regression always has df Model = 1)
-- df Error = 53 (df Total − df Model = 54 − 1)
-- SS Error = 31.91 (SS Total − SS Model = 66.12 − 34.21)
-- MS Model = 34.21 (SS Model / df Model = 34.21 / 1)
-- MS Error = 0.602 (SS Error / df Error = 31.91 / 53)
-- F = 56.83 (MS Model / MS Error = 34.21 / 0.602)
-
-**Table b:** Given: MS Model = 6.03, df Error = 16, SS Total = 19.98
-- df Model = 1 (simple linear regression)
-- df Total = 17 (df Model + df Error = 1 + 16)
-- SS Model = 6.03 (MS Model × df Model = 6.03 × 1)
-- SS Error = 13.95 (SS Total − SS Model = 19.98 − 6.03)
-- MS Error = 0.872 (SS Error / df Error = 13.95 / 16)
-- F = 6.91 (MS Model / MS Error = 6.03 / 0.872)
-
-**Significance interpretation:**
-- Table a: F(1, 53) = 56.83 exceeds critical value ≈ 4.03 at α = 0.05, so model is significant
-- Table b: F(1, 16) = 6.91 exceeds critical value ≈ 4.49 at α = 0.05, so model is significant
-
-Accept minor rounding differences (e.g. F = 56.8 or 56.84 for table a; F = 6.9 or 6.92 for table b).
-
----
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}
 
 **RUBRIC:**
 
-**Component 1: Header & Structural Integrity (2 points)**
+**Component 1: Formatting (2 points):**
+Use AUTOMATIC FORMATTING DETECTION RESULT above.
+- 1 point: Task description correctly formatted
+- 1 point: Proper autoformatting and structure
 
-Start at 2 points.
+**Component 2: Table 1 (9 points):**
+Use AUTOMATIC DETECTION above.
+- 1 point: Table number present (use table1_number)
+- 1 point: Table title present (use table1_title)
+- 3 points: Calculation details shown, correctly and completely (use table1_calculations)
+- 2 points: Formulas provided (use table1_formulas)
+- 2 points: Table itself filled out correctly (use table1_table)
+- CRITICAL: Verify the numeric values are mathematically correct (SS, df, MS, F relationships) before awarding calculation and table points
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
 
-Deduct 1 point for each missing element:
+**Component 3: Table 2 (9 points):**
+Use AUTOMATIC DETECTION above.
+- 1 point: Table number present (use table2_number)
+- 1 point: Table title present (use table2_title)
+- 3 points: Calculation details shown, correctly and completely (use table2_calculations)
+- 2 points: Formulas provided (use table2_formulas)
+- 2 points: Table itself filled out correctly (use table2_table)
+- CRITICAL: Verify the numeric values are mathematically correct (SS, df, MS, F relationships) before awarding calculation and table points
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
 
-STEP 1 - Task Description [STRICT]
-Use task_description_present.
-If False: deduct 1 point. Add: "Task description is missing. -1 point."
-
-STEP 2 - No autoformatting [STRICT]
-Use no_autoformatting_present.
-If False: deduct 1 point. Add: "Autoformatting detected. -1 point."
-
----
-
-**Component 2: Table a — Completed Correctly (8 points)**
-
-Award points for each correctly computed cell:
-- df Model = 1: 1 point
-- df Error = 53: 1 point
-- SS Error = 31.91: 1 point
-- MS Model = 34.21: 1 point
-- MS Error = 0.602 (accept 0.60): 2 points
-- F = 56.83 (accept 56.8–56.9): 2 points
-
----
-
-**Component 3: Table b — Completed Correctly (8 points)**
-
-Award points for each correctly computed cell:
-- df Model = 1: 1 point
-- df Total = 17: 1 point
-- SS Model = 6.03: 1 point
-- SS Error = 13.95: 1 point
-- MS Error = 0.872 (accept 0.87): 2 points
-- F = 6.91 (accept 6.9–6.92): 2 points
+**FEEDBACK RULES**
+- Identify which components were completed correctly
+- Point out missing or incomplete elements explicitly
+- Maintain supportive tone
 
 ---
 
-**Component 4: Significance Interpretation (2 points)**
-
-Student must state whether each model is significant at α = 0.05 and explain how they know
-(by comparing F to critical value, or p < .05).
-
-- 2 points: Both tables interpreted correctly with reasoning
-- 1 point: One table interpreted correctly, or both stated without reasoning
-- 0 points: No interpretation or completely wrong
-
-CRITICAL: Both models are significant. Any answer stating otherwise is wrong.
-
----
-
-**COMMON MISTAKES TO WATCH FOR:**
-
-❌ Using df Model > 1 (for simple linear regression df Model is always 1)
-❌ Computing MS = SS × df instead of SS / df
-❌ Computing F = MS Error / MS Model instead of MS Model / MS Error
-❌ Forgetting to compute SS Error before MS Error
-❌ Stating models are not significant
-
----
-
-**ORIGINALITY CHECK:**
-Before finalizing scores, assess whether the answer appears to be AI-generated or copied.
-Signs include: textbook-perfect phrasing with no personal voice, unnaturally polished
-structure, or language that reads like a Wikipedia/ChatGPT excerpt rather than a student explanation.
-- If originality concern detected: set all component scores to 0, set originality_concern to true,
-  and set feedback to EXACTLY: "Due to originality concern, your points are frozen. You can get them back if you provide oral explanation for this paper."
-- If original student work: set originality_concern to false and proceed normally.
-
----
-
-**STUDENT ANSWER:**
-{student_answer}
-
-**SCORING INSTRUCTIONS FOR SUB-SCORES:**
-
-For component_1_task_score: use task_description_present (1 if True, 0 if False)
-For component_1_autoformat_score: use no_autoformatting_present (1 if True, 0 if False)
-
-Return grading in this exact JSON format:
+Return JSON only:
 {{
-  "originality_concern": <true/false>,
   "component_1_score": <0-2>,
   "component_1_task_score": <0-1>,
   "component_1_autoformat_score": <0-1>,
-  "component_1_explanation": "<brief explanation for header>",
-  "component_2_score": <0-8>,
-  "component_2_explanation": "<brief explanation for table a>",
-  "component_3_score": <0-8>,
-  "component_3_explanation": "<brief explanation for table b>",
-  "component_4_score": <0-2>,
-  "component_4_explanation": "<brief explanation for significance interpretation>",
-  "total_points": <0-20>,
+  "component_1_explanation": "<brief>",
+  "component_2_score": <0-9>,
+  "component_2_explanation": "<brief>",
+  "component_3_score": <0-9>,
+  "component_3_explanation": "<brief>",
+  "total_points": <sum of above, 0-20>,
   "max_points": 20,
-  "percentage": <percentage as number>,
-  "feedback": "<SHORT teacher's comment, not an invitation for discussion>",
-  "vibe": "<one-sentence overall impression of the student's understanding of ANOVA tables>"
-}}"""
+  "percentage": <percentage>,
+  "feedback": "<narrative feedback>",
+  "vibe": "<one-sentence overall impression>"
+}}
+"""
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
             additional_checks={
+                "element_check": element_check,
                 "formatting_check": formatting_check
             }
         )
@@ -290,101 +285,44 @@ Return grading in this exact JSON format:
                 "component_1_score",
                 "component_2_score",
                 "component_3_score",
-                "component_4_score",
             ]
             result = self.validate_component_scores(result, component_keys, 20)
 
         return result
 
     def print_grading_results(self, grading):
-        """Display grading results."""
-        print("=" * 60)
-        print("GRADING RESULTS - HW13_3")
-        print("ANOVA Tables for Simple Linear Regression")
-        print("=" * 60)
+        """
+        Display grading results using OutputFormatter.
 
-        if 'component_1_score' in grading:
-            if grading.get("originality_concern"):
-                print("\n⚠️  ORIGINALITY CONCERN DETECTED")
-                print("   All points frozen. See feedback below.")
+        Args:
+            grading: Grading result dictionary
+        """
+        component_labels = {
+            "component_1_score": "Formatting (Task desc / Autoformatting)",
+            "component_2_score": "Table 1",
+            "component_3_score": "Table 2",
+        }
 
-            print("\nCOMPONENT BREAKDOWN:")
-            print(f"  Component 1 (Header): {grading.get('component_1_score', 'N/A')}/2")
-            print(f"    • Task description:    {grading.get('component_1_task_score', 'N/A')}/1 (string match)")
-            print(f"    • No autoformatting:   {grading.get('component_1_autoformat_score', 'N/A')}/1 (regex)")
-            if grading.get('component_1_explanation'):
-                print(f"   → {grading.get('component_1_explanation')}")
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "HYBRID",
+            "component_3_score": "HYBRID",
+        }
 
-            print(f"  Component 2 (Table a): {grading.get('component_2_score', 'N/A')}/8")
-            if grading.get('component_2_explanation'):
-                print(f"    → {grading.get('component_2_explanation')}")
+        max_scores = {
+            "component_1_score": 2,
+            "component_2_score": 9,
+            "component_3_score": 9,
+        }
 
-            print(f"  Component 3 (Table b): {grading.get('component_3_score', 'N/A')}/8")
-            if grading.get('component_3_explanation'):
-                print(f"    → {grading.get('component_3_explanation')}")
-
-            print(f"  Component 4 (Significance Interpretation): {grading.get('component_4_score', 'N/A')}/2")
-            if grading.get('component_4_explanation'):
-                print(f"    → {grading.get('component_4_explanation')}")
-
-            print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points', 'N/A')}/{grading.get('max_points', 20)}")
-        print(f"PERCENTAGE: {grading.get('percentage', 'N/A')}%")
-
-        print("\n" + "=" * 60)
-        print("FEEDBACK:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get('feedback', 'No feedback available'), width=60))
-
-        print("\n" + "=" * 60)
-        print("THE VIBE:")
-        print("=" * 60)
-        print(textwrap.fill(grading.get('vibe', 'N/A'), width=60))
-
-        if 'error' in grading:
-            print("\n" + "=" * 60)
-            print("ERROR:")
-            print("=" * 60)
-            print(grading.get('error'))
-            if 'raw_response' in grading:
-                print("\nRaw Response:")
-                print(grading['raw_response'][:500])
-
-
-if __name__ == "__main__":
-    print("Welcome to the Homework AI Evaluator System!")
-    print("=" * 60)
-
-    evaluator = HW13_3Evaluator()
-
-    print("=" * 60)
-    print("HOMEWORK 13.3 EVALUATOR")
-    print("ANOVA Tables for Simple Linear Regression")
-    print("=" * 60)
-    print("\nPlease enter the student's answer to HOMEWORK 13_3.")
-    print("(Press Enter twice when finished, or type 'END' on a new line)\n")
-
-    lines = []
-    while True:
-        line = input()
-        if line.strip().upper() == 'END':
-            break
-        lines.append(line)
-        if len(lines) >= 2 and lines[-1] == '' and lines[-2] == '':
-            lines = lines[:-2]
-            break
-
-    student_answer = '\n'.join(lines)
-
-    if not student_answer.strip():
-        print("\n❌ Error: No answer provided. Exiting.")
-        exit(1)
-
-    print("\n" + "=" * 60)
-    print("EVALUATING...")
-    print("=" * 60)
-
-    grading = evaluator.grade_hw13_3_answer(student_answer)
-
-    evaluator.print_grading_results(grading)
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="HOMEWORK 13_3",
+            question_description="ANOVA Table Completion for Simple Linear Regressions",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="HYBRID"
+        )

@@ -1,349 +1,272 @@
 """
 cw13_5.py
 Classwork 13: Linear Regression
-APA-style results description and research question answer
-Evaluation method name: def grade_question_cw13_5_answer
+Results description, research question answer
+Evaluation method name: def grade_cw13_5_answer
 """
 
 import re
 from config import BaseEvaluator
-
+from config.output_formatter import OutputFormatter
+from config.formatting_checks import check_formatting_elements_type2
 
 class CW13_5Evaluator(BaseEvaluator):
     """
-    Evaluator for Classwork 13_5.
+    Evaluator for Linear Regression APA Results and Research Question Answer.
 
-    Task: Describe your results in APA style, using as template the text on video,
-    but include only results you got yourself (10 points).
-    Please keep in mind that your assignment is different from the description presented
-    in the video: it is shortened.
-    Answer the main research question (10 points).
-    Total (strictly) 20 points.
+    Task 5. Describe your results in APA style, using as template the text on video, but include only results you got yourself (21:40). Please keep in mind that your assignment is different from the description presented in the video: it is shortened. (10 points). Answer the main research question (10 points).
+
+    Inherits common functionality from BaseEvaluator.
     """
 
     def __init__(self):
+        """Initialize the evaluator with API handler."""
         super().__init__()
+        # Initialize output formatter
+        self.formatter = OutputFormatter(default_width=60)
 
     def check_required_elements(self, student_answer: str) -> dict:
+        """
+        Check if required elements are present.
+
+        Args:
+            student_answer: The student's response text
+
+        Returns:
+            Dictionary with found elements and evidence
+        """
         text_lower = student_answer.lower()
 
         elements_found = {
-            "task_description": False,
-            "apa_format": False,
-            "results_content": False,
-            "research_question_answer": False,
-            "alignment": False,
+            "f_statistic_present": False,
+            "p_value_present": False,
+            "r2_present": False,
+            "plain_language_summary": False,
+            "predictor_named": False,
+            "significant_prediction_stated": False,
         }
 
         evidence = []
 
-        # Task description (pedagogical anchors that students would NOT naturally write)
-        pedagogical_markers = [
-            "include only results you got yourself",
-        ]
-
-        if any(marker in text_lower for marker in pedagogical_markers):
-            elements_found["task_description"] = True
-            evidence.append("Task description found")
+        # Checkpoint 1 — F(1, 18) = 18.46
+        if re.search(r'f\s*\(\s*1\s*,\s*18\s*\)\s*=\s*18\.4[5-7]', text_lower):
+            elements_found["f_statistic_present"] = True
+            evidence.append("F(1, 18) = 18.46 found")
         else:
-            evidence.append("Task description NOT found")
+            evidence.append("F(1, 18) = 18.46 NOT found")
 
-        # APA format indicators
-        apa_indicators = [
-            r'b\s*=',
-            r'β\s*=',
-            r'r\s*²|r2|r\^2',
-            r'f\s*\(',
-            r't\s*\(',
-            r'p\s*[<>=]\s*\.\d+',
-            r'p\s*[<>=]\s*0\.\d+',
-            r'\d+\s*%.*variance',
-            r'95\s*%',
-            r'ci',
-        ]
-        if any(re.search(pattern, text_lower) for pattern in apa_indicators):
-            elements_found["apa_format"] = True
-            evidence.append("APA format indicators found")
+        # Checkpoint 2 — p < .001
+        if re.search(r'p\s*<\s*\.?0?01', text_lower) or re.search(r'p\s*<\s*\.001', text_lower):
+            elements_found["p_value_present"] = True
+            evidence.append("p < .001 found")
         else:
-            evidence.append("APA format indicators NOT found")
+            evidence.append("p < .001 NOT found")
 
-        # Results content (actual regression values reported)
-        results_indicators = [
-            "regression",
-            "coefficient",
-            "intercept",
-            "slope",
-            "significant",
-            "not significant",
-            "predict",
-            "explained",
-            "variance",
-            "linear",
-            r"r\s*²",
-            r"b\s*=",
-        ]
-        if any(re.search(pattern, text_lower) if pattern.startswith('r') or '\\' in pattern
-               else pattern in text_lower
-               for pattern in results_indicators):
-            elements_found["results_content"] = True
-            evidence.append("Results content found")
+        # Checkpoint 3 — R² = .506
+        if re.search(r'\.506|0\.506', text_lower):
+            elements_found["r2_present"] = True
+            evidence.append("R² = .506 found")
         else:
-            evidence.append("Results content NOT found")
+            evidence.append("R² = .506 NOT found")
 
-        # Research question answer
-        rq_indicators = [
-            "research question",
-            "main question",
-            "therefore",
-            "thus",
-            "in conclusion",
-            "to answer",
-            "the results show",
-            "found that",
-            "significant linear",
-            "no significant",
-            "reject",
-            "fail to reject",
-            "supports",
-            "does not support",
-        ]
-        if any(indicator in text_lower for indicator in rq_indicators):
-            elements_found["research_question_answer"] = True
-            evidence.append("Research question answer found")
+        # Checkpoint 4 — plain-language summary linking study hours to final scores
+        if re.search(r'studied\s*longer|study(ing)?\s*(more|longer)|higher\s*(final\s*)?scores', text_lower):
+            elements_found["plain_language_summary"] = True
+            evidence.append("Plain-language summary found")
         else:
-            evidence.append("Research question answer NOT found")
+            evidence.append("Plain-language summary NOT found")
 
-        # Alignment — results and RQ answer are consistent with each other
-        alignment_indicators = [
-            "based on",
-            "consistent with",
-            "aligned with",
-            "as shown",
-            "as indicated",
-            "these results",
-            "this suggests",
-            "therefore",
-            "thus",
-            "accordingly",
-        ]
-        if any(indicator in text_lower for indicator in alignment_indicators):
-            elements_found["alignment"] = True
-            evidence.append("Alignment indicators found")
+        # Checkpoint 5 — predictor named (hours spent on statistics homework)
+        if re.search(r'hours\s*spent\s*on\s*statistics\s*homework|study\s*hours|hours\s*(spent\s*)?studying', text_lower):
+            elements_found["predictor_named"] = True
+            evidence.append("Predictor named")
         else:
-            evidence.append("Alignment indicators NOT found")
+            evidence.append("Predictor NOT named")
+
+        # Checkpoint 6 — significantly predicted final course scores
+        if re.search(r'significantly\s*predict(ed)?', text_lower):
+            elements_found["significant_prediction_stated"] = True
+            evidence.append("Significant prediction statement found")
+        else:
+            evidence.append("Significant prediction statement NOT found")
 
         return {
             "elements_found": elements_found,
-            "evidence": evidence
+            "evidence": evidence if evidence else ["No clear element indicators found"]
         }
 
-    def grade_question_cw13_5_answer(self, student_answer: str, test_mode: bool = False):
+    def grade_cw13_5_answer(self, student_answer: str, test_mode: bool = False):
+        """
+        Grade Classwork 13.5: APA-style results description and research question answer.
+        Returns detailed grading breakdown.
+
+        Args:
+            student_answer: The student's response text
+            test_mode: If True, returns mock data without calling API
+        """
 
         if test_mode:
             return self.create_mock_result(
                 component_scores={
-                    "component_1_score": 1,
-                    "component_2_score": 4,
-                    "component_3_score": 5,
-                    "component_4_score": 5,
-                    "component_5_score": 5,
+                    "component_1_score": 2,
+                    "component_2_score": 8,
+                    "component_3_score": 10,
                 },
                 max_points=20,
-                feedback="[TEST MODE] APA-style results present with correct values. Research question answered clearly.",
+                feedback="[TEST MODE] Formatting present. APA results correctly reported. Research question answered clearly.",
                 vibe="Well-structured regression summary with proper APA reporting",
+                additional_data={
+                    "element_check": {
+                        "elements_found": {
+                            "f_statistic_present": True,
+                            "p_value_present": True,
+                            "r2_present": True,
+                            "plain_language_summary": True,
+                            "predictor_named": True,
+                            "significant_prediction_stated": True,
+                        },
+                        "all_present": True,
+                        "evidence": ["Test mode - all elements present"]
+                    }
+                }
             )
 
-        prompt = f"""You are grading a statistics assignment using a STRICT rubric.
+        element_check = self.check_required_elements(student_answer)
+        formatting_check = check_formatting_elements_type2(
+            student_answer,
+            pedagogical_markers=["please keep in mind"]
+        )
 
-TASK:
-Students must complete 5 components: task description, APA-style formatting,
-results content, research question answer, and alignment between results and conclusion.
+        prompt = f"""You are grading a statistics assignment about APA-style results reporting and research question interpretation using a **STRICT rubric-based approach**.
 
-IMPORTANT GRADING RULES:
-1. Total score MUST be exactly 20 points
-2. Focus on conceptual understanding and correct APA reporting
-3. Feedback should be SHORT, written as a teacher's comment
-4. Feedback CANNOT be an invitation for further discussion
+**TASK DESCRIPTION:**
+Task 5. Describe your results in APA style, using as template the text on video, but include only results you got yourself (21:40). Please keep in mind that your assignment is different from the description presented in the video: it is shortened. (10 points). Answer the main research question (10 points).
 
-RUBRIC:
-
-Component 1: Task Description (1 point)
-DO NOT SCORE — handled externally. Leave component_1_score as 0.
-
-Component 2: APA Style and Format (4 points)
-Student must report results using APA style as modelled in the video, adapted for their
-own (shortened) assignment. APA regression reporting includes: F-statistic with df,
-p-value, R², unstandardized coefficient B, and where applicable, t-value.
-
-- 4 points: Results reported in correct APA format with at least three of the following:
-  F(df1, df2) = value, p = value, R² = value, B = value, t(df) = value
-- 3 points: APA format attempted with two elements correct; minor deviations acceptable
-- 2 points: Some APA elements present but format substantially incomplete or incorrect
-- 1 point: Minimal APA attempt — only one element or values without proper notation
-- 0 points: No APA formatting present
-
-CRITICAL: Student must use their own results, not values from the video example.
-CRITICAL: Notation must follow APA style (e.g., F(1, 48) = 12.34, p = .003, R² = .20).
-
-Component 3: Results Content Accuracy (5 points)
-Student must describe the actual regression results they obtained, including the direction
-and significance of the effect, and what the model shows about the relationship between
-the predictor and criterion variables.
-
-- 5 points: Results clearly described with correct values; direction (positive/negative),
-  significance decision (p < or > .05), and R² or variance explained all addressed
-- 4 points: Results correct but one element (direction, significance, or R²) missing
-- 3 points: Results partially described — correct values present but interpretation is vague
-- 2 points: Some results reported but key elements missing or unclear
-- 1 point: Minimal results content — only one value mentioned without context
-- 0 points: No results content
-
-CRITICAL: Student must report their own values, not copy from the video template.
-CRITICAL: Values must be consistent with a linear regression output (not correlation output).
-
-Component 4: Answer to Main Research Question (5 points)
-Student must provide a clear, direct answer to the main research question formulated
-in Task 1, phrased in terms of linear regression and significance.
-
-- 5 points: Research question directly answered with explicit reference to the regression
-  result — states whether the predictor significantly predicts the criterion,
-  and whether H0 is rejected, in plain language
-- 4 points: Answer present and correct but missing explicit connection to H0 or significance
-- 3 points: Answer present but vague or only partially addresses the research question
-- 2 points: Attempt to answer but confused or inconsistent with reported results
-- 1 point: Minimal answer — restates the question without providing a conclusion
-- 0 points: No answer to the research question
-
-CRITICAL: Answer must be phrased in terms of linear regression, not correlation.
-CRITICAL: Answer must be consistent with the p-value and results reported in Component 3.
-
-Component 5: Alignment Between Results and Conclusion (5 points)
-Student must demonstrate that their research question answer is logically consistent
-with the results they reported — the conclusion must follow from the data.
-
-- 5 points: Conclusion clearly follows from the reported results; direction, significance,
-  and practical meaning are all coherent and mutually consistent
-- 4 points: Conclusion mostly consistent but one minor inconsistency present
-- 3 points: Conclusion generally consistent but reasoning is not explicitly connected
-- 2 points: Partial alignment — conclusion present but not clearly derived from results
-- 1 point: Conclusion contradicts or ignores reported results
-- 0 points: No conclusion or completely absent
-
-CRITICAL: If p < .05 was reported, the conclusion MUST state rejection of H0.
-CRITICAL: If p > .05 was reported, the conclusion MUST state failure to reject H0.
-
----
+Total: 20 points
 
 STUDENT ANSWER:
 {student_answer}
 
-Return JSON in this exact format:
+**IMPORTANT GRADING RULES:**
+1. Total score MUST be exactly 20 points
+2. Reasoning is required; calculations are mandatory
+3. Feedback should be SHORT, written as a teacher's comment
+4. Feedback CANNOT be an invitation for further discussion
+5. Award partial credit where reasoning is mostly correct but incomplete
+6. It is expected to see both student's logic and calculations, not only the final answer
+7. Explanations must be SPECIFIC and ACTIONABLE - avoid vague phrases like "lacks depth", "could be better", "needs improvement". Instead, point to what is actually missing or what was done well.
+
+**HYBRID GRADING APPROACH:**
+
+**AUTOMATIC FORMATTING DETECTION RESULT:**
+Task description correctly formatted (1 point if True): {formatting_check['elements_found']['task_description']}
+Proper autoformatting and structure (1 point if True): {formatting_check['elements_found']['autoformatting']}
+Evidence: {formatting_check['evidence']}
+
+**AUTOMATIC DETECTION:**
+{element_check['elements_found']}
+
+**RUBRIC:**
+
+**Component 1: Formatting (2 points):**
+Use AUTOMATIC FORMATTING DETECTION RESULT above.
+- 1 point: Task description correctly formatted
+- 1 point: Proper autoformatting and structure
+
+**Component 2: APA Results Description (8 points):**
+Use AUTOMATIC DETECTION above.
+- 2 points: F(1, 18) = 18.46 reported
+- 2 points: p < .001 reported
+- 2 points: R² = .506 reported
+- 2 points: plain-language summary linking study hours to final scores
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**Component 3: Research Question Answer (10 points):**
+Use AUTOMATIC DETECTION above.
+- 5 points: naming the predictor (hours spent on statistics homework)
+- 5 points: stating it significantly predicted final course scores
+- CRITICAL: Do NOT assume elements are present if not explicitly written in the student's text
+
+**FEEDBACK RULES**
+- Identify which components were completed correctly
+- Point out missing or incomplete elements explicitly
+- Maintain supportive tone
+
+---
+
+Return JSON only:
 {{
-  "component_1_score": 0,
-  "component_1_explanation": "Handled externally",
-  "component_2_score": <0-4>,
-  "component_2_explanation": "<brief explanation>",
-  "component_3_score": <0-5>,
-  "component_3_explanation": "<brief explanation>",
-  "component_4_score": <0-5>,
-  "component_4_explanation": "<brief explanation>",
-  "component_5_score": <0-5>,
-  "component_5_explanation": "<brief explanation>",
-  "total_points": <0-20>,
+  "component_1_score": <0-2>,
+  "component_1_task_score": <0-1>,
+  "component_1_autoformat_score": <0-1>,
+  "component_1_explanation": "<brief>",
+  "component_2_score": <0-8>,
+  "component_2_explanation": "<brief>",
+  "component_3_score": <0-10>,
+  "component_3_explanation": "<brief>",
+  "total_points": <sum of above, 0-20>,
   "max_points": 20,
   "percentage": <percentage>,
-  "feedback": "<SHORT teacher's comment>",
+  "feedback": "<narrative feedback>",
   "vibe": "<one-sentence overall impression>"
 }}
-
-SCORING INSTRUCTIONS:
-total_points = component_1_score + component_2_score + component_3_score + component_4_score + component_5_score
 """
-
-        element_check = self.check_required_elements(student_answer)
 
         result = self.grade_with_prompt(
             student_answer=student_answer,
             prompt=prompt,
-            additional_checks={"element_check": element_check}
+            additional_checks={
+                "element_check": element_check,
+                "formatting_check": formatting_check
+            }
         )
 
-        # Enforcement: task description check (plain string matching, overrides LLM)
         if "error" not in result:
-            if not element_check["elements_found"]["task_description"]:
-                result["component_1_score"] = 0
-                result["component_1_explanation"] = "Task description NOT found (instructional phrasing missing)"
-            else:
-                result["component_1_score"] = 1
-                result["component_1_explanation"] = "Task description found"
-
-        if "error" not in result:
-            result = self.validate_component_scores(
-                result,
-                [
-                    "component_1_score",
-                    "component_2_score",
-                    "component_3_score",
-                    "component_4_score",
-                    "component_5_score",
-                ],
-                20
-            )
+            component_keys = [
+                "component_1_score",
+                "component_2_score",
+                "component_3_score",
+            ]
+            result = self.validate_component_scores(result, component_keys, 20)
 
         return result
 
     def print_grading_results(self, grading):
-        import textwrap
+        """
+        Display grading results using OutputFormatter.
 
-        print("=" * 60)
-        print("GRADING RESULTS - CLASSWORK 13.5")
-        print("APA Results Description and Research Question Answer")
-        print("=" * 60)
+        Args:
+            grading: Grading result dictionary
+        """
+        # Define component labels
+        component_labels = {
+            "component_1_score": "Formatting (Task desc / Autoformatting)",
+            "component_2_score": "APA Results Description",
+            "component_3_score": "Research Question Answer",
+        }
 
-        if 'component_1_score' in grading:
-            print("\nCOMPONENT BREAKDOWN:")
+        # Define component types
+        component_types = {
+            "component_1_score": "STRICT",
+            "component_2_score": "STRICT",
+            "component_3_score": "HYBRID",
+        }
 
-            print(f"  Component 1 (Task Description): {grading.get('component_1_score')}/1")
-            if grading.get('component_1_explanation'):
-                print(f"    → {grading.get('component_1_explanation')}")
+        max_scores = {
+            "component_1_score": 2,
+            "component_2_score": 8,
+            "component_3_score": 10,
+        }
 
-            print(f"  Component 2 (APA Style and Format): {grading.get('component_2_score')}/4")
-            if grading.get('component_2_explanation'):
-                print(f"    → {grading.get('component_2_explanation')}")
-
-            print(f"  Component 3 (Results Content Accuracy): {grading.get('component_3_score')}/5")
-            if grading.get('component_3_explanation'):
-                print(f"    → {grading.get('component_3_explanation')}")
-
-            print(f"  Component 4 (Research Question Answer): {grading.get('component_4_score')}/5")
-            if grading.get('component_4_explanation'):
-                print(f"    → {grading.get('component_4_explanation')}")
-
-            print(f"  Component 5 (Alignment Between Results and Conclusion): {grading.get('component_5_score')}/5")
-            if grading.get('component_5_explanation'):
-                print(f"    → {grading.get('component_5_explanation')}")
-
-            print(f"  {'─' * 40}")
-
-        print(f"\nTOTAL SCORE: {grading.get('total_points')}/20")
-        print(f"PERCENTAGE: {grading.get('percentage')}%")
-
-        print("\nFEEDBACK:")
-        print(textwrap.fill(grading.get('feedback', ''), width=60))
-
-
-if __name__ == "__main__":
-    evaluator = CW13_5Evaluator()
-
-    from config import InputHandler
-    input_handler = InputHandler()
-
-    student_answer = input_handler.collect_and_validate_input(
-        question_name="CLASSWORK 13.5",
-        question_description="APA Results Description and Research Question Answer",
-        min_length=10
-    )
-
-    if student_answer:
-        grading = evaluator.grade_question_cw13_5_answer(student_answer)
-        evaluator.print_grading_results(grading)
+        # Use formatter to display results
+        self.formatter.print_grading_results(
+            grading=grading,
+            question_name="CLASSWORK 13_5",
+            question_description="APA Results Description and Research Question Answer",
+            component_labels=component_labels,
+            max_score=max_scores,
+            component_types=component_types,
+            check_configs=None,
+            width=60,
+            mode="HYBRID"
+        )
