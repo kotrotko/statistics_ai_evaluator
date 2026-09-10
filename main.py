@@ -17,7 +17,7 @@ from classwork.classwork_2 import (
     CW2_2Evaluator,
     CW2_3Evaluator,
     CW2_4Evaluator,
-    # CW2_5Evaluator
+    CW2_5Evaluator
 )
 
 from classwork.classwork_3 import (
@@ -226,6 +226,9 @@ def main():
         "cw2_4": (CW2_4Evaluator, "QUESTION 2.4",
                 "Excel Histogram from Frequency Table",
                 "grade_cw2_4_answer", {}),
+        "cw2_5": (CW2_5Evaluator, "QUESTION 2.5",
+                  "Radar Chart",
+                  "grade_cw2_5_answer", {}),
 
         "cw3_1": (CW3_1Evaluator, "CLASSWORK 3.1",
                   "Mean, Median, Mode by Gender (GPA & IQ)",
