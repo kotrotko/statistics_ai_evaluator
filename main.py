@@ -24,7 +24,7 @@ from classwork.classwork_3 import (
     CW3_1Evaluator,
     CW3_2Evaluator,
     CW3_3Evaluator,
-    # CW3_4Evaluator,
+    CW3_4Evaluator,
     # CW3_5Evaluator
 )
 
@@ -239,7 +239,9 @@ def main():
         "cw3_3": (CW3_3Evaluator, "CLASSWORK 3.3",
                 "Distribution Plots with Density Curves by Gender",
                 "grade_question_cw3_3_answer", {}),
-
+        "cw3_4": (CW3_4Evaluator, "CLASSWORK 3.4",
+                  "Boxplots by Gender",
+                  "grade_cw3_4_answer", {}),
 
         "cw4_1": (CW4_1Evaluator, "CLASSWORK 4.1",
                   "Mean, SD Table + Normal Distribution Figures for IQ and GPA",
