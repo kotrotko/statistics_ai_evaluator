@@ -32,7 +32,7 @@ from classwork.classwork_4 import (
     CW4_1Evaluator,
     CW4_2Evaluator,
     CW4_3Evaluator,
-    # CW4_4Evaluator,
+    CW4_4Evaluator,
     # CW4_5Evaluator
 )
 
@@ -255,6 +255,11 @@ def main():
         "cw4_3": (CW4_3Evaluator, "CLASSWORK 4.3",
                   "Normal Curve IQ Percentages + Figure Formatting",
                   "grade_question_cw4_3_answer", {}),
+        "cw4_4": (CW4_4Evaluator, "CLASSWORK 4.4",
+                  "Percentage of students, standard deviations",
+                  "grade_cw4_4_answer", {}),
+
+
 
         "cw5_1": (CW5_1Evaluator, "CLASSWORK 5.1",
                   "Central Limit Theorem - Standard Error True/False Question",
