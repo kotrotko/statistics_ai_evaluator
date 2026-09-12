@@ -25,7 +25,7 @@ from classwork.classwork_3 import (
     CW3_2Evaluator,
     CW3_3Evaluator,
     CW3_4Evaluator,
-    # CW3_5Evaluator
+    CW3_5Evaluator
 )
 
 from classwork.classwork_4 import (
@@ -242,6 +242,9 @@ def main():
         "cw3_4": (CW3_4Evaluator, "CLASSWORK 3.4",
                   "Boxplots by Gender",
                   "grade_cw3_4_answer", {}),
+        "cw3_5": (CW3_5Evaluator, "CLASSWORK 3.5",
+                  "Summarize",
+                  "grade_cw3_5_answer", {}),
 
         "cw4_1": (CW4_1Evaluator, "CLASSWORK 4.1",
                   "Mean, SD Table + Normal Distribution Figures for IQ and GPA",
