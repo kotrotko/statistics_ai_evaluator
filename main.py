@@ -33,7 +33,7 @@ from classwork.classwork_4 import (
     CW4_2Evaluator,
     CW4_3Evaluator,
     CW4_4Evaluator,
-    # CW4_5Evaluator
+    CW4_5Evaluator
 )
 
 from classwork.classwork_5 import (
@@ -258,6 +258,12 @@ def main():
         "cw4_4": (CW4_4Evaluator, "CLASSWORK 4.4",
                   "Percentage of students, standard deviations",
                   "grade_cw4_4_answer", {}),
+        "cw4_4": (CW4_4Evaluator, "CLASSWORK 4.4",
+                  "Percentage of students, standard deviations",
+                  "grade_cw4_4_answer", {}),
+        "cw4_5": (CW4_5Evaluator, "CLASSWORK 4.5",
+                  "Familywise Error",
+                  "grade_cw4_5_answer", {}),
 
 
 
