@@ -40,7 +40,7 @@ from classwork.classwork_5 import (
     CW5_1Evaluator,
     CW5_2Evaluator,
     CW5_3Evaluator,
-    # CW5_4Evaluator,
+    CW5_4Evaluator,
     # CW5_5Evaluator
 )
 
@@ -266,7 +266,6 @@ def main():
                   "grade_cw4_5_answer", {}),
 
 
-
         "cw5_1": (CW5_1Evaluator, "CLASSWORK 5.1",
                   "Central Limit Theorem - Standard Error True/False Question",
                   "grade_question_cw5_1_answer", {}),
@@ -274,8 +273,12 @@ def main():
                   "Standard Error Calculation Improving Task",
                   "grade_question_cw5_2_answer", {}),
         "cw5_3": (CW5_3Evaluator, "CLASSWORK 5.3",
-                  "Z-Score Definition + Formula + Given + Solution + Answer",
+                  "Z-Score Definition",
                   "grade_question_cw5_3_answer", {}),
+        "cw5_4": (CW5_4Evaluator, "CLASSWORK 5.4",
+                  "Section Proportion",
+                  "grade_cw5_4_answer", {}),
+
 
         "cw7_1": (CW7_1Evaluator, "QUESTION 7.1",
                 "One Group T Test - Problem Statement / RQ / Hypotheses / α df CV",
