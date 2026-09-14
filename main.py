@@ -41,7 +41,7 @@ from classwork.classwork_5 import (
     CW5_2Evaluator,
     CW5_3Evaluator,
     CW5_4Evaluator,
-    # CW5_5Evaluator
+    CW5_5Evaluator
 )
 
 from classwork.classwork_7 import (
@@ -278,7 +278,9 @@ def main():
         "cw5_4": (CW5_4Evaluator, "CLASSWORK 5.4",
                   "Section Proportion",
                   "grade_cw5_4_answer", {}),
-
+        "cw5_5": (CW5_5Evaluator, "CLASSWORK 5.5",
+                  "Descriptive Statistics, Standard Error",
+                  "grade_cw5_5_answer", {}),
 
         "cw7_1": (CW7_1Evaluator, "QUESTION 7.1",
                 "One Group T Test - Problem Statement / RQ / Hypotheses / α df CV",
